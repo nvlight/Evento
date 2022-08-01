@@ -7,6 +7,68 @@
 
 Simple project with laravel 8 + vue 3.
 
+## Dev install
+
+> npm init vite vue
+
+choose vue without ts
+
+> cd vue
+
+> npm i 
+
+check HMR
+> npm run dev
+
+open in browser http://localhost:5173/ (in my case)
+
+> 
+
+install vuex
+>npm i -S vuex@next
+
+install vue-router
+>npm i -S vue-router@next
+
+Install Tailwind CSS with Vue 3 and Vite <br>
+https://tailwindcss.com/docs/guides/vite
+>npm i -D tailwindcss postcss autoprefixer <br>
+>npx tailwindcss init -p<br>
+
+tailwind.config.js
+````
+/** @type {import('tailwindcss').Config} */ 
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+````
+create filex index.css -> ./src/index.css
+````
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+````
+Main.vue
+````
+import { createApp } from 'vue'
+import App from './App.vue'
+import './index.css'
+
+createApp(App).mount('#app')
+````
+
+for components in https://tailwindui.com/components, im use login/register install
+> npm i @headlessui/vue <br>
+> npm i @heroicons/vue <br> 
+
+
 [//]: # (- [Simple, fast routing engine]&#40;https://laravel.com/docs/routing&#41;.)
 
 [//]: # (- [Powerful dependency injection container]&#40;https://laravel.com/docs/container&#41;.)
