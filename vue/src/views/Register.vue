@@ -4,11 +4,11 @@
         <div class="max-w-md w-full space-y-8">
             <div>
                 <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Register for free</h2>
                 <p class="mt-2 text-center text-sm text-gray-600">
                     Or
                     {{ ' ' }}
-                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> register for free </a>
+                    <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> sign in to your account </a>
                 </p>
             </div>
             <form class="mt-8 space-y-6" action="#" method="POST">
@@ -40,7 +40,7 @@
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                           <LockClosedIcon class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                         </span>
-                        Sign in
+                        Register
                     </button>
                 </div>
             </form>
