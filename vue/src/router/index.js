@@ -8,7 +8,7 @@ const routes = [
     {
         path: '/',
         //redirect: '/login',
-        name: 'home',
+        name: 'HelloWorld',
         //meta: { requiresAuth: true },
         component: HelloWorld,
         // children: [

@@ -54,6 +54,7 @@
 <script setup>
 import { LockClosedIcon } from '@heroicons/vue/solid'
 import store from "../store"
+import router from "../router"
 
 const user = {
     name: '',
@@ -65,8 +66,14 @@ const user = {
 function register(ev)
 {
     ev.preventDefault();
-
-    console.log(user);
+    store
+        .dispatch('register', user)
+        .then( () => {
+            console.log('registered!');
+            router.push({
+                name: 'HelloWorld'
+            })
+        })
 }
 
 </script>

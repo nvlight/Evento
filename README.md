@@ -68,6 +68,8 @@ for components in https://tailwindui.com/components, im use login/register insta
 > npm i @headlessui/vue <br>
 > npm i @heroicons/vue <br> 
 
+install axios
+>npm i -S axios
 
 [//]: # (- [Simple, fast routing engine]&#40;https://laravel.com/docs/routing&#41;.)
 

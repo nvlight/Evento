@@ -1,24 +1,31 @@
 import {createStore} from "vuex";
+import axiosClient from "../axios.js"
 
 const store = createStore({
     state:{
         user:{
-            data:{
-                name: 'Martin',
-                age : 33,
-            },
-            token: "cool",
-            // token: null,
+            data:{},
+            token: null,
         }
     },
     getters:{},
     actions:{
-        register(){
-
+        register({commit}, user){
+            return axiosClient.post('/register', user)
+                .then( ({data}) => {
+                    commit('setUser', data)
+                    return data;
+                })
         }
     },
-    mutations:{},
+    mutations:{
+        setUser: (state, userData) => {
+            state.user.token = userData.token;
+            state.user.data  = userData.data;
+            sessionStorage.setItem('TOKEN', userData.token);
+        }
+    },
     modules:{},
-})
+});
 
 export default store;
