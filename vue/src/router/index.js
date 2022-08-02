@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
 import HelloWorld from "../components/HelloWorld.vue"
+import AuthLayout from "../components/AuthLayout.vue"
 import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 
@@ -9,7 +10,7 @@ const routes = [
         //redirect: '/login',
         name: 'home',
         //meta: { requiresAuth: true },
-        component: Login,
+        component: HelloWorld,
         // children: [
         //     {
         //         path: '/dashboard',
@@ -24,14 +25,23 @@ const routes = [
         // ],
     },
     {
-        path: '/login',
-        name: 'Login',
-        component: Login,
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: Register,
+        path: '/auth',
+        redirect: '/login',
+        name: 'Auth',
+        component: AuthLayout,
+        meta: { isGuest: true,},
+        children: [
+            {
+                path: '/login',
+                name: 'Login',
+                component: Login,
+            },
+            {
+                path: '/register',
+                name: 'Register',
+                component: Register,
+            },
+        ],
     },
     // {
     //     path: '/auth',
