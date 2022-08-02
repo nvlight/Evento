@@ -1,28 +1,30 @@
 import {createRouter, createWebHistory} from "vue-router";
-import HelloWorld from "../components/HelloWorld.vue"
+import DefaultLayout from "../components/DefaultLayout.vue"
 import AuthLayout from "../components/AuthLayout.vue"
 import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
+import store from "../store"
+import Eventos from "../views/Eventos.vue";
 
 const routes = [
     {
         path: '/',
-        //redirect: '/login',
-        name: 'HelloWorld',
-        //meta: { requiresAuth: true },
-        component: HelloWorld,
-        // children: [
-        //     {
-        //         path: '/dashboard',
-        //         name: 'Dashboard',
-        //         component: Dashboard,
-        //     },
+        redirect: '/eventos',
+        //name: 'HelloWorld',
+        meta: { requiresAuth: true },
+        component: DefaultLayout,
+        children: [
+            {
+                path: '/eventos',
+                name: 'Eventos',
+                component: Eventos,
+            },
         //     {
         //         path: '/surveys',
         //         name: 'Surveys',
         //         component: Surveys,
         //     },
-        // ],
+        ],
     },
     {
         path: '/auth',
@@ -70,14 +72,14 @@ const router = createRouter({
     routes,
 })
 
-// router.beforeEach( (to,from, next) => {
-//     if (to.meta.requiresAuth && !store.state.user.token){
-//         next({name: 'Login'})
-//     }else if(store.state.user.token && to.meta.isGuest ){
-//         next({name: 'Dashboard'});
-//     }else{
-//         next();
-//     }
-// })
+router.beforeEach( (to,from, next) => {
+    if (to.meta.requiresAuth && !store.state.user.token){
+        next({name: 'Login'})
+    }else if(store.state.user.token && to.meta.isGuest ){
+        next({name: 'Eventos'});
+    }else{
+        next();
+    }
+})
 
 export default router;
