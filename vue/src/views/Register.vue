@@ -71,7 +71,7 @@ function register(ev)
         .then( () => {
             console.log('registered!');
             router.push({
-                name: 'HelloWorld'
+                name: 'Eventos'
             })
         })
 }

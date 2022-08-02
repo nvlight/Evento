@@ -30,8 +30,12 @@
                                 </div>
                                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                                     <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                                            <a :href="item.href" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item.name }}</a>
+                                        <MenuItem
+                                            v-slot="{ active }">
+                                            <a @click="logout"
+                                               :class="[
+                                                   'block px-4 py-2 text-sm text-gray-700 cursor-pointer ']"> Sign out
+                                            </a>
                                         </MenuItem>
                                     </MenuItems>
                                 </transition>
@@ -78,16 +82,13 @@
     </div>
 </template>
 
-<script setup>
+<script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+import {computed} from 'vue';
 
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
 const navigation = [
     { name: 'Dashboard', href: '#', current: true },
     { name: 'Team', href: '#', current: false },
@@ -95,10 +96,40 @@ const navigation = [
     { name: 'Calendar', href: '#', current: false },
     { name: 'Reports', href: '#', current: false },
 ]
-const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
-]
+
+export default {
+    components: {
+        Disclosure,
+        DisclosureButton,
+        DisclosurePanel,
+        Menu,
+        MenuButton,
+        MenuItem,
+        MenuItems,
+        BellIcon,
+        MenuIcon,
+        XIcon,
+    },
+    setup() {
+        const store  = useStore();
+        const router = useRouter();
+
+        function logout(){
+
+            store.dispatch('logout')
+                .then( () => {
+                    router.push({
+                        name: 'Login',
+                    })
+                });
+        }
+
+        return {
+            user: computed( () => store.state.user.data),
+            navigation,
+            logout,
+        }
+    }
+}
 
 </script>
