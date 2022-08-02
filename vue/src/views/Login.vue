@@ -32,6 +32,26 @@
             </div>
         </div>
 
+        <div v-if="errorMsg" class="flex items-center justify-between py-3 px-5 bg-red-500 text-white rounded">
+            {{ errorMsg }}
+            <span @click="errorMsg = ''" class="w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer hover:bg-[rgba(0,0,0,0.2)]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </span>
+        </div>
+
+        <div v-if="validateErrors">
+            <div v-for="(verror,key) in validateErrors" :key="key" class="flex items-center justify-between mb-3 py-3 px-5 bg-red-500 text-white rounded">
+                {{ verror[0] }}
+                <span @click="validateErrors=''" class="w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer hover:bg-[rgba(0,0,0,0.2)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </span>
+            </div>
+        </div>
+
         <div>
             <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span class="absolute left-0 inset-y-0 flex items-center pl-3">
@@ -46,24 +66,30 @@
 <script setup>
 import { LockClosedIcon } from '@heroicons/vue/solid'
 import store from "../store"
-import router from "../router"
+import {useRouter} from "vue-router"
+import {ref} from "vue";
 
 const user = {
     email: '',
     password: '',
     remember: false,
 }
+const router = useRouter();
+let errorMsg = ref('');
+let validateErrors = ref('');
 
 function login(ev)
 {
     ev.preventDefault();
-    store
-        .dispatch('login', user)
+    store.dispatch('login', user)
         .then( () => {
-            console.log('logined!');
             router.push({
                 name: 'Eventos'
             })
+        })
+        .catch(err => {
+            errorMsg.value = err.response.data.error;
+            validateErrors.value = err.response.data.errors;
         })
 }
 
