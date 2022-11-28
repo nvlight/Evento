@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->group(function ()
         return $request->user();
     });
     Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
-
 });
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);

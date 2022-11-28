@@ -17,6 +17,8 @@ const store = createStore({
                     return data;
                 })
         },
+        // 12345678aA@
+        // 12345678aA@
         login({commit}, user){
             return axiosClient.post('/login', user)
                 .then( ({data}) => {

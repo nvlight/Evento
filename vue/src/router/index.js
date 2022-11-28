@@ -10,7 +10,6 @@ const routes = [
     {
         path: '/',
         redirect: '/eventos',
-        //name: 'HelloWorld',
         meta: { requiresAuth: true },
         component: DefaultLayout,
         children: [
@@ -19,11 +18,6 @@ const routes = [
                 name: 'Eventos',
                 component: Eventos,
             },
-        //     {
-        //         path: '/surveys',
-        //         name: 'Surveys',
-        //         component: Surveys,
-        //     },
         ],
     },
     {
@@ -45,26 +39,6 @@ const routes = [
             },
         ],
     },
-    // {
-    //     path: '/auth',
-    //     redirect: '/login',
-    //     name: 'Auth',
-    //     component: AuthLayout,
-    //     meta: { isGuest: true },
-    //     children: [
-    //         {
-    //             path: '/login',
-    //             name: 'Login',
-    //             component: Login,
-    //         },
-    //         {
-    //             path: '/register',
-    //             name: 'Register',
-    //             component: Register,
-    //         },
-    //     ],
-    // },
-
 ];
 
 const router = createRouter({
