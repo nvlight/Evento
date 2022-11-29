@@ -9,7 +9,13 @@
                         </div>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
-                                <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
+                                <a v-for="item in navigation"
+                                   :key="item.name"
+                                   :href="item.href"
+                                   :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']" :aria-current="item.current ? 'page' : undefined"
+                                >{{ item.name }}</a>
+                                <!-- custom-links-->
+                                <a @click="tagModalVisible = !tagModalVisible" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Tags</a>
                             </div>
                         </div>
                     </div>
@@ -85,58 +91,104 @@
             </DisclosurePanel>
         </Disclosure>
 
-        <router-view></router-view>
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Eventos
+                </h1>
+            </div>
+        </header>
+        <main>
+            <mg-modal v-model:show="tagModalVisible">
+                <div class="flex">
+
+                    <div class="w-4/12 ">
+                        <tag-edit-form v-show="editFormShow" class="border border p-3"
+                            @editFormClosedBtnPressed="editFormShow = false"
+                        ></tag-edit-form>
+                        <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>
+                    </div>
+
+                    <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"
+                       :tags="tags"
+                       :title="'Список тегов'"
+                       @editBtnClicked="editFormShow = true"
+                    >
+                    </tag-list>
+                </div>
+            </mg-modal>
+
+            <div>
+                <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                    <!-- Replace with your content -->
+                    <div class="px-4 py-6 sm:px-0">
+
+                    </div>
+                    <!-- /End replace -->
+                </div>
+            </div>
+        </main>
     </div>
 </template>
 
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
-import {useStore} from 'vuex';
-import {useRouter} from 'vue-router';
-import {computed} from 'vue';
-
-const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
-    { name: 'Reports', href: '#', current: false },
-]
+import {mapActions} from 'vuex'
+import TagCreateForm from "./tag/TagCreateForm.vue";
+import TagList from "./tag/TagList.vue";
+import TagItem from "./tag/TagItem.vue";
+import TagIndex from "./tag/TagIndex.vue"
+import TagEditForm from "./tag/TagEditForm.vue";
 
 export default {
     components: {
-        Disclosure,
-        DisclosureButton,
-        DisclosurePanel,
-        Menu,
-        MenuButton,
-        MenuItem,
-        MenuItems,
-        BellIcon,
-        MenuIcon,
-        XIcon,
+        Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems, BellIcon, MenuIcon, XIcon,
+        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm
     },
-    setup() {
-        const store  = useStore();
-        const router = useRouter();
 
-        function logout(){
+    data(){
+        return {
+            user: {
+                name: 'Tom Cook',
+                email: 'tom@example.com',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+            },
+            navigation : [
+                { name: 'Eventos', href: 'eventos', current: true },
+                { name: 'Команда', href: '#', current: false },
+                { name: 'Проекты', href: '#', current: false },
+                { name: 'Календарь', href: '#', current: false },
+                { name: 'Отчеты', href: '#', current: false },
+            ],
+            userNavigation : [
+                { name: 'Your Profile', href: '#' },
+                { name: 'Settings', href: '#' },
+            ],
 
-            store.dispatch('logout')
+            tagModalVisible: false,
+            editFormShow: false,
+            tags: [],
+        }
+    },
+    methods:{
+        ...mapActions({
+        }),
+        logout(){
+            this.$store.dispatch('logout')
                 .then( () => {
-                    router.push({
+                    this.$router.push({
                         name: 'Login',
                     })
                 });
-        }
+        },
 
-        return {
-            user: computed( () => store.state.user.data),
-            navigation,
-            logout,
-        }
-    }
+    },
+    computed:{
+    },
+    mounted() {
+    },
 }
 
 </script>
