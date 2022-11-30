@@ -6,6 +6,7 @@
             <mg-close-icon-button @click="resetForm()"></mg-close-icon-button>
         </div>
 
+        <div>currentTag: {{tag}}</div>
         <mg-input-labeled class="mt-3 block" v-model="tag.name">Название</mg-input-labeled>
         <div class="justify-between mt-2">
             <div>

@@ -5,6 +5,7 @@
             <mg-close-icon-button @click="$emit('editFormClosedBtnPressed')"></mg-close-icon-button>
         </div>
 
+        <div>currentTag: {{currentTag}}</div>
         <mg-input-labeled class="mt-3 block" v-model="currentTag.name">Название</mg-input-labeled>
         <div class="flex justify-between mt-2">
             <div>
@@ -13,9 +14,9 @@
                 </label>
                 <div class="mt-1 flex items-center">
                     <img
-                        v-if="currentTag.image_url"
-                        :src="currentTag.image_url"
-                        :alt="currentTag.title"
+                        v-if="tagImgModel.image_url"
+                        :src="tagImgModel.image_url"
+                        :alt="tagImgModel.title"
                         class="w-10 h-10 object-cover rounded-md"
                     >
                     <span
@@ -28,8 +29,8 @@
                     </span>
                     <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative">
                         <input type="file"
-                               @change="onImageChoose"
-                               class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
+                           @change="onImageChoose"
+                           class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
                         >Change</button>
                 </div>
             </div>
@@ -49,16 +50,35 @@ export default {
     emits: ['editFormClosedBtnPressed'],
     data(){
         return {
+            tagImgModel: {},
+            img: '',
         }
     },
 
     methods: {
         editTag(){
-            //console.log(this.currentTag);
-            //return;
-            this.$store.dispatch('tag/editItem', this.currentTag);
-        },
+            let data = new FormData();
+            data.append('name',        this.currentTag.name);
+            data.append('description', this.currentTag.description);
+            data.append('img',         this.currentTag.img);
 
+            // https://stackoverflow.com/questions/47676134/laravel-request-all-is-empty-using-multipart-form-data
+            data.append('_method','PUT');
+
+            const item = {item: this.currentTag, formData: data}
+
+            this.$store.dispatch('tag/editItem', item);
+        },
+        onImageChoose(ev){
+            this.img = ev.target.files[0];
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.tagImgModel.image_url = reader.result;
+            }
+
+            reader.readAsDataURL(this.img);
+        },
     },
     computed: {
         ...mapGetters({
@@ -69,6 +89,9 @@ export default {
         currentTag(){
             const currEditMattId = this.currentEditMaterialId;
             const currEditMatt   = this.getItemById(currEditMattId);
+            if (this.img){
+                currEditMatt.img     = this.img;
+            }
             return Object.assign({}, currEditMatt);
         }
     },

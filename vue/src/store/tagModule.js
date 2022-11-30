@@ -79,11 +79,14 @@ export const tagModule = {
         editItemQuery({commit, state}, item){
             let response;
             const modelName = state.itemModelName;
+            //console.log(item)
             response = axiosClient
-                .patch(`/${modelName}/${item.id}`, item)
+                .post(`/${modelName}/${item.item.id}`, item.formData)
                 .then((res)=>{
                     if (res.data.success) {
-                        commit('editItem', item);
+                        //const updItem = item.item;
+                        //updItem.img = res.data.img;
+                        //commit('editItem', updItem);
                     }
                     return res;
                 })

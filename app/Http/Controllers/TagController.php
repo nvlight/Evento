@@ -102,49 +102,43 @@ class TagController extends Controller
 
     public function update(Request $request, Tag $tag)
     {
-        $img = [
-            'dimensions' => [
-                'min' => [
-                    'width'  => 10,
-                    'height' => 10
-                ],
-                'max' => [
-                    'width'  => 100,
-                    'height' => 100
-                ],
-            ],
-            'size' => [
-                'min' => 0,
-                'max' => 2048
-            ]
-        ];
+//        return response()->json([
+//            'success'   => 0,
+//            'request'   => $request->img,
+//            'request2'   => $request->file('img'),
+//            'tag'       => $tag,
+//        ]);
 
         $this->validate($request, [
             'name' => 'required|string|max:111',
-            'img' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|min:' . $img['size']['min'] .
-                '|max:' . $img['size']['max'] .
-                '|dimensions:' .
-                'min_width=' . $img['dimensions']['min']['width'] . ',min_height=' . $img['dimensions']['min']['height'] .
-                ',max_width=' . $img['dimensions']['max']['width'] . ',max_height=' . $img['dimensions']['max']['height'],
+            'img' => 'nullable|image|max:2048',
             'description' => 'nullable|string',
         ]);
 
         $tag->name = $request['name'];
-        $tag->img = $request['img'];
         $tag->description = $request['description'];
+
+        if($request->file('img')) {
+            $file_name = time().'_'.$request->img->getClientOriginalName();
+            $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
+            $tag->img = $file_path;
+        }
 
         try{
             $tag->save();
         }catch (\Exception $e){
-            $this->saveToLog($e);
+            $this->saveToLog(__METHOD__, $e);
             return response()->json([
                 'success' => 0,
-                'error' => 'some error!'
+                'error' => 'some error!',
+                'e' => $e,
+                'img' => $tag->img,
             ]);
         }
 
         return response()->json([
-            'success' => 1,
+            'success'   => 1,
+            'img'       => $tag->img,
             'updatedId' => $tag->id,
         ]);
     }
@@ -152,8 +146,7 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         try{
-            $img = Storage::disk('public')->exists($tag->img);
-            if ($img){
+            if ($img = Storage::disk('public')->exists($tag->img)){
                 Storage::disk('public')->delete($tag->img);
             }
             $tag->delete();
