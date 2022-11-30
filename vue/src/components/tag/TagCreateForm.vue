@@ -8,14 +8,6 @@
 
         <mg-input-labeled class="mt-3 block" v-model="tag.name">Название</mg-input-labeled>
         <div class="justify-between mt-2">
-
-            <!-- <mg-input-labeled v-model="tag.img">Иконка</mg-input-labeled>-->
-<!--            <div>-->
-<!--                <span>tagImgModel: {{tagImgModel}}</span>-->
-<!--            </div>-->
-<!--            <div>tag:{{tag}}</div>-->
-<!--            <div>imgFile:{{JSON.stringify(imgFile)}}</div>-->
-<!--            <div>imgFile:{{imgFile}}</div>-->
             <div>
                 <label class="block text-sm font-medium text-gray-700" for="">
                     Иконка
@@ -67,49 +59,33 @@ export default {
 
             tag: {},
             tagImgModel: {},
-            imgFile: null,
         }
     },
     methods: {
         create(){
             this.$store.dispatch('tag/setCurrentEditItem', false);
-            //this.$store.dispatch('tag/createItem', this.tag);
 
-            const config = {
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            }
             let data = new FormData();
             data.append('name', this.tag.name);
             data.append('description', this.tag.description);
-            data.append('img', this.imgFile);
-            //data = this.tag;
-            // todo: выставление FormData, автоматически делает 'content-type': 'multipart/form-data' ! сюрприз!
-            axiosClient.post('tag', data) // config
-                .then(function (res) {
-                    //console.log(res.data)
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
+            data.append('img', this.tag.img);
 
+            const item = {item: this.tag, formData: data}
+            this.$store.dispatch('tag/createItem', item);
         },
         resetForm(){
             this.tag = Object.assign({}, this.defaultTag);
         },
 
         onImageChoose(ev){
-            const file = ev.target.files[0];
-            this.imgFile = file;
+            this.tag.img = ev.target.files[0];
 
             const reader = new FileReader();
             reader.onload = () => {
-                this.tagImgModel.image     = reader.result;
                 this.tagImgModel.image_url = reader.result;
             }
 
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(this.tag.img);
         },
     },
     computed: {
@@ -131,7 +107,7 @@ export default {
         },
         tagImgModel: {
             handler(nv,ov){
-                  this.tag.img  = this.imgFile;
+                //console.log(nv);
             },
             deep: true,
         }

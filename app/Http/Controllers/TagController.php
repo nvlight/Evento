@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class TagController extends Controller
 {
@@ -64,16 +66,15 @@ class TagController extends Controller
         $item->name = $request['name'];
         $item->description = $request['description'];
 
-        if($request->file()) {
+        if($request->file('img')) {
             $file_name = time().'_'.$request->img->getClientOriginalName();
             $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
-            $item->img = '/storage/' . $file_path;
+            $item->img = $file_path;
         }
 
         try{
             $item->save();
         }catch (\Exception $e){
-
             $this->saveToLog($e);
             return response()->json([
                 'success' => 0,
@@ -85,7 +86,7 @@ class TagController extends Controller
 
         return response()->json([
             'success' => 1,
-            //'imgFile' => $request->img->getClientOriginalName(),
+            'img'     => $item->img,
             'savedId' => $item->id,
         ]);
     }
@@ -151,24 +152,56 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         try{
+            $img = Storage::disk('public')->exists($tag->img);
+            if ($img){
+                Storage::disk('public')->delete($tag->img);
+            }
             $tag->delete();
+//            $img = [];
+//            $img[] = Storage::disk('public')->exists($tag->img);
+//
+//            $img[] = Storage::disk('public')->allFiles();
+//
+//            $prefix = '/storage/';
+//
+//            $p = public_path($prefix . $tag->img);
+//            $i = intval(is_file($p));
+//            $ch = File::exists($p);
+//            $img[] = implode(' | ', [$i, $ch, $p] );
+//
+//            $p = public_path($prefix . $tag->img);
+//            $i = intval(is_file($p));
+//            $ch = file_exists($p);
+//            $img[] = implode(' | ', [$i, $ch, $p] );
+//            $img[] = 'visibility: ' . Storage::disk('public')->getVisibility($tag->img);
+//
+//            return response()->json([
+//                'rs' => $img,
+//                'success' => 0,
+//                'error' => 'some error!'
+//            ]);
         }catch (\Exception $e){
-            $this->saveToLog($e);
+            $this->saveToLog(__METHOD__, $e);
             return response()->json([
-                'success' => 1,
+                'img' => $img,
+                'success' => 0,
                 'error' => 'some error!'
             ]);
         }
 
         return response()->json([
+            'img' => $img,
             'success' => 1,
         ]);
     }
 
-    protected function saveToLog($e){
-        logger('error with ' . __METHOD__ . ' '
+    protected function saveToLog($method, $e){
+        logger('error in method: ' . $method. '! '
             . implode(' | ', [
-                $e->getMessage(), $e->getLine(), $e->getCode(), $e->getFile()
+                'msg: '  . $e->getMessage(),
+                'line: ' . $e->getLine(),
+                'file: ' . $e->getFile(),
+                'code: ' . $e->getCode(),
             ])
         );
     }

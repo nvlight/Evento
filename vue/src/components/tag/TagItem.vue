@@ -57,7 +57,7 @@ export default {
             getCreateItemStatus: 'tag/getCreateItemStatus',
         }),
         siteImgStaticPath(){
-            return "http://laravel8-evento:87/";
+            return "http://laravel8-evento:87/storage/";
         }
     },
     mounted() {

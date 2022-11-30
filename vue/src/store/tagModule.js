@@ -50,14 +50,15 @@ export const tagModule = {
         createItemQuery({commit,dispatch,state}, item){
             let response;
             const modelName = state.itemModelName;
-            console.log('createItem');
-            console.log(item);
+            //console.log('createItem');
+            //console.log(item);
             response = axiosClient
-                .post(`/${modelName}`, item)
+                .post(`/${modelName}`, item.formData)
                 .then((res)=>{
                     if (res.data.success) {
-                        const itemClone = Object.assign({}, item);
-                        itemClone.id = res.data.savedId;
+                        const itemClone = Object.assign({}, item.item);
+                        itemClone.id  = res.data.savedId;
+                        itemClone.img = res.data.img;
                         commit('setCreateItemStatus', true);
                         dispatch('addItem', itemClone);
                     }else{
