@@ -7,9 +7,24 @@
         </div>
     </header>
     <main>
-        <mg-dialog v-model:show="tagModalVisible">
-            <h3>Tags Dialog</h3>
-        </mg-dialog>
+        <mg-modal v-model:show="tagModalVisible.value">
+            <div class="flex">
+
+                <div class="w-4/12 ">
+                    <tag-edit-form v-show="editFormShow" class="border border p-3"
+                       @editFormClosedBtnPressed="editFormShow = false"
+                    ></tag-edit-form>
+                    <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>
+                </div>
+
+                <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"
+                      :tags="tags"
+                      :title="'Список тегов'"
+                      @editBtnClicked="editFormShow = true"
+                >
+                </tag-list>
+            </div>
+        </mg-modal>
 
         <div>
             <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -24,23 +39,51 @@
 </template>
 
 <script>
+import TagCreateForm from "../components/tag/TagCreateForm.vue";
+import TagList from "../components/tag/TagList.vue";
+import TagItem from "../components/tag/TagItem.vue";
+import TagIndex from "../components/tag/TagIndex.vue"
+import TagEditForm from "../components/tag/TagEditForm.vue";
+import {mapActions, mapState} from "vuex";
+
 export default {
     name: "Eventos",
     components: {
+        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm,
     },
     data(){
         return {
-            tagModalVisible: false,
+            tempMdVisible: false,
+            editFormShow: false,
         }
     },
+    props: {
+        tagModalVisible: {
+            type: Object,
+        },
+    },
     methods:{
-        showTagModal(){
-          this.tagModalVisible = true;
-        },
-        hideTagModal(){
-            this.tagModalVisible = false;
-        },
+        ...mapActions({
+            'loadItems': 'tag/loadItems',
+        }),
+
+        // $store.getters['tagModule/getCrudModalVisible']
+    },
+    computed:{
+        ...mapState({
+            'tags': state => state.tag.items,
+        }),
+    },
+    watch:{
+        //tagModalVisible(nv, ov){
+        //    console.log(nv, ov);
+        //},
+    },
+    mounted() {
+        this.loadItems();
+        //console.log('tagModalVisible: '+this.tagModalVisible.value);
     }
+
 }
 </script>
 

@@ -15,7 +15,8 @@
                                    :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']" :aria-current="item.current ? 'page' : undefined"
                                 >{{ item.name }}</a>
                                 <!-- custom-links-->
-                                <a @click="tagModalVisible = !tagModalVisible" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer">Tags</a>
+                                <a @click="showTagsModal" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                                    >Tags</a>
                             </div>
                         </div>
                     </div>
@@ -91,62 +92,28 @@
             </DisclosurePanel>
         </Disclosure>
 
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <h1 class="text-3xl font-bold text-gray-900">
-                    Eventos
-                </h1>
-            </div>
-        </header>
-        <main>
-            <mg-modal v-model:show="tagModalVisible">
-                <div class="flex">
-
-                    <div class="w-4/12 ">
-                        <tag-edit-form v-show="editFormShow" class="border border p-3"
-                            @editFormClosedBtnPressed="editFormShow = false"
-                        ></tag-edit-form>
-                        <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>
-                    </div>
-
-                    <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"
-                       :tags="tags"
-                       :title="'Список тегов'"
-                       @editBtnClicked="editFormShow = true"
-                    >
-                    </tag-list>
-                </div>
-            </mg-modal>
-
-            <div>
-                <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                    <!-- Replace with your content -->
-                    <div class="px-4 py-6 sm:px-0">
-
-                    </div>
-                    <!-- /End replace -->
-                </div>
-            </div>
-        </main>
+        <eventos :tagModalVisible="tagModalVisible"></eventos>
     </div>
 </template>
 
 <script>
+import {computed} from "vue";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import {mapActions} from 'vuex'
-import TagCreateForm from "./tag/TagCreateForm.vue";
-import TagList from "./tag/TagList.vue";
-import TagItem from "./tag/TagItem.vue";
-import TagIndex from "./tag/TagIndex.vue"
-import TagEditForm from "./tag/TagEditForm.vue";
+import Eventos from "../views/Eventos.vue";
 
 export default {
     components: {
         Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems, BellIcon, MenuIcon, XIcon,
-        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm
+       Eventos,
     },
-
+    provide(){
+        return {
+            //tagModalVisible: this.tagModalVisible,
+            //tagModalVisible: computed(() => this.tagModalVisible),
+        }
+    },
     data(){
         return {
             user: {
@@ -166,10 +133,7 @@ export default {
                 { name: 'Your Profile', href: '#' },
                 { name: 'Settings', href: '#' },
             ],
-
-            tagModalVisible: false,
-            editFormShow: false,
-            tags: [],
+            tagModalVisible: { value: true},
         }
     },
     methods:{
@@ -183,7 +147,9 @@ export default {
                     })
                 });
         },
-
+        showTagsModal(){
+            this.tagModalVisible.value = !this.tagModalVisible.value;
+        },
     },
     computed:{
     },

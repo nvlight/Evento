@@ -2,8 +2,9 @@
     <div
         class="dialog"
         v-if="show"
-        @click="hideDialog"
     >
+    <!-- @click="hideDialog"-->
+
         <div class="dialog__content relative"
              @click.stop
         >

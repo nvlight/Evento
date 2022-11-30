@@ -1,5 +1,6 @@
 import {createStore} from "vuex";
 import axiosClient from "../axios.js"
+import {tagModule} from "./tagModule.js";
 
 const store = createStore({
     state:{
@@ -46,7 +47,9 @@ const store = createStore({
             sessionStorage.setItem('TOKEN', userData.token);
         }
     },
-    modules:{},
+    modules:{
+        tag: tagModule,
+    },
 });
 
 export default store;
