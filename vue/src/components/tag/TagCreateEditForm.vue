@@ -10,6 +10,8 @@
                 @click="resetFormHandler"></mg-close-icon-button>
         </div>
 
+<!--        <div>getCurrentEditMaterialId: {{getCurrentEditMaterialId}}</div>-->
+<!--        <div>editFormShow: {{editFormShow}}</div>-->
         <div v-if="false" class="debuggg">
             <div class="flex justify-between">
                 <span class="font-semibold">getCurrentEditMaterial: </span>
@@ -82,6 +84,12 @@ export default {
     name: 'tag-create-edit-form',
     components: {},
     emits: ['editFormClosedBtnPressed'],
+    props:{
+        editFormShow:{
+            type: Boolean,
+            default: false,
+        },
+    },
     data(){
         return {
             isCreatedButtonVisible: true,
@@ -99,7 +107,7 @@ export default {
 
     methods: {
         ...mapMutations({
-            setCurrentEditId: 'tag/setCurrentItemId',
+            setCurrentEditId: 'tag/setCurrentEditItemId',
             setCreatedItemId: 'tag/setCreatedItemId',
             setCreatedItemStatus: 'tag/setCreateItemStatus',
         }),
@@ -107,12 +115,13 @@ export default {
             this.tag = Object.assign({}, this.defaultTag);
         },
         resetFormHandler(){
-            this.resetForm();
             this.isCreatedButtonVisible = !this.isCreatedButtonVisible;
-            this.setCurrentEditId(0);
-            this.setCreatedItemId(0);
-            this.setCreatedItemStatus(false);
             this.tagImgModel.image_url = null;
+            this.resetForm();
+
+            // this.setCurrentEditId(0);
+            // this.setCreatedItemStatus(false);
+            // this.setCreatedItemId(0);
         },
         createTag(){
             this.$store.commit('tag/setCreateItemStatus', false);
@@ -152,7 +161,7 @@ export default {
     },
     computed: {
         ...mapGetters({
-            currentEditMaterialId: "tag/getCurrentEditItemId",
+            getCurrentEditMaterialId: "tag/getCurrentEditItemId",
             getCurrentEditMaterial: "tag/getCurrentEditItem",
             getCreateItemStatus: "tag/getCreateItemStatus",
             getCreatedItemId: "tag/getCreatedItemId",
@@ -168,14 +177,19 @@ export default {
         this.isCreatedButtonVisible = true;
     },
     watch:{
-        currentEditMaterialId(nv,ov){
+        getCurrentEditMaterialId(nv,ov){
+            //console.log('getCurrentEditMaterialId', nv)
             const currEdtMaterial = this.getCurrentEditMaterial;
             if ( currEdtMaterial ){
+                this.tagImgModel.image_url = null;
                 this.tag = Object.assign({}, currEdtMaterial);
                 this.isCreatedButtonVisible = false;
+            }else{
+                this.resetFormHandler();
             }
         },
         getCreateItemStatus(nv,ov){
+            //console.log('getCreateItemStatus', nv)
             if (nv){
                 this.setCurrentEditId(this.getCreatedItemId);
             }

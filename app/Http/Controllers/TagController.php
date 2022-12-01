@@ -111,7 +111,7 @@ class TagController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|max:111',
-            //'img' => 'nullable|image|max:2048',
+//            'img' => 'nullable|string|image|max:2048',
             'description' => 'nullable|string',
         ]);
 
@@ -119,6 +119,13 @@ class TagController extends Controller
         $tag->description = $request['description'];
 
         if($request->file('img')) {
+
+            // delete if exists old file
+            if ($img = Storage::disk('public')->exists($tag->img)){
+                Storage::disk('public')->delete($tag->img);
+            }
+
+            // create new file
             $file_name = time().'_'.$request->img->getClientOriginalName();
             $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
             $tag->img = $file_path;

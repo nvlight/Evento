@@ -124,8 +124,8 @@ export const tagModule = {
             return response;
         },
 
-        setCurrentEditItem({commit}, id){
-            return commit('setCurrentItemId', id);
+        setCurrentEditItemId({commit}, id){
+            return commit('setCurrentEditItemId', id);
         },
         setCreatedItemId({commit}, id){
             return commit('setCreatedItemId', id);
@@ -159,7 +159,7 @@ export const tagModule = {
                 }
             }
         },
-        setCurrentItemId: (state, id) => {
+        setCurrentEditItemId: (state, id) => {
             state.currentEditItemId = id;
         },
         setCreateItemStatus: (state, value) => {

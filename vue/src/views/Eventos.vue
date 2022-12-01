@@ -9,14 +9,14 @@
     <main>
         <mg-modal v-model:show="tagModalVisible.value">
             <div class="flex">
-
+<!--                <div>editFormShow: {{editFormShow}}</div>-->
                 <div class="w-4/12 ">
 <!--                    <tag-edit-form v-show="editFormShow" class="border border p-3"-->
 <!--                       @editFormClosedBtnPressed="editFormShow = false"-->
 <!--                    ></tag-edit-form>-->
 <!--                    <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>-->
 
-                    <tag-create-edit-form class="border border p-3"></tag-create-edit-form>
+                    <tag-create-edit-form :editFormShow="editFormShow" class="border border p-3"></tag-create-edit-form>
                 </div>
 
                 <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"

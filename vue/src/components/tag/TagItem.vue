@@ -43,13 +43,14 @@ export default {
             this.show = !this.show;
         },
         editMaterialHandler(id){
-            this.$store.dispatch('tag/setCurrentEditItem', id);
+            //console.log('editMaterialHandler: ', id);
+            this.$store.commit('tag/setCurrentEditItemId', id);
             this.$emit('editBtnClicked');
         },
         deleteItemHandler(id){
             if (!confirm('Действительно удалить?')) {return}
             this.$store.dispatch('tag/delItem', id);
-            this.$store.dispatch('tag/setCurrentEditItem', true);
+            this.$store.dispatch('tag/setCurrentEditItemId', 0);
         },
     },
     computed:{
