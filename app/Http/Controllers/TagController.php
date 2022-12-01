@@ -104,14 +104,14 @@ class TagController extends Controller
     {
 //        return response()->json([
 //            'success'   => 0,
-//            'request'   => $request->img,
-//            'request2'   => $request->file('img'),
+//            'request'   => $request->all(),
+//            //'request2'   => $request->file('img'),
 //            'tag'       => $tag,
 //        ]);
 
         $this->validate($request, [
             'name' => 'required|string|max:111',
-            'img' => 'nullable|image|max:2048',
+            //'img' => 'nullable|image|max:2048',
             'description' => 'nullable|string',
         ]);
 

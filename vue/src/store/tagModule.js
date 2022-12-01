@@ -7,6 +7,7 @@ export const tagModule = {
         currentEditItemId: 0,
         crudModalVisible: true,
         createItemStatus: false,
+        createdItemId: 0,
     }),
     getters: {
         getCrudModalVisible(state){
@@ -21,6 +22,12 @@ export const tagModule = {
         getCreateItemStatus(state){
             return state.createItemStatus;
         },
+        getCurrentEditItem(state){
+            return state.items.filter(t => t.id === state.currentEditItemId)?.[0];
+        },
+        getCreatedItemId(state){
+            return state.createdItemId;
+        }
     },
     actions: {
         loadItems({commit, state}){
@@ -60,6 +67,7 @@ export const tagModule = {
                         itemClone.id  = res.data.savedId;
                         itemClone.img = res.data.img;
                         commit('setCreateItemStatus', true);
+                        dispatch('setCreatedItemId', itemClone.id);
                         dispatch('addItem', itemClone);
                     }else{
                         commit('setCreateItemStatus', false);
@@ -84,9 +92,9 @@ export const tagModule = {
                 .post(`/${modelName}/${item.item.id}`, item.formData)
                 .then((res)=>{
                     if (res.data.success) {
-                        //const updItem = item.item;
-                        //updItem.img = res.data.img;
-                        //commit('editItem', updItem);
+                        const updItem = Object.assign({}, item.item);
+                        updItem.img = res.data.img;
+                        commit('editItem', updItem);
                     }
                     return res;
                 })
@@ -118,6 +126,9 @@ export const tagModule = {
 
         setCurrentEditItem({commit}, id){
             return commit('setCurrentItemId', id);
+        },
+        setCreatedItemId({commit}, id){
+            return commit('setCreatedItemId', id);
         },
     },
     mutations: {
@@ -153,7 +164,10 @@ export const tagModule = {
         },
         setCreateItemStatus: (state, value) => {
             state.createItemStatus = value;
-        }
+        },
+        setCreatedItemId: (state, value) => {
+            state.createdItemId = value;
+        },
     },
     namespaced: true,
 }

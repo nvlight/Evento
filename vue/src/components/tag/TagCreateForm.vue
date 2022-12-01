@@ -7,6 +7,8 @@
         </div>
 
         <div>currentTag: {{tag}}</div>
+        <div>tagImgModel.image_url: {{tagImgModel.image_url}}</div>
+
         <mg-input-labeled class="mt-3 block" v-model="tag.name">Название</mg-input-labeled>
         <div class="justify-between mt-2">
             <div>

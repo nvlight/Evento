@@ -11,10 +11,12 @@
             <div class="flex">
 
                 <div class="w-4/12 ">
-                    <tag-edit-form v-show="editFormShow" class="border border p-3"
-                       @editFormClosedBtnPressed="editFormShow = false"
-                    ></tag-edit-form>
-                    <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>
+<!--                    <tag-edit-form v-show="editFormShow" class="border border p-3"-->
+<!--                       @editFormClosedBtnPressed="editFormShow = false"-->
+<!--                    ></tag-edit-form>-->
+<!--                    <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>-->
+
+                    <tag-create-edit-form class="border border p-3"></tag-create-edit-form>
                 </div>
 
                 <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"
@@ -45,11 +47,12 @@ import TagItem from "../components/tag/TagItem.vue";
 import TagIndex from "../components/tag/TagIndex.vue"
 import TagEditForm from "../components/tag/TagEditForm.vue";
 import {mapActions, mapState} from "vuex";
+import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
 
 export default {
     name: "Eventos",
     components: {
-        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm,
+        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm, TagCreateEditForm,
     },
     data(){
         return {

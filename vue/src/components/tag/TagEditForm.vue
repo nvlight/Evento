@@ -6,6 +6,8 @@
         </div>
 
         <div>currentTag: {{currentTag}}</div>
+        <div>imgSrvName: {{imgSrvName}}</div>
+
         <mg-input-labeled class="mt-3 block" v-model="currentTag.name">Название</mg-input-labeled>
         <div class="flex justify-between mt-2">
             <div>
@@ -79,6 +81,14 @@ export default {
 
             reader.readAsDataURL(this.img);
         },
+        customImgChoose(srvImage){
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.tagImgModel.image_url = reader.result;
+            }
+            reader.readAsDataURL(srvImage);
+        },
+
     },
     computed: {
         ...mapGetters({
@@ -93,7 +103,17 @@ export default {
                 currEditMatt.img     = this.img;
             }
             return Object.assign({}, currEditMatt);
-        }
+        },
+
+        siteImgStaticPath(){
+            return "http://laravel8-evento:87/storage/";
+        },
+
+        imgSrvName(){
+            const nm = this.siteImgStaticPath + this.currentTag.img;
+            //this.customImgChoose(nm);
+            return nm;
+        },
     },
     mounted() {
     },
