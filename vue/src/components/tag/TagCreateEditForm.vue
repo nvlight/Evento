@@ -42,7 +42,7 @@
                 </label>
                 <div class="mt-1 flex items-center">
                     <div>
-                        <img v-if="tag.img && !isImgSrcFileObject" :src="img_src" class="h-10 w-10 ml-3" alt="">
+                        <img v-if="tag.img && !isImgSrcFileObject" :src="img_src" class="h-10 w-10" alt="">
                         <div v-else>
                             <img
                                 v-if="tagImgModel.image_url"
@@ -63,7 +63,7 @@
                         <input type="file"
                                @change="onImageChoose"
                                class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
-                        >Change</button>
+                        >Изменить</button>
                 </div>
             </div>
         </div>
@@ -89,12 +89,8 @@ import {mapGetters, mapMutations} from "vuex";
 export default {
     name: 'tag-create-edit-form',
     components: {},
-    emits: ['editFormClosedBtnPressed'],
+    emits: [],
     props:{
-        editFormShow:{
-            type: Boolean,
-            default: false,
-        },
     },
     data(){
         return {

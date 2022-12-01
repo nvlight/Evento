@@ -2,15 +2,8 @@
     <div>
         <h1 class="font-semibold text-2xl">{{ title }}</h1>
 
-        <div v-for="tag in tags"
-             :key="tag.id"
-        >
-            <tag-item
-                :tag="tag"
-                :show_title="false"
-                @editBtnClicked="$emit('editBtnClicked')"
-            >
-            </tag-item>
+        <div v-for="tag in tags" :key="tag.id">
+            <tag-item :tag="tag"></tag-item>
         </div>
     </div>
 </template>
@@ -27,7 +20,7 @@ export default {
         },
         title: {
             type: String,
-            default: 'Элементы',
+            default: 'Список тегов',
         }
     },
     components: {

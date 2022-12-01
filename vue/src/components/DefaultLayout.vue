@@ -15,8 +15,8 @@
                                    :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium']" :aria-current="item.current ? 'page' : undefined"
                                 >{{ item.name }}</a>
                                 <!-- custom-links-->
-                                <a @click="showTagsModal" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
-                                    >Tags</a>
+                                <a @click="showHideTagsModal" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+                                    >Теги</a>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export default {
                 { name: 'Your Profile', href: '#' },
                 { name: 'Settings', href: '#' },
             ],
-            tagModalVisible: { value: true},
+            tagModalVisible: { value: false, },
         }
     },
     methods:{
@@ -147,7 +147,7 @@ export default {
                     })
                 });
         },
-        showTagsModal(){
+        showHideTagsModal(){
             this.tagModalVisible.value = !this.tagModalVisible.value;
         },
     },

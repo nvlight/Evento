@@ -7,12 +7,14 @@
                 <mg-trash-icon-button @click="deleteItemHandler(tag.id)"></mg-trash-icon-button>
             </div>
             <span class="font-light">[{{tag.id}}]</span>
-            <span class="ml-1 cursor-pointer title" @click="showHideDescription">{{tag.name}} </span>
+            <span class="ml-1 cursor-pointer title" @click="showHideDescription">{{tag.name}}
+            </span>
+        </div>
+        <div class="description" v-if="show">{{ tag.description }}
             <div v-if="tag.img" class="ml-1 border-l-2 pl-1">
-                <a :href="siteImgStaticPath+tag.img">img</a>
+                <img :src="img_src"/>
             </div>
         </div>
-        <div class="description" v-if="show">{{ tag.description }}</div>
     </div>
 </template>
 
@@ -22,16 +24,12 @@ import {mapGetters} from "vuex";
 export default {
     name: 'tag-item',
     components: {},
-    emits: ['editBtnClicked'],
+    emits: [],
     props: {
         tag: {
             type: Object,
             required: true,
         },
-        show_title: {
-            type: Boolean,
-            required: true,
-        }
     },
     data(){
         return {
@@ -43,9 +41,7 @@ export default {
             this.show = !this.show;
         },
         editMaterialHandler(id){
-            //console.log('editMaterialHandler: ', id);
             this.$store.commit('tag/setCurrentEditItemId', id);
-            this.$emit('editBtnClicked');
         },
         deleteItemHandler(id){
             if (!confirm('Действительно удалить?')) {return}
@@ -55,14 +51,13 @@ export default {
     },
     computed:{
         ...mapGetters({
-            getCreateItemStatus: 'tag/getCreateItemStatus',
         }),
-        siteImgStaticPath(){
-            return "http://laravel8-evento:87/storage/";
-        }
+
+        img_src(){
+            return this.$store.getters['getSiteImgStaticPath'] + this.tag.img;
+        },
     },
     mounted() {
-        this.show = this.show_title;
     }
 }
 </script>

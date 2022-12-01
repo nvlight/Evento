@@ -6,24 +6,15 @@
             </h1>
         </div>
     </header>
+
     <main>
-        <mg-modal v-model:show="tagModalVisible.value">
+        <mg-modal v-model:show="tagModalVisible.value"
+            :dialog_content_classes="'w-6/12 mt-5 mb-5'"
+            >
             <div class="flex">
-<!--                <div>editFormShow: {{editFormShow}}</div>-->
-                <div class="w-4/12 ">
-<!--                    <tag-edit-form v-show="editFormShow" class="border border p-3"-->
-<!--                       @editFormClosedBtnPressed="editFormShow = false"-->
-<!--                    ></tag-edit-form>-->
-<!--                    <tag-create-form v-show="!editFormShow" class="border border p-3"></tag-create-form>-->
+                <tag-create-edit-form class="w-5/12 border border p-3"></tag-create-edit-form>
 
-                    <tag-create-edit-form :editFormShow="editFormShow" class="border border p-3"></tag-create-edit-form>
-                </div>
-
-                <tag-list class="w-8/12 w-full ml-5 border border-dotted border p-3"
-                      :tags="tags"
-                      :title="'Список тегов'"
-                      @editBtnClicked="editFormShow = true"
-                >
+                <tag-list class="w-7/12 w-full ml-5 border border-dotted border p-3" :tags="tags">
                 </tag-list>
             </div>
         </mg-modal>
@@ -56,8 +47,6 @@ export default {
     },
     data(){
         return {
-            tempMdVisible: false,
-            editFormShow: false,
         }
     },
     props: {
@@ -69,8 +58,6 @@ export default {
         ...mapActions({
             'loadItems': 'tag/loadItems',
         }),
-
-        // $store.getters['tagModule/getCrudModalVisible']
     },
     computed:{
         ...mapState({
@@ -78,14 +65,10 @@ export default {
         }),
     },
     watch:{
-        //tagModalVisible(nv, ov){
-        //    console.log(nv, ov);
-        //},
     },
     mounted() {
         this.loadItems();
-        //console.log('tagModalVisible: '+this.tagModalVisible.value);
-    }
+    },
 
 }
 </script>

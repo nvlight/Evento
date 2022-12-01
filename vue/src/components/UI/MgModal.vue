@@ -1,16 +1,12 @@
 <template>
-    <div
-        class="dialog"
-        v-if="show"
+    <div class="dialog"
+        v-if="show" @click="hideDialog"
     >
-    <!-- @click="hideDialog"-->
-
-        <div class="dialog__content relative"
+        <div class="dialog__content relative" :class="dialog_content_classes"
              @click.stop
         >
-            <mg-close-icon-button
-                @click="hideDialog"
-                class="absolute right-1 top-1 border-blue-400"></mg-close-icon-button>
+            <mg-close-icon-button @click="hideDialog" class="absolute right-1 top-1 border-blue-400">
+            </mg-close-icon-button>
             <slot></slot>
         </div>
     </div>
@@ -25,7 +21,11 @@ export default {
         show: {
             type: Boolean,
             default: false,
-        }
+        },
+        dialog_content_classes: {
+            type: String,
+            default: '',
+        },
     },
     data(){
         return {
@@ -56,9 +56,7 @@ export default {
 }
 .dialog__content{
     margin: auto;
-    width: 90%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    /*width: 100%;*/
     background: white;
     border-radius: 12px;
     min-height: 50px;
