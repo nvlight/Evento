@@ -7,9 +7,14 @@ const store = createStore({
         user:{
             data:{},
             token: sessionStorage.getItem('TOKEN'),
+        },
+        siteImgStaticPath: "http://laravel8-evento:87/storage/",
+    },
+    getters:{
+        getSiteImgStaticPath(state){
+            return state.siteImgStaticPath;
         }
     },
-    getters:{},
     actions:{
         register({commit}, user){
             return axiosClient.post('/register', user)
