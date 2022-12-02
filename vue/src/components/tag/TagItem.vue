@@ -4,7 +4,9 @@
             <div class="flex items-center">
                 <mg-show-icon-button @click="showHideDescription"></mg-show-icon-button>
                 <mg-edit-icon-button @click="editMaterialHandler(tag.id)"></mg-edit-icon-button>
-                <mg-trash-icon-button @click="deleteItemHandler(tag.id)"></mg-trash-icon-button>
+                <mg-trash-icon-button @click="deleteItemHandler(tag.id)"
+                    class="text-red-500 border-0 mt-1"
+                ></mg-trash-icon-button>
             </div>
             <span class="font-light">[{{tag.id}}]</span>
             <span class="ml-1 cursor-pointer title" @click="showHideDescription">{{tag.name}}
