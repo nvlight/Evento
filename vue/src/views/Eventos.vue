@@ -28,20 +28,20 @@
                         <div class="mt-3 flex items-center ">
 
                             <div class="main_date">
-                                <span>[ {{eventoDate}} ]</span>
-                                <mg-input-date-labeled v-model="eventoDate"></mg-input-date-labeled>
+                                <span>[ {{evento.date}} ]</span>
+                                <mg-input-date-labeled v-model="evento.date"></mg-input-date-labeled>
                             </div>
 
                             <div class="tag_first w-3/12 ml-3">
-                                <span>Тег основной [ {{tagValue.tag_id_first}} ]</span>
-                                <mg-checkbox v-model="tagValue.tag_id_first"  class="w-full"
+                                <span>Тег основной [ {{evento.tag_id_first}} ]</span>
+                                <mg-checkbox v-model="evento.tag_id_first"  class="w-full"
                                     :options="tags"
                                 ></mg-checkbox>
                             </div>
 
                             <div class="tag_value ml-3">
-                                <span>Значение [ {{tagValue.value}} ]</span>
-                                <mg-input-labeled class="tag_value " v-model="tagValue.value"></mg-input-labeled>
+                                <span>Значение [ {{evento.value}} ]</span>
+                                <mg-input-labeled class="tag_value " v-model="evento.value"></mg-input-labeled>
                             </div>
 
                             <mg-plus-icon-button
@@ -51,8 +51,8 @@
                             >Добавить тег</mg-plus-icon-button>
 
                             <div v-if="!isMainTagButtonVisible" class="tag_first w-3/12 ml-3">
-                                <span>Тег вторичный [ {{tagValue.tag_id_second}} ]</span>
-                                <mg-checkbox v-model="tagValue.tag_id_second"  class="w-full"
+                                <span>Тег вторичный [ {{evento.tag_id_second}} ]</span>
+                                <mg-checkbox v-model="evento.tag_id_second"  class="w-full"
                                      :options="tags"
                                 ></mg-checkbox>
                             </div>
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="w-4/12">
-                            <mg-textarea v-model="tagValue.description">Описание</mg-textarea>
+                            <mg-textarea v-model="evento.description">Описание</mg-textarea>
                         </div>
 
                         <div>
@@ -100,14 +100,14 @@ export default {
     },
     data(){
         return {
-            tagValue:{
+            evento:{
                 value: '',
                 description: '',
                 evento_id: 0,
                 tag_id_first: 0,
-                tag_id_second: 0,
+                tag_id_second: '',
+                date: '2022-12-03',
             },
-            eventoDate: '',
 
             isMainTagButtonVisible: true,
         }
@@ -122,8 +122,14 @@ export default {
             'loadItems': 'tag/loadItems',
         }),
 
-        createEvento(ev){
-            //console.log('createEvento', ev.target);
+        createEvento(){
+            let data = new FormData();
+            for(let key in this.evento){
+                data.append(key, this.evento[key]);
+            }
+
+            const item = {item: this.tag, formData: data}
+            this.$store.dispatch('evento/createItem', item);
         },
     },
     computed:{
@@ -144,7 +150,7 @@ export default {
     },
     mounted() {
         this.loadItems();
-        this.eventoDate = this.getCurrentDate;
+        this.evento.date = this.getCurrentDate;
     },
 
 }

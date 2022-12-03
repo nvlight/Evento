@@ -38,23 +38,6 @@ class TagController extends Controller
 
     public function store(Request $request)
     {
-        $img = [
-            'dimensions' => [
-                'min' => [
-                    'width'  => 10,
-                    'height' => 10
-                ],
-                'max' => [
-                    'width'  => 100,
-                    'height' => 100
-                ],
-            ],
-            'size' => [
-                'min' => 0,
-                'max' => 2048
-            ]
-        ];
-
         $this->validate($request, [
             'name' => 'required|string|max:111',
             'img' => 'nullable|image|max:2048',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventoController;
 use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
 
     Route::resource('/tag', TagController::class);
+    Route::resource('/evento', EventoController::class);
 });
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);

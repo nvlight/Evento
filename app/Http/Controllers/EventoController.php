@@ -3,83 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evento;
+use App\Models\TagValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EventoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'date' => 'nullable|date',
+            'tag_id_first'  => 'required|integer|exists:tags,id',
+            'tag_id_second' => 'nullable|integer|exists:tags',
+            'value' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        try{
+            $rqstAll = $request->all();
+
+            DB::transaction(function () use($request){
+
+                $evento = new Evento();
+                $evento->user_id = Auth::user()->id;
+
+                $evento->date = $request->date;
+                $evento->tag_value_id = 0;
+                $evento->save();
+
+                $tagValue = new TagValue();
+                $tagValue->evento_id = $evento->id;
+                $tagValue->tag_id_first  = $request->tag_id_first;
+                $tagValue->tag_id_second = $request->tag_id_second;
+                $tagValue->value         = $request->value;
+                $tagValue->description   = $request->description;
+                $tagValue->save();
+
+                $evento->tag_value_id = $tagValue->id;
+                $evento->save();
+            });
+        }catch (\Exception $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!',
+            ]);
+        }
+
+        return response()->json([
+            'success' => 1,
+            'savedId' => 0,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Evento  $evento
-     * @return \Illuminate\Http\Response
-     */
     public function show(Evento $evento)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Evento  $evento
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Evento $evento)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Evento  $evento
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Evento $evento)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Evento  $evento
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Evento $evento)
     {
         //
+    }
+
+    protected function saveToLog($method, $e){
+        logger('error in method: ' . $method. '! '
+            . implode(' | ', [
+                'msg: '  . $e->getMessage(),
+                'line: ' . $e->getLine(),
+                'file: ' . $e->getFile(),
+                'code: ' . $e->getCode(),
+            ])
+        );
     }
 }
