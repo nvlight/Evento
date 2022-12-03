@@ -25,52 +25,53 @@
                 <div class="p-5 border border-gray-300 rounded-md border-dashed">
                     <h1 class="text-xl font-semibold">Добавление события</h1>
                     <form @submit.prevent>
-                        <div class="mt-3 flex items-center ">
+                        <div class="mt-3 flex items-center justify-between">
 
                             <div class="main_date">
                                 <span>[ {{evento.date}} ]</span>
                                 <mg-input-date-labeled v-model="evento.date"></mg-input-date-labeled>
                             </div>
 
-                            <div class="tag_first w-3/12 ml-3">
+                            <div class="tag_first ">
                                 <span>Тег основной [ {{evento.tag_id_first}} ]</span>
-                                <mg-checkbox v-model="evento.tag_id_first"  class="w-full"
+                                <mg-select v-model="evento.tag_id_first"  class=""
                                     :options="tags"
-                                ></mg-checkbox>
+                                ></mg-select>
                             </div>
 
-                            <div class="tag_value ml-3">
+                            <div class="tag_value ">
                                 <span>Значение [ {{evento.value}} ]</span>
-                                <mg-input-labeled class="tag_value " v-model="evento.value"></mg-input-labeled>
+                                <mg-input-labeled class="" v-model="evento.value"></mg-input-labeled>
                             </div>
 
                             <mg-plus-icon-button
                                 v-if="isMainTagButtonVisible" @click="isMainTagButtonVisible = !isMainTagButtonVisible"
                                 class="add_anather_tag block bg-green-600
                                 focus:ring-green-600 rounded-md text-white p-2 self-end ml-3"
-                            >Добавить тег</mg-plus-icon-button>
+                            >привязать тег</mg-plus-icon-button>
 
-                            <div v-if="!isMainTagButtonVisible" class="tag_first w-3/12 ml-3">
+                            <div v-if="!isMainTagButtonVisible" class="tag_first
+                                relative">
                                 <span>Тег вторичный [ {{evento.tag_id_second}} ]</span>
-                                <mg-checkbox v-model="evento.tag_id_second"  class="w-full"
+                                <mg-select v-model="evento.tag_id_second" class=""
                                      :options="tags"
-                                ></mg-checkbox>
+                                ></mg-select>
+                                <mg-trash-icon-button
+                                    v-if="!isMainTagButtonVisible" @click="isMainTagButtonVisible = !isMainTagButtonVisible"
+                                    class="add_anather_tag absolute border-none text-red-500 self-end
+                                            absolute right-0 top-1 focus:ring-red-500 rounded-sm h-4 w-4
+                                            "
+                                    :svgClass="'h-4 w-4'"
+                                ></mg-trash-icon-button>
                             </div>
 
-                            <mg-trash-icon-button
-                                v-if="!isMainTagButtonVisible" @click="isMainTagButtonVisible = !isMainTagButtonVisible"
-                                class="add_anather_tag block border-red-500 text-red-500
-                                focus:ring-red-600 rounded-md p-2 self-end ml-3"
-                            >Удалить тег</mg-trash-icon-button>
-
+                            <div class="self-end">
+                                <mg-button @click="createEvento" class="">добавить</mg-button>
+                            </div>
                         </div>
 
                         <div class="w-4/12">
                             <mg-textarea v-model="evento.description">Описание</mg-textarea>
-                        </div>
-
-                        <div>
-                            <mg-button @click="createEvento" class="h-fit">добавить</mg-button>
                         </div>
                     </form>
                 </div>
@@ -90,10 +91,12 @@ import {mapActions, mapState} from "vuex";
 import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
 import MgTextarea from "../components/UI/MgTextarea.vue";
 import MgTrashIconButton from "../components/UI/MgTrashIconButton.vue";
+import MgSelect from "../components/UI/MgSelect.vue";
 
 export default {
     name: "Eventos",
     components: {
+        MgSelect,
         MgTrashIconButton,
         MgTextarea,
         TagIndex, TagItem, TagList, TagCreateForm, TagEditForm, TagCreateEditForm,
@@ -105,11 +108,11 @@ export default {
                 description: '',
                 evento_id: 0,
                 tag_id_first: 0,
-                tag_id_second: '',
+                tag_id_second: 0,
                 date: '2022-12-03',
             },
 
-            isMainTagButtonVisible: true,
+            isMainTagButtonVisible: false,
         }
     },
     props: {
@@ -119,7 +122,8 @@ export default {
     },
     methods:{
         ...mapActions({
-            'loadItems': 'tag/loadItems',
+            'loadTagItems': 'tag/loadItems',
+            'loadEventos': 'evento/loadItems',
         }),
 
         createEvento(){
@@ -149,7 +153,8 @@ export default {
     watch:{
     },
     mounted() {
-        this.loadItems();
+        this.loadTagItems();
+        this.loadEventos();
         this.evento.date = this.getCurrentDate;
     },
 

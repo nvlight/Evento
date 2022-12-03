@@ -1,10 +1,4 @@
 <template>
-<!--    <div>-->
-<!--        {{options}}-->
-<!--    </div>-->
-<!--    <div>{{modelValue}}</div>-->
-
-
     <select v-model="modelValue"
         @change="changeOption"
         class="border border-gray-300 text-gray-900 text-sm rounded-lg
@@ -23,7 +17,7 @@
 
 <script>
 export default {
-    name: "mg-checkbox",
+    name: "mg-select",
     props:{
         modelValue: {
             type: [ Array, Number, String ]

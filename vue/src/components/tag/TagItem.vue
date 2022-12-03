@@ -5,7 +5,7 @@
                 <mg-show-icon-button @click="showHideDescription"></mg-show-icon-button>
                 <mg-edit-icon-button @click="editMaterialHandler(tag.id)"></mg-edit-icon-button>
                 <mg-trash-icon-button @click="deleteItemHandler(tag.id)"
-                    class="text-red-500 border-0 mt-1"
+                    class="text-red-500 border-0"
                 ></mg-trash-icon-button>
             </div>
             <span class="font-light">[{{tag.id}}]</span>

@@ -8,6 +8,22 @@ export const eventoModule = {
     getters:{
     },
     actions: {
+        loadItems({commit, state}){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .get(`/${modelName}`) // // .get("/tags")
+                .then((res)=>{
+                    if (res.data.success) {
+                        commit('setItems', res.data.data);
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                    console.log('we got error:',err);
+                })
+            return response;
+        },
         createItem({dispatch, commit}, item){
             return dispatch('createItemQuery', item);
         },
