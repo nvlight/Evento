@@ -17,7 +17,7 @@ class EventoController extends Controller
                   join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
                 ->join('tags', 'tags.id', '=', 'tag_values.tag_id_first')
                 ->leftJoin('tags as tags2', 'tags2.id', 'tag_values.tag_id_second')
-                ->select('eventos.date', 'tag_values.value', 'tag_values.description',
+                ->select('eventos.id', 'eventos.date', 'tag_values.value', 'tag_values.description',
                         'tag_values.tag_id_first', 'tag_values.tag_id_second',
                         'tags.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
                     )

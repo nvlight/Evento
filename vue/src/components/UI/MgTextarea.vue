@@ -4,7 +4,7 @@
         <textarea
             :value="modelValue"
             @input="updateInput"
-            class="border border-red-400 w-full rounded h-20
+            class="border w-full rounded h-20
                 p-3
                 focus:border-indigo-500
                 focus:outline-none

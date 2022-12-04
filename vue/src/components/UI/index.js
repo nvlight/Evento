@@ -11,6 +11,7 @@ import MgUpdateIconButton from "./MgUpdateIconButton.vue";
 import MgInputDateLabeled from "./MgInputDateLabeled.vue";
 import MgPlusIconButton from "./MgPlusIconButton.vue";
 import MgSelect from "./MgSelect.vue";
+import MgPencilIconButton from "./MgPencilIconButton.vue";
 
 export default [
     MgButton,
@@ -26,4 +27,5 @@ export default [
     MgUpdateIconButton,
     MgInputDateLabeled,
     MgPlusIconButton,
+    MgPencilIconButton,
 ];
