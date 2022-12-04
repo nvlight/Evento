@@ -12,33 +12,28 @@
                                     rounded-r-none
                                 ">{{ evento.tag_id_first_name }}
                     </span>
-                    <template v-if="evento.tag_id_second_name">
-                        <span class="px-1.5 py-1.5 rounded-none border-gray-300
-                                font-semibold
-                                bg-gray-600
-                                text-white"
-                        > <span class="text-sm">{{ evento.value }}</span>
-                        </span>
-                        <span
-                            class="bg-gray-400 px-1.5 py-1.5 text-white rounded-md rounded-l-none">{{ evento.tag_id_second_name }}
-                        </span>
-                    </template>
-                    <template v-else>
-                        <span class="px-1.5 py-1.5 rounded-r border-gray-300
-                                font-semibold
-                                bg-gray-600
-                                text-white"
-                        > <span class="text-sm">{{ evento.value }}</span>
-                        </span>
-                    </template>
+                    <span class="px-1.5 py-1.5 rounded-none border-gray-300
+                            font-semibold
+                            bg-gray-600
+                            text-white"
+                    > <span class="text-sm">{{ evento.value }}</span>
+                    </span>
+                    <span
+                        class="bg-gray-400 px-1.5 py-1.5 text-white rounded-md rounded-l-none">{{ evento.tag_id_second_name }}
+                    </span>
                 </button>
             </div>
         </td>
-        <td class="border text-center">{{ evento.description }} ...</td>
+        <td class="border text-center">
+            <span v-if="evento.description">
+                {{ evento.description }}
+            </span>
+            <span v-else>...</span>
+        </td>
         <td class="border text-center">
             <div class="w-full flex justify-center items-center">
                 <mg-trash-icon-button
-                    @click="deleteEvento"
+                    @click="deleteEvento(evento.id)"
                     class="ml-1 border-none text-red-500 self-end
                             focus:ring-red-500 rounded-sm h-4 w-4
                             "
@@ -63,11 +58,13 @@ export default {
             required: true,
         }
     },
+    emits: ['doAddFormReset'],
 
     methods:{
-        deleteEvento(){
+        deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
-
+            this.$store.dispatch('evento/delItem', id);
+            this.$emit('doAddFormReset');
         },
     },
     computed:{

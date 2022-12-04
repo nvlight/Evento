@@ -34,10 +34,7 @@ export const eventoModule = {
                 .post(`/${modelName}`, item.formData)
                 .then((res)=>{
                     if (res.data.success) {
-                        const itemClone = Object.assign({}, item.item);
-                        itemClone.id  = res.data.savedId;
-                        dispatch('addItem', itemClone);
-                    }else{
+                        dispatch('addItem', res.data.data);
                     }
                     return res;
                 })
@@ -49,6 +46,26 @@ export const eventoModule = {
         addItem({commit}, item){
             return commit('addItem', item);
         },
+
+        delItem({dispatch}, id){
+            dispatch('delItemQuery', id);
+        },
+        delItemQuery({dispatch,state, commit}, id){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .delete(`/${modelName}/${id}`)
+                .then((res)=>{
+                    if (res.data.success){
+                        commit('delItem', id);
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                    console.log('we got error:',err);
+                })
+            return response;
+        },
     },
     mutations: {
         setItems: (state, items) => {
@@ -56,6 +73,12 @@ export const eventoModule = {
         },
         addItem: (state, item) => {
             state.items.unshift(item);
+        },
+
+        delItem: (state, id) => {
+            state.items = state.items.filter(
+                t => t.id != id
+            );
         },
     },
     namespaced: true,

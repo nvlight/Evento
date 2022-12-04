@@ -12,7 +12,7 @@
         <tbody>
             <template v-for="evento in eventos"
                 :key="evento.id">
-                <evento-item :evento="evento"></evento-item>
+                <evento-item @doAddFormReset="$emit('doAddFormReset')" :evento="evento"></evento-item>
             </template>
         </tbody>
     </table>
@@ -25,6 +25,7 @@ export default {
     components: {
         EventoItem,
     },
+    emits: ['doAddFormReset'],
     props: {
         eventos:{
             type: Object,

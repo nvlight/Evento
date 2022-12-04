@@ -10,6 +10,37 @@ use Illuminate\Support\Facades\DB;
 
 class EventoController extends Controller
 {
+    protected function getOneEvento($id)
+    {
+        try{
+            $items = Evento::
+            join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
+                ->join('tags', 'tags.id', '=', 'tag_values.tag_id_first')
+                ->leftJoin('tags as tags2', 'tags2.id', 'tag_values.tag_id_second')
+                ->select('eventos.id', 'eventos.date', 'tag_values.value', 'tag_values.description',
+                    'tag_values.tag_id_first', 'tag_values.tag_id_second',
+                    'tags.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                )
+                ->where('eventos.id', $id)
+                ->where('eventos.user_id', Auth::user()->id)
+                ->where('tags.user_id', Auth::user()->id)
+                ->orderBy('eventos.date', 'DESC')
+//                ->toSql()
+                ->get()
+            ;
+        }catch (\Exception $e){
+            $this->saveToLog(__METHOD__, $e);
+            return [
+                'success' => 0,
+            ];
+        }
+
+        return [
+            'success' => 1,
+            'data' => $items[0],
+        ];
+    }
+
     public function index()
     {
         try{
@@ -23,7 +54,8 @@ class EventoController extends Controller
                     )
                 ->where('eventos.user_id', Auth::user()->id)
                 ->where('tags.user_id', Auth::user()->id)
-                ->orderBy('eventos.date', 'DESC')
+                ->orderBy('eventos.id', 'DESC')
+                ->orderBy('eventos.date', 'ASC')
 //                ->toSql()
                 ->get()
             ;
@@ -62,8 +94,9 @@ class EventoController extends Controller
             ]);
         }
 
+        $eventoId = 0;
         try{
-            DB::transaction(function () use($request){
+            DB::transaction(function () use($request, &$eventoId){
 
                 $evento = new Evento();
                 $evento->user_id = Auth::user()->id;
@@ -82,7 +115,12 @@ class EventoController extends Controller
 
                 $evento->tag_value_id = $tagValue->id;
                 $evento->save();
+
+                $eventoId = $evento->id;
             });
+
+            $dataRowWithNeedSelected = $this->getOneEvento($eventoId);
+            $dataRs = $dataRowWithNeedSelected['success'] ? $dataRowWithNeedSelected['data'] : null;
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -94,6 +132,7 @@ class EventoController extends Controller
         return response()->json([
             'success' => 1,
             'savedId' => 0,
+            'data' => $dataRs,
         ]);
     }
 
@@ -114,7 +153,19 @@ class EventoController extends Controller
 
     public function destroy(Evento $evento)
     {
-        //
+        try{
+            $evento->delete();
+        }catch (\Exception $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!'
+            ]);
+        }
+
+        return response()->json([
+            'success' => 1,
+        ]);
     }
 
     protected function saveToLog($method, $e){

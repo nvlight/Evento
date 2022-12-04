@@ -23,6 +23,7 @@
             <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <!-- Replace with your content -->
                 <div class="p-5 border border-gray-300 rounded-md border-dashed">
+
                     <div class="evento_create_form_wrapper p-3 border border-dashed rounded-md">
                         <h1 class="text-xl font-semibold">Добавление события</h1>
                         <form @submit.prevent>
@@ -76,8 +77,9 @@
                             </div>
                         </form>
                     </div>
+
                     <div class="evento_table mt-3">
-                        <evento-list :eventos="eventos"></evento-list>
+                        <evento-list @doAddFormReset="resetEventoForm" :eventos="eventos"></evento-list>
                     </div>
                 </div>
                 <!-- /End replace -->
@@ -107,13 +109,16 @@ export default {
     },
     data(){
         return {
-            evento:{
+            defaultEvento:{
                 value: '',
                 description: '',
                 evento_id: 0,
                 tag_id_first: 0,
                 tag_id_second: 0,
                 date: '2022-12-03',
+            },
+            evento:{
+
             },
 
             isMainTagButtonVisible: false,
@@ -139,6 +144,10 @@ export default {
             const item = {item: this.tag, formData: data}
             this.$store.dispatch('evento/createItem', item);
         },
+
+        resetEventoForm(){
+            this.evento = Object.assign({}, this.defaultEvento);
+        },
     },
     computed:{
         ...mapState({
@@ -161,6 +170,7 @@ export default {
     mounted() {
         this.loadTagItems();
         this.loadEventos();
+        this.resetEventoForm();
         this.evento.date = this.getCurrentDate;
     },
 
