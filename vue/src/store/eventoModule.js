@@ -4,8 +4,19 @@ export const eventoModule = {
     state: () => ({
         itemModelName: 'evento',
         items: [],
+        createItemStatus: 'none',
+        currentEditItemId: 0,
     }),
     getters:{
+        getcreateItemStatus(state){
+            return state.createItemStatus;
+        },
+        getCurrentEditItemId(state){
+            return state.currentEditItemId;
+        },
+        getCurrentEditedItem: (state) => {
+            return state.items.filter( t => t.id === state.currentEditItemId)?.[0];
+        },
     },
     actions: {
         loadItems({commit, state}){
@@ -25,6 +36,7 @@ export const eventoModule = {
             return response;
         },
         createItem({dispatch, commit}, item){
+            commit('setCreateItemStatus', 'start');
             return dispatch('createItemQuery', item);
         },
         createItemQuery({commit,dispatch,state}, item){
@@ -35,10 +47,14 @@ export const eventoModule = {
                 .then((res)=>{
                     if (res.data.success) {
                         dispatch('addItem', res.data.data);
+                        commit('setCreateItemStatus', 'success');
+                    }else{
+                        commit('setCreateItemStatus', 'fail');
                     }
                     return res;
                 })
                 .catch( (err) => {
+                    commit('setCreateItemStatus', 'fail');
                     console.log('we got error:',err);
                 })
             return response;
@@ -66,6 +82,10 @@ export const eventoModule = {
                 })
             return response;
         },
+
+        setCurrentEditItemId({commit}, id){
+            commit('setCurrentEditItemId', id);
+        },
     },
     mutations: {
         setItems: (state, items) => {
@@ -74,11 +94,17 @@ export const eventoModule = {
         addItem: (state, item) => {
             state.items.unshift(item);
         },
-
         delItem: (state, id) => {
             state.items = state.items.filter(
                 t => t.id != id
             );
+        },
+        setCreateItemStatus: (state, value) => {
+            state.createItemStatus = value;
+        },
+
+        setCurrentEditItemId: (state, id) => {
+            state.currentEditItemId = id
         },
     },
     namespaced: true,

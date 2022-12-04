@@ -25,7 +25,20 @@
                 <div class="p-5 border border-gray-300 rounded-md border-dashed">
 
                     <div class="evento_create_form_wrapper p-3 border border-dashed rounded-md">
-                        <h1 class="text-xl font-semibold">Добавление события</h1>
+                        <div>createItemStatus: {{createItemStatus}}</div>
+                        <div>getCurrentEditItemId: {{getCurrentEditItemId}}</div>
+                        <div>getCurrentEditedItem: {{getCurrentEditedItem}}</div>
+
+                        <div class="flex justify-between">
+                            <div>
+                                <h1 v-if="isCreateEventoButtonVisible" class="text-xl font-semibold">Добавление события</h1>
+                                <h1 v-else class="text-xl font-semibold">Редактирование события</h1>
+                            </div>
+                            <mg-close-icon-button
+                                v-if="!isCreateEventoButtonVisible"
+                                @click="resetUpdateMode"></mg-close-icon-button>
+                        </div>
+
                         <form @submit.prevent>
                             <div class="mt-3 flex items-center justify-between">
 
@@ -68,12 +81,32 @@
                                 </div>
 
                                 <div class="self-end">
-                                    <mg-button @click="createEvento" class="">добавить</mg-button>
+                                    <mg-button
+                                        v-if="isCreateEventoButtonVisible"
+                                        @click="createEvento"
+                                        :class="'bg-green-600 hover:bg-green-700 focus:ring-green-500 flex items-center'"
+                                        >
+                                        <div
+                                            v-if="createItemStatus  == 'start'"
+                                            class="flex items-center justify-center mr-2">
+                                            <div class="w-3 h-3 border-b-2 border-red-900 rounded-full animate-spin"></div>
+                                        </div>
+                                        <span>добавить</span>
+                                    </mg-button>
+                                </div>
+                                <div class="self-end">
+                                    <mg-button
+                                        v-if="!isCreateEventoButtonVisible"
+                                        @click="updateEvento(evento.id)"
+                                        :class="'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500'"
+                                        >обновить
+                                    </mg-button>
                                 </div>
                             </div>
 
-                            <div class="w-4/12">
-                                <mg-textarea v-model="evento.description" class="border-red-400">Описание</mg-textarea>
+                            <div class="w-full">
+                                <mg-textarea v-model="evento.description" class="border-red-400"
+                                    >Описание</mg-textarea>
                             </div>
                         </form>
                     </div>
@@ -94,7 +127,7 @@ import TagList from "../components/tag/TagList.vue";
 import TagItem from "../components/tag/TagItem.vue";
 import TagIndex from "../components/tag/TagIndex.vue"
 import TagEditForm from "../components/tag/TagEditForm.vue";
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
 import MgTrashIconButton from "../components/UI/MgTrashIconButton.vue";
 import MgSelect from "../components/UI/MgSelect.vue";
@@ -112,16 +145,14 @@ export default {
             defaultEvento:{
                 value: '',
                 description: '',
-                evento_id: 0,
                 tag_id_first: 0,
                 tag_id_second: 0,
                 date: '2022-12-03',
             },
-            evento:{
-
-            },
+            evento:{},
 
             isMainTagButtonVisible: false,
+            isCreateEventoButtonVisible: true,
         }
     },
     props: {
@@ -135,7 +166,12 @@ export default {
             'loadEventos': 'evento/loadItems',
         }),
 
-        createEvento(){
+        ...mapMutations({
+            'setCurrentEditItemId': 'evento/setCurrentEditItemId',
+        }),
+
+         createEvento(){
+            console.log('createEvento');
             let data = new FormData();
             for(let key in this.evento){
                 data.append(key, this.evento[key]);
@@ -145,14 +181,33 @@ export default {
             this.$store.dispatch('evento/createItem', item);
         },
 
+        createEventoHandler(){
+            //const result = this.createEvento();
+        },
+
+        updateEvento(id){
+            console.log('updateEvento: ', id);
+        },
+
         resetEventoForm(){
             this.evento = Object.assign({}, this.defaultEvento);
+        },
+
+        resetUpdateMode(){
+            this.resetEventoForm();
+            this.setCurrentEditItemId(0);
+            this.isCreateEventoButtonVisible = true;
         },
     },
     computed:{
         ...mapState({
             'tags': state => state.tag.items,
             'eventos': state => state.evento.items,
+        }),
+        ...mapGetters({
+            'createItemStatus': 'evento/getcreateItemStatus',
+            'getCurrentEditItemId': 'evento/getCurrentEditItemId',
+            'getCurrentEditedItem': 'evento/getCurrentEditedItem',
         }),
 
         getCurrentDate(){
@@ -166,6 +221,13 @@ export default {
         },
     },
     watch:{
+        getCurrentEditItemId(nv, ov){
+            //console.log('changed: ', nv);
+            if (nv){
+                this.evento = Object.assign({}, this.getCurrentEditedItem);
+                this.isCreateEventoButtonVisible = false;
+            }
+        }
     },
     mounted() {
         this.loadTagItems();

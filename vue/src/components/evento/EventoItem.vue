@@ -39,7 +39,9 @@
                             "
                     :svgClass="'h-4 w-4'"
                 ></mg-trash-icon-button>
-                <mg-pencil-icon-button class="ml-1 border-none text-purple-800  self-end
+                <mg-pencil-icon-button
+                    @click="$store.dispatch('evento/setCurrentEditItemId', evento.id)"
+                    class="ml-1 border-none text-purple-800  self-end
                     focus:ring-purple-500 rounded-sm h-4 w-4"
                 ></mg-pencil-icon-button>
             </div>
