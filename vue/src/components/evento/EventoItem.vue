@@ -4,23 +4,26 @@
         <td class="border text-center">{{ evento.date }}</td>
         <td class="border p-2">
             <div class="border w-fit p-2.5 border-gray-300 rounded-md border-red-100 border-none ">
-                <button class="cursor-pointer
-                        focus:ring-offset-8
-                        focus:ring-gray-300 focus:ring-2 focus:rounded-sm">
-                    <span v-if="evento.tag_id_first_name"
-                          class="bg-gray-400 px-1.5 py-1.5 text-white rounded-md
-                                    rounded-r-none
-                                ">{{ evento.tag_id_first_name }}
-                    </span>
-                    <span class="px-1.5 py-1.5 rounded-none border-gray-300
-                            font-semibold
-                            bg-gray-600
-                            text-white"
-                    > <span class="text-sm">{{ evento.value }}</span>
-                    </span>
-                    <span
-                        class="bg-gray-400 px-1.5 py-1.5 text-white rounded-md rounded-l-none">{{ evento.tag_id_second_name }}
-                    </span>
+                <button class="rounded-md cursor-pointer bg-gray-400 px-1.5 py-1.5 text-white
+                    focus:ring-offset-1 focus:ring-gray-300 focus:ring-2 focus:rounded-sm">
+                    <div class="flex items-center">
+                        <span v-if="evento.tag_id_first_name"
+                              class="
+
+                                    ">{{ evento.tag_id_first_name }}
+                        </span>
+                        <template v-if="!evento.tag_id_second && !evento.value">
+
+                        </template>
+
+                        <div v-if="evento.value" class="px-1.5 py-0.5 ml-2 mr-2  font-semibold bg-gray-600 text-white">
+                            <span class="text-sm">{{ evento.value }}</span>
+                        </div>
+
+                        <span v-if="evento.tag_id_second"
+                              class="py-1.5 text-white  ">{{ evento.tag_id_second_name }}
+                        </span>
+                    </div>
                 </button>
             </div>
         </td>

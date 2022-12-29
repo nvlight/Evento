@@ -6,7 +6,10 @@ use App\Models\Evento;
 use App\Models\TagValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class EventoController extends Controller
 {
@@ -168,7 +171,8 @@ class EventoController extends Controller
         ]);
     }
 
-    protected function saveToLog($method, $e){
+    protected function saveToLog($method, $e)
+    {
         logger('error in method: ' . $method. '! '
             . implode(' | ', [
                 'msg: '  . $e->getMessage(),
