@@ -1,39 +1,37 @@
 <template>
-    <tr>
-        <td class="border text-center">{{ evento.id }}</td>
-        <td class="border text-center">{{ evento.date }}</td>
-        <td class="border p-2">
+    <tr :class="[index % 2 != 0
+                ? 'bg-gray-50 border-b dark:bg-gray-800'
+                : 'bg-white dark:bg-gray-900'
+                , ' border-b dark:border-gray-700'
+            ]"
+        >
+        <td class="border text-center p-2">{{ evento.id }}</td>
+        <td class="border text-center p-2">{{ evento.date }}</td>
+
+        <td class="tags_main_info border p-2">
             <div class="border w-fit p-2.5 border-gray-300 rounded-md border-red-100 border-none ">
-                <button class="rounded-md cursor-pointer bg-gray-400 px-1.5 py-1.5 text-white
-                    focus:ring-offset-1 focus:ring-gray-300 focus:ring-2 focus:rounded-sm">
-                    <div class="flex items-center">
-                        <span v-if="evento.tag_id_first_name"
-                              class="
+                <div class="flex items-center cursor-pointer items-stretch">
+                    <div class="py-1.5 px-2 bg-gray-200 text-black">{{ evento.tag_id_first_name }}
+                    </div>
 
-                                    ">{{ evento.tag_id_first_name }}
-                        </span>
-                        <template v-if="!evento.tag_id_second && !evento.value">
-
-                        </template>
-
-                        <div v-if="evento.value" class="px-1.5 py-0.5 ml-2 mr-2  font-semibold bg-gray-600 text-white">
+                    <div v-if="evento.tag_id_second" class="py-1.5 px-2 bg-green-600 text-white flex items-center"
+                    >{{ evento.tag_id_second_name }}
+                        <div v-if="evento.value" class="px-1.5 py-0.5 ml-2 rounded-md font-semibold bg-gray-600 text-white">
                             <span class="text-sm">{{ evento.value }}</span>
                         </div>
-
-                        <span v-if="evento.tag_id_second"
-                              class="py-1.5 text-white  ">{{ evento.tag_id_second_name }}
-                        </span>
                     </div>
-                </button>
+                </div>
             </div>
         </td>
-        <td class="border text-center">
+
+        <td class="description border text-center p-2">
             <span v-if="evento.description">
                 {{ evento.description }}
             </span>
             <span v-else>...</span>
         </td>
-        <td class="border text-center">
+
+        <td class="buttons_block border text-center p-2">
             <div class="w-full flex justify-center items-center">
                 <mg-trash-icon-button
                     @click="deleteEvento(evento.id)"
@@ -60,6 +58,10 @@ export default {
     props: {
         evento: {
             type: Object,
+            required: true,
+        },
+        index:{
+            type: Number,
             required: true,
         }
     },

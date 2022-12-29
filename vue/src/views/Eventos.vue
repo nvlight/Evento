@@ -24,6 +24,7 @@
                 <!-- Replace with your content -->
                 <div class="p-5 border border-gray-300 rounded-md border-dashed">
                     <evento-create-edit/>
+
                     <evento-list @doAddFormReset="resetEventoForm" :eventos="eventos"/>
                 </div>
                 <!-- /End replace -->
