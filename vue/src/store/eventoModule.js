@@ -6,6 +6,7 @@ export const eventoModule = {
         items: [],
         createItemStatus: 'none',
         currentEditItemId: 0,
+        updateItemLoading: false,
     }),
     getters:{
         getcreateItemStatus(state){
@@ -86,6 +87,31 @@ export const eventoModule = {
         setCurrentEditItemId({commit}, id){
             commit('setCurrentEditItemId', id);
         },
+
+        updateItem({dispatch, commit}, item){
+            commit('setUpdateItemLoading', true);
+            return dispatch('updateItemQuery', item);
+        },
+        updateItemQuery({commit,dispatch,state}, item){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .patch(`/${modelName}/${item.id}`, item.formData)
+                .then((res)=>{
+                    if (res.data.success) {
+                        dispatch('addItem', res.data.data);
+                        commit('setUpdateItemLoading', true);
+                    }else{
+                        commit('setUpdateItemLoading', true);
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                    commit('setUpdateItemLoading', false);
+                    console.log('we got error:',err);
+                })
+            return response;
+        },
     },
     mutations: {
         setItems: (state, items) => {
@@ -106,6 +132,10 @@ export const eventoModule = {
         setCurrentEditItemId: (state, id) => {
             state.currentEditItemId = id
         },
+
+        setUpdateItemLoading(state, value){
+            state.updateItemLoading = value;
+        }
     },
     namespaced: true,
 }

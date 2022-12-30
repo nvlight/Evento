@@ -126,6 +126,7 @@ export default {
 
         updateEvento(id){
             console.log('updateEvento: ', id);
+            this.$store.dispatch('evento/updateItem', this.evento);
         },
     },
     computed:{

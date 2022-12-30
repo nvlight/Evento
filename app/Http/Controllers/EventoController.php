@@ -151,7 +151,10 @@ class EventoController extends Controller
 
     public function update(Request $request, Evento $evento)
     {
-        //
+
+        return response([
+            'success' => true,
+        ]);
     }
 
     public function destroy(Evento $evento)
