@@ -41,7 +41,7 @@
                     :svgClass="'h-4 w-4'"
                 ></mg-trash-icon-button>
                 <mg-pencil-icon-button
-                    @click="$store.dispatch('evento/setCurrentEditItemId', evento.id)"
+                    @click="editEventoHanlder(evento)"
                     class="ml-1 border-none text-purple-800  self-end
                     focus:ring-purple-500 rounded-sm h-4 w-4"
                 ></mg-pencil-icon-button>
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { mapGetters} from "vuex";
+
 export default {
     name: 'evento-item',
     components: {},
@@ -65,17 +67,27 @@ export default {
             required: true,
         }
     },
-    emits: ['doAddFormReset'],
+    emits: [],
 
     methods:{
         deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
             this.$store.dispatch('evento/delItem', id);
-            this.$emit('doAddFormReset');
         },
+
+        editEventoHanlder(evento){
+            //console.log('editEventoHanlder:', evento.id);
+            this.$store.dispatch('evento/setCurrentEditItemId', evento.id);
+            //console.log(this.currentEditedItem);
+            this.$store.commit('evento/editButtonClicked');
+            this.$store.commit('evento/setCreateEditFormVisible', true);
+        },
+
     },
     computed:{
-
+        ...mapGetters({
+            'currentEditedItem': 'evento/getCurrentEditedItem',
+        }),
     }
 }
 </script>

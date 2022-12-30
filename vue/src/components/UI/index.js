@@ -12,6 +12,7 @@ import MgInputDateLabeled from "./MgInputDateLabeled.vue";
 import MgPlusIconButton from "./MgPlusIconButton.vue";
 import MgSelect from "./MgSelect.vue";
 import MgPencilIconButton from "./MgPencilIconButton.vue";
+import MgSpin from "./MgSpin.vue";
 
 export default [
     MgButton,
@@ -28,4 +29,5 @@ export default [
     MgInputDateLabeled,
     MgPlusIconButton,
     MgPencilIconButton,
+    MgSpin,
 ];

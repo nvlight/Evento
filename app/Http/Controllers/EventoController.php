@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Database\QueryException;
 
 class EventoController extends Controller
 {
@@ -84,14 +85,22 @@ class EventoController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'date' => 'nullable|date',
+            'date' => 'required|date',
             'tag_id_first'  => 'required|integer|exists:tags,id',
-            'tag_id_second' => 'integer|min:0',
+            'tag_id_second' => 'nullable',
             'value' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
         ]);
 
-        if ($request->tag_id_second > 0) {
+        $request->tag_id_second = intval($request->tag_id_second);
+
+//        return response([
+//            'errors' => '',
+//            '$request->tag_id_second' => $request->tag_id_second,
+//            'date' => $request->date,
+//        ]);
+
+        if ($request->tag_id_second) {
             $this->validate($request, [
                 'tag_id_second' => 'exists:tags,id',
             ]);
@@ -124,7 +133,7 @@ class EventoController extends Controller
 
             $dataRowWithNeedSelected = $this->getOneEvento($eventoId);
             $dataRs = $dataRowWithNeedSelected['success'] ? $dataRowWithNeedSelected['data'] : null;
-        }catch (\Exception $e){
+        }catch (QueryException $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
                 'success' => 0,
@@ -151,9 +160,48 @@ class EventoController extends Controller
 
     public function update(Request $request, Evento $evento)
     {
+        $this->validate($request, [
+            'date' => 'nullable|date',
+            'tag_id_first'  => 'required|integer|exists:tags,id',
+            'tag_id_second' => 'nullable',
+            'value' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+        ]);
 
-        return response([
-            'success' => true,
+        $request->tag_id_second = intval($request->tag_id_second);
+        if ($request->tag_id_second) {
+            $this->validate($request, [
+                'tag_id_second' => 'exists:tags,id',
+            ]);
+        }
+
+//        return response()->json([
+//            'evento' => $evento,
+//            'tag_value' => $evento->tagValue,
+//        ]);
+
+        try{
+            $tagValue = $evento->tagValue;
+            $tagValue->tag_id_first  = $request->tag_id_first;
+            $tagValue->tag_id_second = $request->tag_id_second;
+            $tagValue->value         = $request->value;
+            $tagValue->description   = $request->description;
+            //$tagValue->description   = 'itak che vi tut prisosalis?!';
+            $tagValue->save();
+
+            $dataRowWithNeedSelected = $this->getOneEvento($evento->id);
+            $dataRs = $dataRowWithNeedSelected['success'] ? $dataRowWithNeedSelected['data'] : null;
+        }catch (QueryException $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!',
+            ]);
+        }
+
+        return response()->json([
+            'success' => 1,
+            'data' => $dataRs,
         ]);
     }
 

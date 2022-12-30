@@ -4,9 +4,18 @@ export const eventoModule = {
     state: () => ({
         itemModelName: 'evento',
         items: [],
-        createItemStatus: 'none',
-        currentEditItemId: 0,
+
+        createItemLoading: false,
         updateItemLoading: false,
+
+        currentEditItemId: 0,
+
+        editButtonClicked: false,
+        createButtonClicked: false,
+
+        createEditFormVisible: false,
+        editMode: false,
+        createMode: false,
     }),
     getters:{
         getcreateItemStatus(state){
@@ -18,6 +27,9 @@ export const eventoModule = {
         getCurrentEditedItem: (state) => {
             return state.items.filter( t => t.id === state.currentEditItemId)?.[0];
         },
+        getItemById: (state) => (id) => {
+            return state.items.filter( t => t.id === id)?.[0];
+        }
     },
     actions: {
         loadItems({commit, state}){
@@ -37,7 +49,7 @@ export const eventoModule = {
             return response;
         },
         createItem({dispatch, commit}, item){
-            commit('setCreateItemStatus', 'start');
+            commit('setCreateItemLoading', true);
             return dispatch('createItemQuery', item);
         },
         createItemQuery({commit,dispatch,state}, item){
@@ -46,16 +58,14 @@ export const eventoModule = {
             response = axiosClient
                 .post(`/${modelName}`, item.formData)
                 .then((res)=>{
+                    commit('setCreateItemLoading', false);
                     if (res.data.success) {
                         dispatch('addItem', res.data.data);
-                        commit('setCreateItemStatus', 'success');
-                    }else{
-                        commit('setCreateItemStatus', 'fail');
                     }
                     return res;
                 })
                 .catch( (err) => {
-                    commit('setCreateItemStatus', 'fail');
+                    commit('setCreateItemLoading', false);
                     console.log('we got error:',err);
                 })
             return response;
@@ -96,10 +106,12 @@ export const eventoModule = {
             let response;
             const modelName = state.itemModelName;
             response = axiosClient
-                .patch(`/${modelName}/${item.id}`, item.formData)
+                .patch(`/${modelName}/${item.id}`, item)
                 .then((res)=>{
                     if (res.data.success) {
+                        commit('delItem', res.data.data.id);
                         dispatch('addItem', res.data.data);
+
                         commit('setUpdateItemLoading', true);
                     }else{
                         commit('setUpdateItemLoading', true);
@@ -112,6 +124,12 @@ export const eventoModule = {
                 })
             return response;
         },
+
+        closeForm({commit}){
+            commit('setCreateEditFormVisible', false);
+            commit('setEditMode', false);
+            commit('setCreateMode', false);
+        }
     },
     mutations: {
         setItems: (state, items) => {
@@ -125,8 +143,12 @@ export const eventoModule = {
                 t => t.id != id
             );
         },
-        setCreateItemStatus: (state, value) => {
-            state.createItemStatus = value;
+
+        setCreateItemLoading: (state, value) => {
+            state.createItemLoading = value;
+        },
+        updateItemLoading: (state, value) => {
+            state.updateItemLoading = value;
         },
 
         setCurrentEditItemId: (state, id) => {
@@ -135,7 +157,29 @@ export const eventoModule = {
 
         setUpdateItemLoading(state, value){
             state.updateItemLoading = value;
-        }
+        },
+
+        editButtonClicked(state){
+            state.editButtonClicked = !state.editButtonClicked;
+            state.editMode = true;
+            state.createMode = false;
+        },
+        createButtonClicked(state){
+            state.createButtonClicked = !state.createButtonClicked;
+            state.editMode = false;
+            state.createMode = true;
+        },
+
+        setEditMode(state, value){
+            state.editMode = value;
+        },
+        setCreateMode(state, value){
+            state.createMode = value;
+        },
+
+        setCreateEditFormVisible(state, value){
+            state.createEditFormVisible = value;
+        },
     },
     namespaced: true,
 }

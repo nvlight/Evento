@@ -9,7 +9,7 @@
 
     <main>
         <mg-modal v-model:show="tagModalVisible.value"
-            :dialog_content_classes="'w-6/12 mt-5 mb-5'"
+            :dialog_content_classes="'w-6/12 mt-5 mb-5 overflow-y-scroll'"
             >
             <div class="flex">
                 <tag-create-edit-form class="w-5/12 border border p-3"></tag-create-edit-form>
@@ -23,9 +23,8 @@
             <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <!-- Replace with your content -->
                 <div class="p-5 border border-gray-300 rounded-md border-dashed">
-                    <evento-create-edit/>
-
-                    <evento-list @doAddFormReset="resetEventoForm" :eventos="eventos"/>
+                    <evento-create-edit v-if="formVisible" />
+                    <evento-list :eventos="eventos"/>
                 </div>
                 <!-- /End replace -->
             </div>
@@ -55,14 +54,6 @@ export default {
     },
     data(){
         return {
-            defaultEvento:{
-                value: '',
-                description: '',
-                tag_id_first: '',
-                tag_id_second: 0,
-                date: '2022-12-03',
-            },
-            evento:{},
         }
     },
     props: {
@@ -80,49 +71,22 @@ export default {
             'setCurrentEditItemId': 'evento/setCurrentEditItemId',
         }),
 
-        createEventoHandler(){
-            //const result = this.createEvento();
-        },
-
-        resetEventoForm(){
-            this.evento = Object.assign({}, this.defaultEvento);
-        },
     },
     computed:{
         ...mapState({
             'tags': state => state.tag.items,
             'eventos': state => state.evento.items,
-        }),
-        ...mapGetters({
-            'createItemStatus': 'evento/getcreateItemStatus',
-            'getCurrentEditItemId': 'evento/getCurrentEditItemId',
-            'getCurrentEditedItem': 'evento/getCurrentEditedItem',
+            'formVisible': state => state.evento.createEditFormVisible,
         }),
 
-        getCurrentDate(){
-            const dt = new Date();
-            let year = dt.getFullYear();
-            let day = dt.getDate();
-            if (day < 10) { day = '0' + day }
-            let month = dt.getMonth();
-            let fullDt = [year, month, day, ].join('-')
-            return fullDt;
-        },
+        ...mapGetters({
+        }),
     },
     watch:{
-        getCurrentEditItemId(nv, ov){
-            //console.log('changed: ', nv);
-            if (nv){
-                this.evento = Object.assign({}, this.getCurrentEditedItem);
-                this.isCreateEventoButtonVisible = false;
-            }
-        }
     },
     mounted() {
         this.loadTagItems();
         this.loadEventos();
-        this.resetEventoForm();
-        this.evento.date = this.getCurrentDate;
     },
 
 }
