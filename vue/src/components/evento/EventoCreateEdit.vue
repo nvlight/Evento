@@ -62,7 +62,14 @@
                 </div>
             </div>
 
-            <div class="buttons">
+            <div class="w-full">
+                <mg-textarea v-model="evento.description" class="border-red-400"
+                >Описание</mg-textarea>
+            </div>
+
+            <Alert :errors="errors" @resetErrors="errors = {}"></Alert>
+
+            <div class="buttons flex justify-end">
                 <div v-if="createMode" class="self-end mt-2">
                     <mg-button
                         @click="createEvento"
@@ -83,20 +90,17 @@
                 </div>
             </div>
 
-            <div class="w-full">
-                <mg-textarea v-model="evento.description" class="border-red-400"
-                >Описание</mg-textarea>
-            </div>
         </form>
     </div>
 </template>
 
 <script>
 import {mapGetters, mapMutations, mapState} from "vuex";
+import Alert from "../Alert.vue";
 
 export default {
     name: 'evento-create-edit',
-    components: {},
+    components: { Alert },
 
     emits: [],
     data(){
@@ -111,6 +115,8 @@ export default {
                 tag_id_first: 0,
                 tag_id_second: 0,
             },
+
+            errors: {},
         }
     },
     methods:{
@@ -130,14 +136,20 @@ export default {
         },
 
         createEvento(){
-            console.log('createEvento');
             let data = new FormData();
             for(let key in this.evento){
                 data.append(key, this.evento[key]);
             }
 
             const item = {item: this.tag, formData: data}
-            this.$store.dispatch('evento/createItem', item);
+            this.$store.dispatch('evento/createItemQuery', item)
+                .then((res) => {
+                    console.log('create evento - then: ', res.response);
+                    this.errors = res.response.data.errors;
+                })
+                .catch((err) => {
+                    console.log('create evento - catch: ', err);
+                });
         },
 
         updateEvento(id){

@@ -14,6 +14,11 @@
                     <div class="py-1.5 px-2 bg-gray-200 text-black">{{ evento.tag_id_first_name }}
                     </div>
 
+                    <div v-if="!evento.tag_id_second && evento.value"
+                         class="px-1.5 py-0.5 font-semibold bg-gray-600 text-white flex items-center">
+                        <div class="text-sm">{{ evento.value }}</div>
+                    </div>
+
                     <div v-if="evento.tag_id_second" class="py-1.5 px-2 bg-green-600 text-white flex items-center"
                     >{{ evento.tag_id_second_name }}
                         <div v-if="evento.value" class="px-1.5 py-0.5 ml-2 rounded-md font-semibold bg-gray-600 text-white">

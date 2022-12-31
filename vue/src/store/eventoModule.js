@@ -48,12 +48,15 @@ export const eventoModule = {
                 })
             return response;
         },
+
         createItem({dispatch, commit}, item){
             commit('setCreateItemLoading', true);
             return dispatch('createItemQuery', item);
         },
+
         createItemQuery({commit,dispatch,state}, item){
             let response;
+            commit('setCreateItemLoading', true);
             const modelName = state.itemModelName;
             response = axiosClient
                 .post(`/${modelName}`, item.formData)
@@ -62,11 +65,13 @@ export const eventoModule = {
                     if (res.data.success) {
                         dispatch('addItem', res.data.data);
                     }
+                    //console.log('then');
                     return res;
                 })
                 .catch( (err) => {
+                    //console.log('catch');
                     commit('setCreateItemLoading', false);
-                    console.log('we got error:',err);
+                    return err;
                 })
             return response;
         },
@@ -111,11 +116,8 @@ export const eventoModule = {
                     if (res.data.success) {
                         commit('delItem', res.data.data.id);
                         dispatch('addItem', res.data.data);
-
-                        commit('setUpdateItemLoading', true);
-                    }else{
-                        commit('setUpdateItemLoading', true);
                     }
+                    commit('setUpdateItemLoading', false);
                     return res;
                 })
                 .catch( (err) => {
