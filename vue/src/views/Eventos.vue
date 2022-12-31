@@ -19,16 +19,45 @@
             </div>
         </mg-modal>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <!-- Replace with your content -->
-                <div class="p-5 border border-gray-300 rounded-md border-dashed">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Replace with your content -->
+            <div class="p-5 border border-gray-300 rounded-md border-dashed">
+                <div v-if="eventos.loading" class="font-semibold text-sm text-center mt-2">Загрузка...</div>
+
+                <div v-else>
                     <evento-create-edit v-if="formVisible" />
-                    <evento-list :eventos="eventos"/>
+                    <evento-list :eventos="eventos.items"/>
+
+                    <!-- Pagination -->
+                    <div v-if="eventos.links.length" class="flex justify-center mt-5">
+                        <nav
+                            class="relative z-0 inline-flex justify-center rounded-md shadow-sm"
+                            aria-label="Pagination"
+                        >
+                            <a
+                                v-for="(link, i) of eventos.links"
+                                :key="i" :disabled="!link.url" href="#" aria-current="page"
+                                v-html="link.label"
+                                @click="getForPage($event, link)"
+                                class="relative inline-flex items-center px-4 py-2 border test-sm font-medium whitespace-nowrap"
+                                :class="[
+                                    link.active
+                                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
+                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100',
+                                        i === 0 ? 'rounded-l-md' : '',
+                                        i === eventos.links.length-1 ? 'rounded-r-md' : '',
+                                ]"
+                            >
+
+                            </a>
+                        </nav>
+                    </div>
+                    <!--/ Pagination -->
                 </div>
-                <!-- /End replace -->
             </div>
+            <!-- /End replace -->
         </div>
+
     </main>
 </template>
 
@@ -71,11 +100,18 @@ export default {
             'setCurrentEditItemId': 'evento/setCurrentEditItemId',
         }),
 
+         getForPage(event, link) {
+                event.preventDefault();
+                if (!link.url || link.active){
+                    return;
+                }
+            this.$store.dispatch("evento/loadItems", {url: link.url})
+        }
     },
     computed:{
         ...mapState({
             'tags': state => state.tag.items,
-            'eventos': state => state.evento.items,
+            'eventos': state => state.evento.eventos,
             'formVisible': state => state.evento.createEditFormVisible,
         }),
 

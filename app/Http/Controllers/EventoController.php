@@ -61,7 +61,8 @@ class EventoController extends Controller
                 ->orderBy('eventos.id', 'DESC')
                 ->orderBy('eventos.date', 'ASC')
 //                ->toSql()
-                ->get()
+//                ->get()
+                ->paginate(10)
             ;
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);

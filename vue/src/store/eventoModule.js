@@ -3,7 +3,12 @@ import axiosClient from "../axios.js";
 export const eventoModule = {
     state: () => ({
         itemModelName: 'evento',
-        items: [],
+
+        eventos: {
+            items: [],
+            loading: false,
+            links: [],
+        },
 
         createItemLoading: false,
         updateItemLoading: false,
@@ -25,26 +30,30 @@ export const eventoModule = {
             return state.currentEditItemId;
         },
         getCurrentEditedItem: (state) => {
-            return state.items.filter( t => t.id === state.currentEditItemId)?.[0];
+            return state.eventos.items.filter( t => t.id === state.currentEditItemId)?.[0];
         },
         getItemById: (state) => (id) => {
-            return state.items.filter( t => t.id === id)?.[0];
+            return state.eventos.items.filter( t => t.id === id)?.[0];
         }
     },
     actions: {
-        loadItems({commit, state}){
+        loadItems({commit, state}, {url = null} = {}){
             let response;
+            commit('setEventosLoading', true);
             const modelName = state.itemModelName;
+            url = url || `/${modelName}`;
             response = axiosClient
-                .get(`/${modelName}`) // // .get("/tags")
+                .get(url) // // .get("/tags")
                 .then((res)=>{
                     if (res.data.success) {
-                        commit('setItems', res.data.data);
+                        commit('setEventoItems', res.data.data.data);
+                        commit('setEventosLinks', res.data.data.links);
                     }
+                    commit('setEventosLoading', false);
                     return res;
                 })
                 .catch( (err) => {
-                    console.log('we got error:',err);
+                    commit('setEventosLoading', false);
                 })
             return response;
         },
@@ -141,14 +150,14 @@ export const eventoModule = {
         }
     },
     mutations: {
-        setItems: (state, items) => {
-            state.items = items;
+        setEventoItems: (state, items) => {
+            state.eventos.items = items;
         },
         addItem: (state, item) => {
-            state.items.unshift(item);
+            state.eventos.items.unshift(item);
         },
         delItem: (state, id) => {
-            state.items = state.items.filter(
+            state.eventos.items = state.items.filter(
                 t => t.id != id
             );
         },
@@ -189,6 +198,14 @@ export const eventoModule = {
         setCreateEditFormVisible(state, value){
             state.createEditFormVisible = value;
         },
+
+        setEventosLoading(state, value){
+            state.eventos.loading = value;
+        },
+        setEventosLinks(state, value){
+            state.eventos.links = value;
+        },
+
     },
     namespaced: true,
 }
