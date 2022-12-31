@@ -79,7 +79,7 @@ export const eventoModule = {
             return commit('addItem', item);
         },
 
-        delItem({dispatch}, id){
+        delItem({dispatch, state, commit}, id){
             dispatch('delItemQuery', id);
         },
         delItemQuery({dispatch,state, commit}, id){
@@ -89,6 +89,12 @@ export const eventoModule = {
                 .delete(`/${modelName}/${id}`)
                 .then((res)=>{
                     if (res.data.success){
+                        //console.log(id, state.currentEditItemId, state.editMode);
+                        if ( (id === state.currentEditItemId) && (state.editMode) ){
+                            commit('setCurrentEditItemId', 0);
+                            commit('setEditMode', 0);
+                            commit('setCreateEditFormVisible', false);
+                        }
                         commit('delItem', id);
                     }
                     return res;

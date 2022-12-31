@@ -144,6 +144,7 @@ export default {
             const item = {item: this.tag, formData: data}
             this.$store.dispatch('evento/createItemQuery', item)
                 .then((res) => {
+                    this.errors = {};
                     console.log('create evento - then: ', res.response);
                     this.errors = res.response.data.errors;
                 })
@@ -155,6 +156,7 @@ export default {
         updateEvento(){
             this.$store.dispatch('evento/updateItem', this.evento)
                 .then((res) => {
+                    this.errors = {};
                     console.log('update evento - then: ', res);
                     this.errors = res.response.data.errors;
                 })
