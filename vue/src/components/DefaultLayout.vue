@@ -97,7 +97,6 @@
 </template>
 
 <script>
-import {computed} from "vue";
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
 import {mapActions} from 'vuex'

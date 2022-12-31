@@ -81,7 +81,7 @@
                 </div>
                 <div v-if="editMode" class="self-end mt-2">
                     <mg-button
-                        @click="updateEvento(evento.id)"
+                        @click="updateEvento()"
                         :class="'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500'"
                     >
                         <mg-spin v-if="updateItemLoading"></mg-spin>
@@ -148,13 +148,19 @@ export default {
                     this.errors = res.response.data.errors;
                 })
                 .catch((err) => {
-                    console.log('create evento - catch: ', err);
+                    //console.log('create evento - catch: ', err);
                 });
         },
 
-        updateEvento(id){
-            console.log('updateEvento: ', id);
-            this.$store.dispatch('evento/updateItem', this.evento);
+        updateEvento(){
+            this.$store.dispatch('evento/updateItem', this.evento)
+                .then((res) => {
+                    console.log('update evento - then: ', res);
+                    this.errors = res.response.data.errors;
+                })
+                .catch((err) => {
+                    //console.log('update evento - catch: ', err);
+                });
         },
 
         createModeHandler(){

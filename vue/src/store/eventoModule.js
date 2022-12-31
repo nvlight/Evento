@@ -122,7 +122,8 @@ export const eventoModule = {
                 })
                 .catch( (err) => {
                     commit('setUpdateItemLoading', false);
-                    console.log('we got error:',err);
+                    //console.log('we got error:',err);
+                    return err;
                 })
             return response;
         },

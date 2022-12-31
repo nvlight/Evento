@@ -3,8 +3,9 @@
         <div class="flex justify-between">
             <h1 class="text-xl font-semibold">Список событий</h1>
 
-            <div>
-                <mg-button class="bg-green-600 hover:bg-green-700 transition-colors focus:bg-green-800"
+            <div class="mr-2 mt-2">
+                <mg-button class="bg-green-600 hover:bg-green-700 transition-colors focus:bg-green-800
+                    focus:ring-green-700"
                    @click="addEventoButtonClicked"
                 ><span class="text-xs">Добавить событие</span></mg-button>
             </div>
