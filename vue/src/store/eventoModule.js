@@ -157,7 +157,7 @@ export const eventoModule = {
             state.eventos.items.unshift(item);
         },
         delItem: (state, id) => {
-            state.eventos.items = state.items.filter(
+            state.eventos.items = state.eventos.items.filter(
                 t => t.id != id
             );
         },

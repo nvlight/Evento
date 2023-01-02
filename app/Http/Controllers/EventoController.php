@@ -48,16 +48,19 @@ class EventoController extends Controller
     public function index()
     {
         try{
+            // ' tags.text_color as tag1_text_color', 'tags.bg_color  as tag1_bg_color'
             $items = Evento::
                   join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
-                ->join('tags', 'tags.id', '=', 'tag_values.tag_id_first')
+                ->join('tags as tags1', 'tags1.id', '=', 'tag_values.tag_id_first')
                 ->leftJoin('tags as tags2', 'tags2.id', 'tag_values.tag_id_second')
                 ->select('eventos.id', 'eventos.date', 'tag_values.value', 'tag_values.description',
                         'tag_values.tag_id_first', 'tag_values.tag_id_second',
-                        'tags.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                        'tags1.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                        'tags2.text_color as tag2_text_color', 'tags2.bg_color as tag2_bg_color',
+                        'tags1.text_color as tag1_text_color', 'tags1.bg_color as tag1_bg_color'
                     )
                 ->where('eventos.user_id', Auth::user()->id)
-                ->where('tags.user_id', Auth::user()->id)
+                ->where('tags1.user_id', Auth::user()->id)
                 ->orderBy('eventos.id', 'DESC')
                 ->orderBy('eventos.date', 'ASC')
 //                ->toSql()

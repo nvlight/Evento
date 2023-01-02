@@ -1,6 +1,6 @@
 <template>
-    <div class="mt-3 overflow-x-auto relative">
-        <div class="flex justify-between">
+    <div class="mt-1 overflow-x-auto relative">
+        <div class="flex justify-between items-center">
             <h1 class="text-xl font-semibold">Список событий</h1>
 
             <div class="mr-2 mt-2">
@@ -10,7 +10,8 @@
                 ><span class="text-xs">Добавить событие</span></mg-button>
             </div>
         </div>
-        <table class="mt-2 w-full border border-collapse rounded-md p-3 ">
+
+        <table v-if="eventos.length" class="mt-2 w-full border border-collapse rounded-md p-3 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th class="py-3 px-6">#</th>
@@ -28,6 +29,9 @@
                 </template>
             </tbody>
         </table>
+        <div v-else>
+            <div class="text-center">Еще нет добавленных событий</div>
+        </div>
     </div>
 </template>
 

@@ -211,8 +211,10 @@ export default {
         getCurrentDate(){
             const dt = new Date();
             let year = dt.getFullYear();
-            let day = dt.getDate() < 10 ? day = '0' +  dt.getDate() : dt.getDate();
+            let day = dt.getDate();
+            day = day < 10 ? '0' +  day : day;
             let month = dt.getMonth();
+            month = month < 10 ? '0' + ( month + 1) : month + 1;
             return [year, month, day,].join('-');
         },
 

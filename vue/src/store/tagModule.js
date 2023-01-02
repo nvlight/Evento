@@ -106,6 +106,7 @@ export const tagModule = {
 
         delItem({dispatch}, id){
             dispatch('delItemQuery', id);
+            console.log(id);
         },
         delItemQuery({dispatch,state, commit}, id){
             let response;

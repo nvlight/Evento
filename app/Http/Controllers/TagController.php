@@ -136,8 +136,14 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         try{
-            if ($img = Storage::disk('public')->exists($tag->img)){
+//            return response()->json([
+//                'img' => $tag->img,
+//                'success' => 0,
+//            ]);
+            if ( $tag->img ){
+                $img = Storage::disk('public')->exists($tag->img);
                 Storage::disk('public')->delete($tag->img);
+
             }
             $tag->delete();
 //            $img = [];
@@ -166,14 +172,12 @@ class TagController extends Controller
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
-                'img' => $img,
                 'success' => 0,
                 'error' => 'some error!'
             ]);
         }
 
         return response()->json([
-            'img' => $img,
             'success' => 1,
         ]);
     }

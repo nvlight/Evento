@@ -5,6 +5,7 @@ import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 import store from "../store"
 import Eventos from "../views/Eventos.vue";
+import TagIndex from "../components/tag/TagIndex.vue";
 
 const routes = [
     {
@@ -19,6 +20,11 @@ const routes = [
                 component: Eventos,
             },
         ],
+    },
+    {
+        path: '/tags',
+        name: 'Tags',
+        component: TagIndex,
     },
     {
         path: '/auth',

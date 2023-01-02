@@ -11,16 +11,29 @@
         <td class="tags_main_info border p-2">
             <div class="border w-fit p-2.5 border-gray-300 rounded-md border-red-100 border-none ">
                 <div class="flex items-center cursor-pointer items-stretch">
-                    <div class="py-1.5 px-2 bg-gray-200 text-black">{{ evento.tag_id_first_name }}
+                    <div class="py-1.5 px-2 bg-gray-200 text-black flex items-center border-r border-indigo-500"
+                         :style="[
+                            evento.tag1_bg_color ? `background-color: #${evento.tag1_bg_color}` : 'background-color: #5CB85C',
+                            evento.tag1_text_color ? `color: #${evento.tag1_text_color}` : 'color: #fff',
+                         ]"
+                    >
+                        {{ evento.tag_id_first_name }}
                     </div>
 
                     <div v-if="!evento.tag_id_second && evento.value"
-                         class="px-1.5 py-0.5 font-semibold bg-gray-600 text-white flex items-center">
+                         class="px-1.5 py-0.5 font-semibold bg-gray-600 text-white flex items-center"
+                    >
                         <div class="text-sm">{{ evento.value }}</div>
                     </div>
 
-                    <div v-if="evento.tag_id_second" class="py-1.5 px-2 bg-green-600 text-white flex items-center"
-                    >{{ evento.tag_id_second_name }}
+                    <div v-if="evento.tag_id_second"
+                        class="py-1.5 px-2 bg-green-600 text-white flex items-center"
+                         :style="[
+                            evento.tag2_bg_color ? `background-color: #${evento.tag2_bg_color}` : 'background-color: #5CB85C',
+                            evento.tag2_text_color ? `color: #${evento.tag2_text_color}` : 'color: #fff',
+                         ]"
+                    >
+                        {{ evento.tag_id_second_name }}
                         <div v-if="evento.value" class="px-1.5 py-0.5 ml-2 rounded-md font-semibold bg-gray-600 text-white">
                             <span class="text-sm">{{ evento.value }}</span>
                         </div>
