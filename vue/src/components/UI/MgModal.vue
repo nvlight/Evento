@@ -57,12 +57,11 @@ export default {
 }
 .dialog__content{
     margin: auto;
-    /*width: 100%;*/
     background: white;
     border-radius: 12px;
     min-height: 50px;
     min-width: 300px;
     padding: 20px;
-    overflow-y: scroll;
+    max-height: 80vh;
 }
 </style>
