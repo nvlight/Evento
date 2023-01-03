@@ -50,6 +50,7 @@ export const tagModule = {
                 })
                 .catch( (err) => {
                     commit('setItemsLoading', false);
+                    return err;
                 })
             return response;
         },
@@ -64,8 +65,6 @@ export const tagModule = {
         createItemQuery({commit,dispatch,state}, item){
             let response;
             const modelName = state.itemModelName;
-            //console.log('createItem');
-            //console.log(item);
             response = axiosClient
                 .post(`/${modelName}`, item.formData)
                 .then((res)=>{
@@ -83,7 +82,7 @@ export const tagModule = {
                 })
                 .catch( (err) => {
                     commit('setCreateItemStatus', false);
-                    console.log('we got error:',err);
+                    return err;
                 })
             return response;
         },
@@ -94,7 +93,6 @@ export const tagModule = {
         editItemQuery({commit, state}, item){
             let response;
             const modelName = state.itemModelName;
-            //console.log(item)
             response = axiosClient
                 .post(`/${modelName}/${item.item.id}`, item.formData)
                 .then((res)=>{
@@ -106,14 +104,13 @@ export const tagModule = {
                     return res;
                 })
                 .catch( (err) => {
-                    console.log('we got error:',err);
+                    return err;
                 })
             return response;
         },
 
         delItem({dispatch}, id){
             dispatch('delItemQuery', id);
-            console.log(id);
         },
         delItemQuery({dispatch,state, commit}, id){
             let response;
@@ -127,7 +124,7 @@ export const tagModule = {
                     return res;
                 })
                 .catch( (err) => {
-                    console.log('we got error:',err);
+                    return err;
                 })
             return response;
         },

@@ -145,7 +145,7 @@ export default {
             this.$store.dispatch('evento/createItemQuery', item)
                 .then((res) => {
                     this.errors = {};
-                    console.log('create evento - then: ', res.response);
+                    //console.log('create evento - then: ', res.response);
                     this.errors = res.response.data.errors;
                 })
                 .catch((err) => {
@@ -157,7 +157,7 @@ export default {
             this.$store.dispatch('evento/updateItem', this.evento)
                 .then((res) => {
                     this.errors = {};
-                    console.log('update evento - then: ', res);
+                    //console.log('update evento - then: ', res);
                     this.errors = res.response.data.errors;
                 })
                 .catch((err) => {
@@ -227,17 +227,10 @@ export default {
     },
     watch:{
         createButtonClicked(nv, ov){
-            //console.log('createButtonClicked--');
-
             this.createModeHandler();
         },
         editButtonClicked(nv, ov){
-            //console.log('evento-create/edit: editButtonClicked');
-
             this.evento = Object.assign({}, this.getCurrentEditedItem);
-        },
-        getCurrentEditItemId(nv, ov){
-            //console.log('getCurrentEditItemId');
         },
     },
     mounted() {

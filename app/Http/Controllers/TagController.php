@@ -52,19 +52,8 @@ class TagController extends Controller
             $attributes['img'] = $file_path;
         }
 
-//        return response([
-//            'success' => false,
-//            '$file_name' => $file_name,
-//            '$file_path' => $file_path,
-//            '$attributes[img]' => $attributes,
-//        ]);
-
         try{
             $item = Tag::create($attributes);
-//            return response([
-//                'success' => false,
-//                '$item' => $item,
-//            ]);
         }catch (QueryException $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -80,7 +69,6 @@ class TagController extends Controller
             'savedId' => $item->id,
         ]);
     }
-
 
     public function update(Request $request, Tag $tag)
     {
@@ -100,10 +88,6 @@ class TagController extends Controller
 
             // delete if exists old file
             $img = Storage::disk('public')->exists($tag->img);
-//            return response([
-//                'success' => false,
-//                'img' => $img,
-//            ]);
             if ($img){
                 Storage::disk('public')->delete($tag->img);
             }
@@ -135,14 +119,11 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         try{
-//            return response()->json([
-//                'img' => $tag->img,
-//                'success' => 0,
-//            ]);
             if ( $tag->img ){
                 $img = Storage::disk('public')->exists($tag->img);
-                Storage::disk('public')->delete($tag->img);
-
+                if ($img){
+                    Storage::disk('public')->delete($tag->img);
+                }
             }
             $tag->delete();
 //            $img = [];

@@ -16,7 +16,7 @@
                   ]"
                   @click="showHideDescription">{{tag.name}}
             </span>
-            <div class="ml-2">tt: {{tag.text_color}} bg: {{tag.bg_color}}</div>
+<!--            <div class="ml-2">tt: {{tag.text_color}} bg: {{tag.bg_color}}</div>-->
         </div>
         <div class="description" v-if="show">{{ tag.description }}
             <div v-if="tag.img" class="ml-1 border-l-2 pl-1">
