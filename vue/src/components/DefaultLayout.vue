@@ -1,20 +1,23 @@
 <template>
-    <div class="min-h-full">
+    <div class="flex flex-col h-screen justify-between">
         <navbar/>
-        <eventos/>
+
+        <main class="mb-auto">
+            <RouterView></RouterView>
+        </main>
+
+        <mg-footer/>
     </div>
-    <footer class="max-w-7xl m-auto">
-        <div class="font-semibold">&copy; 2077 Here you go</div>
-    </footer>
 </template>
 
 <script>
 import Eventos from "../views/Eventos.vue";
 import Navbar from "./nav/Navbar.vue";
+import MgFooter from "./footer/MgFooter.vue";
 
 export default {
     components: {
-       Eventos, Navbar,
+       Eventos, Navbar, MgFooter,
     },
     provide(){
         return {

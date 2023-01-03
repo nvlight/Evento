@@ -11,10 +11,10 @@
         <td class="tags_main_info border p-2">
             <div class="border w-fit p-2.5 border-gray-300 rounded-md border-red-100 border-none ">
                 <div class="flex items-center cursor-pointer items-stretch">
-                    <div class="py-1.5 px-2 bg-gray-200 text-black flex items-center border-r border-indigo-500"
+                    <div class="py-1.5 px-2 bg-gray-200 text-black flex items-center "
                          :style="[
-                            evento.tag1_bg_color ? `background-color: #${evento.tag1_bg_color}` : 'background-color: #5CB85C',
-                            evento.tag1_text_color ? `color: #${evento.tag1_text_color}` : 'color: #fff',
+                            evento.tag1_bg_color ? `background-color: ${evento.tag1_bg_color}` : 'background-color: #5CB85C',
+                            evento.tag1_text_color ? `color: ${evento.tag1_text_color}` : 'color: #fff',
                          ]"
                     >
                         {{ evento.tag_id_first_name }}
@@ -29,8 +29,8 @@
                     <div v-if="evento.tag_id_second"
                         class="py-1.5 px-2 bg-green-600 text-white flex items-center"
                          :style="[
-                            evento.tag2_bg_color ? `background-color: #${evento.tag2_bg_color}` : 'background-color: #5CB85C',
-                            evento.tag2_text_color ? `color: #${evento.tag2_text_color}` : 'color: #fff',
+                            evento.tag2_bg_color ? `background-color: ${evento.tag2_bg_color}` : 'background-color: #5CB85C',
+                            evento.tag2_text_color ? `color: ${evento.tag2_text_color}` : 'color: #fff',
                          ]"
                     >
                         {{ evento.tag_id_second_name }}

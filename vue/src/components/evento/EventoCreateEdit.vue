@@ -190,7 +190,7 @@ export default {
     },
     computed:{
         ...mapState({
-            'tags': state => state.tag.items,
+            'tags': state => state.tag.tags.items,
             'formVisible': state => state.evento.createEditFormVisible,
             'editMode': state => state.evento.editMode,
             'createMode': state => state.evento.createMode,

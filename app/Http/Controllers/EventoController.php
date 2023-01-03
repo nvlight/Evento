@@ -19,15 +19,17 @@ class EventoController extends Controller
         try{
             $items = Evento::
             join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
-                ->join('tags', 'tags.id', '=', 'tag_values.tag_id_first')
+                ->join('tags as tags1', 'tags1.id', '=', 'tag_values.tag_id_first')
                 ->leftJoin('tags as tags2', 'tags2.id', 'tag_values.tag_id_second')
                 ->select('eventos.id', 'eventos.date', 'tag_values.value', 'tag_values.description',
                     'tag_values.tag_id_first', 'tag_values.tag_id_second',
-                    'tags.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                    'tags1.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                    'tags2.text_color as tag2_text_color', 'tags2.bg_color as tag2_bg_color',
+                    'tags1.text_color as tag1_text_color', 'tags1.bg_color as tag1_bg_color'
                 )
                 ->where('eventos.id', $id)
                 ->where('eventos.user_id', Auth::user()->id)
-                ->where('tags.user_id', Auth::user()->id)
+                ->where('tags1.user_id', Auth::user()->id)
                 ->orderBy('eventos.date', 'DESC')
 //                ->toSql()
                 ->get()
@@ -81,11 +83,6 @@ class EventoController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -97,12 +94,6 @@ class EventoController extends Controller
         ]);
 
         $request->tag_id_second = intval($request->tag_id_second);
-
-//        return response([
-//            'errors' => '',
-//            '$request->tag_id_second' => $request->tag_id_second,
-//            'date' => $request->date,
-//        ]);
 
         if ($request->tag_id_second) {
             $this->validate($request, [
@@ -152,16 +143,6 @@ class EventoController extends Controller
         ]);
     }
 
-    public function show(Evento $evento)
-    {
-        //
-    }
-
-    public function edit(Evento $evento)
-    {
-        //
-    }
-
     public function update(Request $request, Evento $evento)
     {
         $this->validate($request, [
@@ -178,11 +159,6 @@ class EventoController extends Controller
                 'tag_id_second' => 'exists:tags,id',
             ]);
         }
-
-//        return response()->json([
-//            'evento' => $evento,
-//            'tag_value' => $evento->tagValue,
-//        ]);
 
         try{
             $tagValue = $evento->tagValue;

@@ -3,7 +3,12 @@ import axiosClient from "../axios.js";
 export const tagModule = {
     state: () => ({
         itemModelName: 'tag',
-        items: [],
+
+        tags: {
+            items: [],
+            loading: false,
+        },
+
         currentEditItemId: 0,
         crudModalVisible: true,
         createItemStatus: false,
@@ -17,13 +22,13 @@ export const tagModule = {
             return state.currentEditItemId;
         },
         getItemById: (state) => (id) => {
-            return state.items.filter(t => t.id === id)?.[0];
+            return state.tags.items.filter(t => t.id === id)?.[0];
         },
         getCreateItemStatus(state){
             return state.createItemStatus;
         },
         getCurrentEditItem(state){
-            return state.items.filter(t => t.id === state.currentEditItemId)?.[0];
+            return state.tags.items.filter(t => t.id === state.currentEditItemId)?.[0];
         },
         getCreatedItemId(state){
             return state.createdItemId;
@@ -33,16 +38,18 @@ export const tagModule = {
         loadItems({commit, state}){
             let response;
             const modelName = state.itemModelName;
+            commit('setItemsLoading', true);
             response = axiosClient
-                .get(`/${modelName}`) // // .get("/tags")
+                .get(`/${modelName}`)
                 .then((res)=>{
                     if (res.data.success) {
                         commit('setItems', res.data.data);
                     }
+                    commit('setItemsLoading', false);
                     return res;
                 })
                 .catch( (err) => {
-                    console.log('we got error:',err);
+                    commit('setItemsLoading', false);
                 })
             return response;
         },
@@ -134,18 +141,18 @@ export const tagModule = {
     },
     mutations: {
         setItems: (state, items) => {
-            state.items = items;
+            state.tags.items = items;
         },
         addItem: (state, item) => {
-            state.items.unshift(item);
+            state.tags.items.unshift(item);
         },
         delItem: (state, id) => {
-            state.items = state.items.filter(
+            state.tags.items = state.tags.items.filter(
                 t => t.id != id
             );
         },
         editItem: (state, item) => {
-            let find = state.items.filter(
+            let find = state.tags.items.filter(
                 t => t.id === item.id
             );
             if (find.length){
@@ -168,6 +175,10 @@ export const tagModule = {
         },
         setCreatedItemId: (state, value) => {
             state.createdItemId = value;
+        },
+
+        setItemsLoading(state, value){
+            state.tags.loading = value;
         },
     },
     namespaced: true,

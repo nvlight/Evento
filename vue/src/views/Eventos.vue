@@ -1,4 +1,5 @@
 <template>
+
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold text-gray-900">
@@ -7,27 +8,21 @@
         </div>
     </header>
 
-    <main>
-        <mg-modal :dialog_content_classes="'w-6/12 mt-5 mb-5 overflow-y-scroll'"
-            >
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Replace with your content -->
+        <div class="p-5 border border-gray-300 rounded-md border-dashed">
 
-        </mg-modal>
+            <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
 
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <!-- Replace with your content -->
-            <div class="p-5 border border-gray-300 rounded-md border-dashed">
-                <div v-if="eventos.loading" class="font-semibold text-sm text-center mt-2">Загрузка...</div>
-
-                <div v-else>
-                    <evento-create-edit v-if="formVisible" />
-                    <evento-list :eventos="eventos.items"/>
-                    <evento-paginator :evento_links="eventos.links"/>
-                </div>
+            <div v-else>
+                <evento-create-edit v-if="formVisible" />
+                <evento-list :eventos="eventos.items"/>
+                <evento-paginator :evento_links="eventos.links"/>
             </div>
-            <!-- /End replace -->
         </div>
+        <!-- /End replace -->
+    </div>
 
-    </main>
 </template>
 
 <script>
@@ -43,10 +38,12 @@ import MgSelect from "../components/UI/MgSelect.vue";
 import EventoList from "../components/evento/EventoList.vue";
 import EventoCreateEdit from "../components/evento/EventoCreateEdit.vue";
 import EventoPaginator from "../components/evento/EventoPaginator.vue";
+import MgLoading from "../components/UI/MgLoading.vue";
 
 export default {
     name: "Eventos",
     components: {
+        MgLoading,
         MgSelect, MgTrashIconButton,
         TagIndex, TagItem, TagList, TagCreateForm, TagEditForm, TagCreateEditForm,
         EventoList, EventoCreateEdit, EventoPaginator,
@@ -77,7 +74,6 @@ export default {
     },
     computed:{
         ...mapState({
-            'tags': state => state.tag.items,
             'eventos': state => state.evento.eventos,
             'formVisible': state => state.evento.createEditFormVisible,
         }),

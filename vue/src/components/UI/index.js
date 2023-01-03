@@ -13,6 +13,7 @@ import MgPlusIconButton from "./MgPlusIconButton.vue";
 import MgSelect from "./MgSelect.vue";
 import MgPencilIconButton from "./MgPencilIconButton.vue";
 import MgSpin from "./MgSpin.vue";
+import MgLoading from "./MgLoading.vue";
 
 export default [
     MgButton,
@@ -30,4 +31,5 @@ export default [
     MgPlusIconButton,
     MgPencilIconButton,
     MgSpin,
+    MgLoading,
 ];

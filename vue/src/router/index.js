@@ -19,13 +19,14 @@ const routes = [
                 name: 'Eventos',
                 component: Eventos,
             },
+            {
+                path: '/tags',
+                name: 'Tags',
+                component: TagIndex,
+            },
         ],
     },
-    {
-        path: '/tags',
-        name: 'Tags',
-        component: TagIndex,
-    },
+
     {
         path: '/auth',
         redirect: '/login',

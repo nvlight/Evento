@@ -9,15 +9,14 @@
                 ></mg-trash-icon-button>
             </div>
             <span class="font-light">[{{tag.id}}]</span>
-            <span class="ml-1 cursor-pointer title p-1 rounded-md"
+            <span class="ml-1 cursor-pointer title p-1 px-3 rounded-md"
                   :style="[
-                    tag.bg_color ? `background-color: #${tag.bg_color}` : 'background-color: #5CB85C',
-                    tag.text_color ? `color: #${tag.text_color}` : 'color: #fff',
+                    tag.bg_color ? `background-color: ${tag.bg_color}` : 'background-color: #5CB85C',
+                    tag.text_color ? `color: ${tag.text_color}` : 'color: #fff',
                   ]"
                   @click="showHideDescription">{{tag.name}}
             </span>
-            <div class="ml-1">({{tag.text_color}}) / ({{tag.bg_color}})</div>
-            <div></div>
+            <div class="ml-2">tt: {{tag.text_color}} bg: {{tag.bg_color}}</div>
         </div>
         <div class="description" v-if="show">{{ tag.description }}
             <div v-if="tag.img" class="ml-1 border-l-2 pl-1">

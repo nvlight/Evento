@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -31,39 +32,45 @@ class TagController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $attributes = $this->validate($request, [
             'name' => 'required|string|max:111',
             'img' => 'nullable|image|max:2048',
             'description' => 'nullable|string',
+            'text_color' => 'nullable|string|size:7',
+            'bg_color' => 'nullable|string|size:7',
         ]);
 
-        $item = new Tag();
-        $item->user_id = Auth::user()->id;
-        $item->name = $request['name'];
-        $item->description = $request['description'];
+        $attributes += ['user_id' => Auth::user()->id ];
 
         if($request->file('img')) {
             $file_name = time().'_'.$request->img->getClientOriginalName();
             $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
-            $item->img = $file_path;
+
+            //$attributes += ['img' => $file_path ];
+            $attributes['img'] = $file_path;
         }
 
+//        return response([
+//            'success' => false,
+//            '$file_name' => $file_name,
+//            '$file_path' => $file_path,
+//            '$attributes[img]' => $attributes,
+//        ]);
+
         try{
-            $item->save();
-        }catch (\Exception $e){
-            $this->saveToLog($e);
+            $item = Tag::create($attributes);
+//            return response([
+//                'success' => false,
+//                '$item' => $item,
+//            ]);
+        }catch (QueryException $e){
+            $this->saveToLog(__METHOD__, $e);
             return response()->json([
                 'success' => 0,
                 'error' => 'some error!',
                 'e' => $e,
-                'img' => $item->img,
             ]);
         }
 
@@ -74,37 +81,30 @@ class TagController extends Controller
         ]);
     }
 
-    public function show(Tag $tag)
-    {
-        //
-    }
-
-    public function edit(Tag $tag)
-    {
-    }
 
     public function update(Request $request, Tag $tag)
     {
-//        return response()->json([
-//            'success'   => 0,
-//            'request'   => $request->all(),
-//            //'request2'   => $request->file('img'),
-//            'tag'       => $tag,
-//        ]);
-
-        $this->validate($request, [
+        $attributes = $this->validate($request, [
             'name' => 'required|string|max:111',
-//            'img' => 'nullable|string|image|max:2048',
+            //'img' => 'nullable|image|max:2048',
             'description' => 'nullable|string',
+            'text_color' => 'nullable|string|size:7',
+            'bg_color' => 'nullable|string|size:7',
         ]);
 
-        $tag->name = $request['name'];
-        $tag->description = $request['description'];
+        foreach($attributes as $key => $value){
+            $tag->$key = $value;
+        }
 
         if($request->file('img')) {
 
             // delete if exists old file
-            if ($img = Storage::disk('public')->exists($tag->img)){
+            $img = Storage::disk('public')->exists($tag->img);
+//            return response([
+//                'success' => false,
+//                'img' => $img,
+//            ]);
+            if ($img){
                 Storage::disk('public')->delete($tag->img);
             }
 
@@ -122,7 +122,6 @@ class TagController extends Controller
                 'success' => 0,
                 'error' => 'some error!',
                 'e' => $e,
-                'img' => $tag->img,
             ]);
         }
 

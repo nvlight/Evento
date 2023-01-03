@@ -10,9 +10,9 @@
                         <div class="ml-10 flex items-baseline space-x-4">
                             <router-link v-for="item in navigation"
                                  :key="item.name"
-                                 :to="{name: item.to,}"
+                                 :to="{name: item.name,}"
                                  :class="[
-                                        item.to == route.name ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                        item.name == route.name ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                         'px-3 py-2 rounded-md text-sm font-medium'
                                     ]"
                                          :aria-current="item.current ? 'page' : undefined"
@@ -64,7 +64,14 @@
 
         <DisclosurePanel class="md:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton>
+                <router-link
+                    v-for="item in navigation"
+                    :to="item.name"
+                    :key="item.name"
+                    as="a" :href="item.href"
+                    :class="[ route.name === item.name ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']"
+                    :aria-current="item.current ? 'page' : undefined">{{ item.name }}
+                </router-link>
             </div>
             <div class="pt-4 pb-3 border-t border-gray-700">
                 <div class="flex items-center px-5">
@@ -115,8 +122,8 @@ export default {
                     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
             },
             navigation : [
-                { title: 'Eventos', to: 'Eventos', current: true },
-                { title: 'Tags', to: 'Tags', current: false },
+                { title: 'Eventos', name: 'Eventos', current: true },
+                { title: 'Tags', name: 'Tags', current: false },
                 // { name: 'Команда', href: '#', current: false },
             ],
             userNavigation : [

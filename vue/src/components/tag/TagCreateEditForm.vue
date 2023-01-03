@@ -67,17 +67,41 @@
                 </div>
             </div>
         </div>
+
+        <div class="tag_colors">
+            <div class="font-semibold">
+                Цвет текста и фона
+            </div>
+            <div class="flex items-center">
+                <div class="justify-between">
+                    <div class="flex justify-between">
+                        <span>text_color: </span>
+                        <input type="color" v-model="tag.text_color" class="ml-2">
+                    </div>
+                    <div class="flex justify-between">
+                        bg_color: <input type="color" v-model="tag.bg_color" class="ml-2">
+                    </div>
+                </div>
+
+                <div class="ml-2 w-fit rounded-md cursor-pointer" :style="['background-color: '+tag.bg_color]">
+                    <div class="p-2 " :style="['color: '+tag.text_color]">Gravity</div>
+                </div>
+            </div>
+        </div>
+
         <mg-textarea v-model="tag.description">Описание</mg-textarea>
 
         <div class="flex">
             <mg-button
                 v-if="isCreatedButtonVisible"
                 @click="createTag" class="bg-green-600 hover:bg-green-700 focus:ring-green-500"
-            >создать</mg-button>
+            >создать
+            </mg-button>
             <mg-button
-                v-if="!isCreatedButtonVisible"
-                @click="editTag"
-            >обновить</mg-button>
+                v-else
+                @click="editTag" class="bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
+            >обновить
+            </mg-button>
         </div>
 
     </form>
@@ -103,6 +127,8 @@ export default {
                 name: 'Название',
                 img: '',
                 description: '',
+                text_color: '#ffffff',
+                bg_color: '#000000',
             },
         }
     },
@@ -132,6 +158,8 @@ export default {
             data.append('name', this.tag.name);
             data.append('description', this.tag.description);
             data.append('img', this.tag.img);
+            data.append('text_color', this.tag.text_color);
+            data.append('bg_color', this.tag.bg_color);
 
             const item = {item: this.tag, formData: data}
             this.$store.dispatch('tag/createItem', item);
@@ -143,6 +171,8 @@ export default {
             data.append('name',        this.tag.name);
             data.append('description', this.tag.description);
             data.append('img',         this.tag.img);
+            data.append('text_color',  this.tag.text_color);
+            data.append('bg_color',    this.tag.bg_color);
 
             // https://stackoverflow.com/questions/47676134/laravel-request-all-is-empty-using-multipart-form-data
             data.append('_method','PUT');
