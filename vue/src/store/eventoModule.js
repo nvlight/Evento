@@ -58,6 +58,26 @@ export const eventoModule = {
             return response;
         },
 
+        filterItems({commit, state}, params){
+            commit('setEventosLoading', true);
+            const modelName = state.itemModelName;
+            let url = `/${modelName}/filter`;
+            let response = axiosClient
+                .get(`/${modelName}/filter`, { params: params })
+                .then((res)=>{
+                    if (res.data.success) {
+                        commit('setEventoItems', res.data.data.data);
+                        commit('setEventosLinks', res.data.data.links);
+                    }
+                    commit('setEventosLoading', false);
+                    return res;
+                })
+                .catch( (err) => {
+                    commit('setEventosLoading', false);
+                })
+            return response;
+        },
+
         createItem({dispatch, commit}, item){
             commit('setCreateItemLoading', true);
             return dispatch('createItemQuery', item);

@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
 
     Route::resource('/tag', TagController::class);
+
+    Route::get('/evento/filter', [EventoController::class, 'filter']);
     Route::resource('/evento', EventoController::class);
 });
 

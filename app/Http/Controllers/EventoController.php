@@ -30,6 +30,23 @@ class EventoController extends Controller
             ->orderBy('eventos.date', 'DESC');
     }
 
+    private function filterSql(){
+        return Evento::
+              join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
+            ->join('tags as tags1', 'tags1.id', '=', 'tag_values.tag_id_first')
+            ->leftJoin('tags as tags2', 'tags2.id', 'tag_values.tag_id_second')
+            ->select('eventos.id', 'eventos.date', 'tag_values.value', 'tag_values.description',
+                'tag_values.tag_id_first', 'tag_values.tag_id_second',
+                'tags1.name as tag_id_first_name', 'tags2.name as tag_id_second_name',
+                'tags2.text_color as tag2_text_color', 'tags2.bg_color as tag2_bg_color',
+                'tags1.text_color as tag1_text_color', 'tags1.bg_color as tag1_bg_color'
+            )
+            ->where('eventos.user_id', Auth::user()->id)
+            ->where('tags1.user_id', Auth::user()->id)
+            //->orderBy('eventos.date', 'DESC')
+        ;
+    }
+
     protected function getOneEvento($id)
     {
         try{
@@ -186,6 +203,32 @@ class EventoController extends Controller
 
         return response()->json([
             'success' => 1,
+        ]);
+    }
+
+    /**  */
+    public function filter(Request $request)
+    {
+        // validate:
+
+        $date = json_decode($request->get('date'));
+        $sum  = json_decode($request->get('sum'));
+
+        /** @var Evento $sql */
+        $sql = $this->filterSql();
+        $rs = $sql
+            ->  whereIn('tags1.id', $request->get('tag_arr'))
+            ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            //->get()
+            ->paginate(10)
+        ;
+
+        return response([
+            'response_data' => $request->all(),
+            'date' => $date,
+            'sum' => $sum,
+            'data'  => $rs,
+            'success' => true,
         ]);
     }
 

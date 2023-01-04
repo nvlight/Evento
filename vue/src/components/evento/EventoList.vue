@@ -126,12 +126,15 @@ export default {
                    start: 0,
                    end: 107000,
                 },
-                tag_arr: [],
+                tag_arr: [122, 123],
                 orderById: 'desc / asc',
             }
         }
     },
     methods:{
+        ...mapActions({
+            'filterItems': 'evento/filterItems',
+        }),
         ...mapMutations({
             'setCreateEditFormVisible': "evento/setCreateEditFormVisible",
             'setCreateMode': "evento/setCreateMode",
@@ -150,6 +153,7 @@ export default {
 
         doFilterEventos(){
             console.log('doFilterEventos');
+            this.filterItems(this.filterData);
         },
 
         setDatesForFilterForm(){
