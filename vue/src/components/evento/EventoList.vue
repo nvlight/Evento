@@ -45,50 +45,7 @@
         <mg-modal v-model:show="filterFormVisible" class=""
             :dialog_content_classes="'overflow-auto '"
             >
-            <h1 class="text-2xl font-semibold">Фильтр событий</h1>
-
-            <form @submit.prevent="doFilterEventos" class="mt-2">
-                <div class="date-start-end flex">
-                    <mg-input-date-labeled v-model="filterData.date.start" >Дата - начало</mg-input-date-labeled>
-                    <mg-input-date-labeled v-model="filterData.date.end" class="ml-2"
-                    >Дата - конец
-                    </mg-input-date-labeled>
-                </div>
-
-                <div class="mt-2 tag_list">
-                    <mg-input-labeled class="block " :classes="'w-full'"
-
-                    >добавить теги</mg-input-labeled>
-                    <div class="flex mt-2">
-                        <div class="bg-green-600 text-white w-fit px-2 py-1 rounded-md cursor-pointer">Доход</div>
-                        <div class="ml-1.5 bg-red-400 text-white w-fit px-2 py-1 rounded-md cursor-pointer">Расход</div>
-                    </div>
-                </div>
-
-                <div class="date-start-end flex mt-3">
-                    <mg-input-labeled v-model="filterData.sum.start" >Сумма начальная</mg-input-labeled>
-                    <mg-input-labeled v-model="filterData.sum.end" class="ml-2"
-                    >Сумма конечная
-                    </mg-input-labeled>
-                </div>
-
-                <div class="flex justify-between">
-                    <button type="reset" class=" mt-2 bg-indigo-300 text-white p-2 rounded-md hover:bg-indigo-400
-                        focus:bg-indigo-500"
-                    >сбросить
-                    </button>
-                    <button class="ml-2 mt-2 bg-indigo-500 text-white p-2 rounded-md hover:bg-indigo-600
-                        focus:bg-indigo-700"
-                        >Фильтровать
-                    </button>
-                </div>
-
-            </form>
-<!--            <div class="mt-2" v-for="(i,index) in [1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,...[1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,]-->
-<!--                ,[1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,]-->
-<!--                ]">-->
-<!--                <h3>sdklfjdlkf {{index}}</h3>-->
-<!--            </div>-->
+            <evento-filter @doFilterEventos="doFilterEventos"/>
         </mg-modal>
 
     </div>
@@ -97,10 +54,12 @@
 <script>
 import EventoItem from "./EventoItem.vue";
 import {mapActions, mapMutations, mapState} from "vuex";
+import EventoFilter from "./EventoFilter.vue";
+
 export default {
     name: 'evento-list',
     components: {
-        EventoItem,
+        EventoItem, EventoFilter,
     },
     emits: ['doAddFormReset'],
     props: {
@@ -117,31 +76,15 @@ export default {
         return {
             isLocalCreateFormButtonVisible: undefined,
             filterFormVisible: false,
-            filterData: {
-                date: {
-                    start: 1,
-                    end: 1,
-                },
-                sum: {
-                   start: 0,
-                   end: 107000,
-                },
-                tag_arr: [122, 123],
-                orderById: 'desc / asc',
-            }
         }
     },
     methods:{
-        ...mapActions({
-            'filterItems': 'evento/filterItems',
-        }),
         ...mapMutations({
             'setCreateEditFormVisible': "evento/setCreateEditFormVisible",
             'setCreateMode': "evento/setCreateMode",
         }),
 
         addEventoButtonClicked(){
-
             this.$store.commit('evento/createButtonClicked');
             this.setCreateMode(true);
             this.setCreateEditFormVisible(true);
@@ -151,35 +94,19 @@ export default {
             this.filterFormVisible = true;
         },
 
-        doFilterEventos(){
-            console.log('doFilterEventos');
-            this.filterItems(this.filterData);
-        },
+        doFilterEventos(filterData){
 
-        setDatesForFilterForm(){
-            this.filterData.date.start = this.getCurrentDate;
-            this.filterData.date.end = this.getCurrentDate;
         },
 
     },
     computed:{
         ...mapState({
             'createEditFormVisible': state => state.evento.createEditFormVisible,
+            'tags': state => state.tag.tags,
         }),
-
-        getCurrentDate(){
-            const dt = new Date();
-            let year = dt.getFullYear();
-            let day = dt.getDate();
-            day = day < 10 ? '0' +  day : day;
-            let month = dt.getMonth();
-            month = month < 10 ? '0' + ( month + 1) : month + 1;
-            return [year, month, day,].join('-');
-        },
-
     },
     mounted() {
-        this.setDatesForFilterForm();
+        //this.setDatesForFilterForm();
         //this.isLocalCreateFormButtonVisible = this.isCreateFormButtonVisible;
     },
     // watch: {

@@ -11,13 +11,12 @@
 </template>
 
 <script>
-import Eventos from "../views/Eventos.vue";
 import Navbar from "./nav/Navbar.vue";
 import MgFooter from "./footer/MgFooter.vue";
 
 export default {
     components: {
-       Eventos, Navbar, MgFooter,
+        Navbar, MgFooter,
     },
     provide(){
         return {
