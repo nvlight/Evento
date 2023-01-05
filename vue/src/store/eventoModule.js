@@ -8,6 +8,8 @@ export const eventoModule = {
             items: [],
             loading: false,
             links: [],
+            current_page: 0,
+            last_page: 0,
         },
 
         createItemLoading: false,
@@ -37,7 +39,33 @@ export const eventoModule = {
         }
     },
     actions: {
-        loadItems({commit, state}, {url = null} = {}){
+        loadItems({commit, state}, {page = 1}){
+            let response;
+            commit('setEventosLoading', true);
+            const modelName = state.itemModelName;
+            let url = `/${modelName}`;
+            if (page != 1){
+                url += `?page=${page}`;
+            }
+            response = axiosClient
+                .get(url)
+                .then((res)=>{
+                    if (res.data.success) {
+                        commit('setEventoItems', res.data.data.data);
+                        commit('setEventosLinks', res.data.data.links);
+                        commit('setCurrentPage', res.data.data.current_page);
+                        commit('setLastPage', res.data.data.last_page);
+                    }
+                    commit('setEventosLoading', false);
+                    return res;
+                })
+                .catch( (err) => {
+                    commit('setEventosLoading', false);
+                })
+            return response;
+        },
+
+        loadItems_copy({commit, state}, {url = null} = {}){
             let response;
             commit('setEventosLoading', true);
             const modelName = state.itemModelName;
@@ -225,7 +253,12 @@ export const eventoModule = {
         setEventosLinks(state, value){
             state.eventos.links = value;
         },
-
+        setCurrentPage(state, value){
+            state.eventos.current_page = value;
+        },
+        setLastPage(state, value){
+            state.eventos.last_page = value;
+        },
     },
     namespaced: true,
 }

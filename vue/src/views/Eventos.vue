@@ -17,7 +17,10 @@
             <div v-else>
                 <evento-create-edit v-if="formVisible" />
                 <evento-list :eventos="eventos.items"/>
-                <evento-paginator :evento_links="eventos.links"/>
+                <evento-paginator :evento_links="eventos.links"
+                  :current_page="eventos.current_page"
+                  :last_page="eventos.last_page"
+                />
             </div>
         </div>
         <!-- /End replace -->
@@ -85,7 +88,11 @@ export default {
     },
     mounted() {
         this.loadTagItems();
-        this.loadEventos();
+
+        // нужно получить page, если он есть и загрузить данные именно с этой страницы
+        const windowData = Object.fromEntries(new URL(window.location).searchParams.entries());
+        //console.log(windowData);
+        this.loadEventos(windowData);
     },
 
 }
