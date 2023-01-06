@@ -74,6 +74,7 @@ class EventoController extends Controller
                 ->orderBy('eventos.date', 'ASC')
                 ->paginate(10)
             ;
+            //$items->withPath('eventos' . $_SERVER['QUERY_STRING']);
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -210,6 +211,10 @@ class EventoController extends Controller
     public function filter(Request $request)
     {
         // validate:
+//        return response([
+//            'response_data' => $request->all(),
+//            'success' => false,
+//        ]);
 
         /** @var Evento $sql */
         $sql = $this->filterSql();
@@ -226,6 +231,7 @@ class EventoController extends Controller
             //->get()
             ->paginate(10)
         ;
+        //$rs->withPath('eventos' . $_SERVER['QUERY_STRING']);
 
         return response([
             //'$sqlDump' => $sqlDump,

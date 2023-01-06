@@ -55,6 +55,15 @@ export default {
         return {
             // search params Object
             params_object: {},
+
+            needKeys: [
+                'date_end',
+                'date_start',
+                'orderById',
+                'sum_end',
+                'sum_start',
+                'tag_arr',
+            ]
         }
     },
     props: {
@@ -94,8 +103,9 @@ export default {
         // нужно получить page, если он есть и загрузить данные именно с этой страницы
         const params = (new URL(document.location)).search;
         const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-        // (new URLSearchParams(od)).toString()
-        this.loadEventos({params, params_object});
+        // new URLSearchParams(obj).toString();
+
+        this.loadEventos({url : null});
     },
 
 }

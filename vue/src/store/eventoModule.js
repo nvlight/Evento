@@ -39,32 +39,28 @@ export const eventoModule = {
         }
     },
     actions: {
-        loadItems({commit, state}, payload){
+        loadItems({commit, state}, {url = null} = null){
             let response;
-            let url;
             commit('setEventosLoading', true);
 
-            //const modelName = state.itemModelName;
-            //url = `/${modelName}`;
-            //if (page != 1){
-            //    url += `?page=${page}`;
-            //}
+            const modelName = state.itemModelName;
+            url = url || `/${modelName}`;
 
-            let {params, params_object} = payload;
-            console.log('-----------')
-            console.log(params);
-            console.log(params_object);
+            //let {params, params_object} = payload;
+            //console.log('-----VuexEventoModule: loadItems------')
+            //console.log(params);
+            //console.log(params_object);
 
-            url = '/evento';
-            if (params) {
-                if ( (Object.keys(params_object).length === 1) ){
-                    console.log('page')
-                    url += `?page=${params_object.page}`;
-                }else{
-                    console.log('filter')
-                    url += `/filter?${params}`;
-                }
-            }
+            // url = '/evento';
+            // if (params) {
+            //     if ( (Object.keys(params_object).length === 1) ){
+            //         //console.log('page')
+            //         url += `?page=${params_object.page}`;
+            //     }else{
+            //         //console.log('filter')
+            //         url += `/filter?${params}`;
+            //     }
+            // }
 
             response = axiosClient
                 .get(url)

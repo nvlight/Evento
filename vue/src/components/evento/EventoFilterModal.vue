@@ -115,17 +115,17 @@ export default {
         }),
         doFilterEventos(){
             //console.log('doFilterEventos');
-            //console.log(this.filterData);
+            sessionStorage.setItem('evento_filter', JSON.stringify(this.filterData)),
             this.filterItems(this.filterData)
                 .then(response => {
-                    if (response.data.success){
-                        //console.log('filter is done!');
-                        window.history.pushState(
-                            null,
-                            document.title,
-                            `eventos?${response.data.QUERY_STRING}`,
-                        )
-                    }
+                    // if (response.data.success){
+                    //     //console.log('filter is done!');
+                    //     window.history.pushState(
+                    //         null,
+                    //         document.title,
+                    //         `eventos?${response.data.QUERY_STRING}`,
+                    //     )
+                    // }
                 });
         },
 

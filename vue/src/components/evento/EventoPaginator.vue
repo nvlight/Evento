@@ -6,12 +6,14 @@
             class="relative z-0 inline-flex justify-center rounded-md shadow-sm "
             aria-label="Pagination"
         >
+<!--            :href="hrefLink(i, link.label)"-->
             <a v-for="(link, i) of evento_links"
                 :key="i"
                 :disabled="!Number(link.label)"
+                @click="getForPage($event, link)"
                 aria-current="page"
                 v-html="linkHtml(i, link.label)"
-                :href="hrefLink(i, link.label)"
+                href="#"
                 class="relative inline-flex items-center px-4 py-2 border test-sm font-medium whitespace-nowrap"
                 :class="classes(i, link.active)"
             >
@@ -38,6 +40,10 @@ export default {
             type: [Number],
         },
     },
+    data(){
+        return {
+        }
+    },
     methods: {
         //@click="getForPage($event, link)
         getForPage(event, link) {
@@ -46,20 +52,42 @@ export default {
                 return;
             }
 
-            return;
-            const windowData = Object.fromEntries(new URL(window.location).searchParams.entries());
-            console.log(windowData);
+            //return;
+            //const windowData = Object.fromEntries(new URL(window.location).searchParams.entries());
+            //console.log(windowData);
+            let newLink = link.url;
+            let key = 'evento_filter';
+            if (sessionStorage.hasOwnProperty(key)){
+                let tmp = JSON.parse(sessionStorage.getItem(key));
+                //console.log(tmp);
 
-            this.$store.dispatch("evento/loadItems", {url: link.url})
+                let keyValues;
+                //keyValues = new URLSearchParams(tmp).toString();
+                for(let i in tmp){
+                    if (Array.isArray(tmp[i])){
+
+                        tmp[i].forEach(v => {
+                            keyValues += `${i}[]=${v}&`;
+                        });
+                    }else{
+                        keyValues += `${i}=${tmp[i]}&`;
+                    }
+                }
+
+                newLink += '&' + keyValues;
+                //console.log(newLink);
+            }
+
+            //console.log(link.url);
+            this.$store.dispatch("evento/loadItems", {url: newLink})
                 .then(response => {
                     if (response.data.success) {
-                        console.log('success', response.data.data.current_page);
-                        window.history.pushState(
-                            null,
-                            document.title,
-                            `${window.location.pathname}?page=${response.data.data.current_page}`
-                        )
-
+                        //console.log('success', response.data.data.current_page);
+                        //window.history.pushState(
+                        //    null,
+                        //    document.title,
+                        //    `${window.location.pathname}?page=${response.data.data.current_page}`
+                        //)
                     }
                 })
         },
@@ -79,24 +107,53 @@ export default {
             return i === 0
                 ? this.prev
                 : i === this.evento_links.length - 1 ? this.next
-                    : '?page=' + link_label
+                    : `${this.searchParams}&page=${link_label}`
         },
     },
     computed: {
+        searchParams(){
+            const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
+            let find = false;
+            this.needKeys.forEach(v => {
+                if (params_object.hasOwnProperty(v)){
+                    find = true;
+                }
+            });
+
+            if (!find){
+                return 'eventos?';
+            }
+
+            if (params_object.hasOwnProperty('page')){
+                delete params_object['page'];
+            }
+            console.log('after delete page:');
+            console.log(params_object);
+            return '?' + (new URLSearchParams(params_object)).toString();
+        },
         prev() {
             return this.current_page - 1 > 0
-                ? `?page=${this.current_page - 1}`
-                : `?page=1`;
+                ? `${this.searchParams}&page=${this.current_page - 1}`
+                : `${this.searchParams}&page=1`;
         },
         next() {
             return this.current_page + 1 < this.last_page
-                ? `?page=${this.current_page + 1}`
-                : `?page=${this.last_page}`;
+                ? `${this.searchParams}&page=${this.current_page + 1}`
+                : `${this.searchParams}&page=${this.last_page}`;
         },
     },
     mounted() {
         //console.log('current_page:', this.current_page);
         //console.log('last_page:', this.last_page);
+        //console.log(this.$router.currentRoute);
+
+        //console.log('-----paginator------');
+        const params = (new URL(document.location)).search;
+        const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
+
+        //console.log(params);
+        //console.log(params_object);
+        //console.log((new URLSearchParams(params_object)).toString());
     }
 }
 </script>

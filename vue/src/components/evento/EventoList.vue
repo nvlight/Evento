@@ -4,13 +4,27 @@
             <h1 class="text-xl font-semibold">Список событий</h1>
 
             <div class="mr-2 mt-2 flex items-center">
-                <mg-button @click="showEventoFilters"
-                    class="text-black focus:ring-0 focus:ring-offset-0 px-0 py-0 mr-2 flex items-center"
+
+<!--                <div>isFilterSeted: {{isFilterSeted}}</div>-->
+
+                <mg-button class="text-black focus:ring-0 focus:ring-offset-0 px-0 py-0 mr-2 "
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                         class="w-7 h-7">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-                    </svg> Фильтры
+                    <div v-if="isFilterSeted" class="text-red-500 flex items-center"
+                        @click="resetEventoFilters"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                             class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg> Фильтры
+                    </div>
+                    <div v-else class="flex items-center"
+                         @click="showEventoFilters"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                             class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                        </svg> Фильтры
+                    </div>
                 </mg-button>
                 <mg-button class="bg-green-600 hover:bg-green-700 transition-colors focus:bg-green-800
                     focus:ring-green-700"
@@ -76,6 +90,8 @@ export default {
         return {
             isLocalCreateFormButtonVisible: undefined,
             filterFormVisible: false,
+
+            filterSeted: false,
         }
     },
     methods:{
@@ -97,6 +113,13 @@ export default {
         doFilterEventos(filterData){
 
         },
+        resetEventoFilters(){
+            //console.log('resetEventoFilters');
+            sessionStorage.removeItem('evento_filter');
+            this.filterSeted = false;
+
+            this.$store.dispatch('evento/loadItems', {url:null});
+        },
 
     },
     computed:{
@@ -104,8 +127,13 @@ export default {
             'createEditFormVisible': state => state.evento.createEditFormVisible,
             'tags': state => state.tag.tags,
         }),
+
+        isFilterSeted(){
+            return this.filterSeted;
+        },
     },
     mounted() {
+        this.filterSeted = sessionStorage.hasOwnProperty('evento_filter');
         //this.setDatesForFilterForm();
         //this.isLocalCreateFormButtonVisible = this.isCreateFormButtonVisible;
     },
