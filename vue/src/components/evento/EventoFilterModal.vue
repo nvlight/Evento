@@ -4,8 +4,8 @@
 
         <form @submit.prevent="doFilterEventos" class="mt-2">
             <div class="date-start-end flex">
-                <mg-input-date-labeled v-model="filterData.date.start" >Дата - начало</mg-input-date-labeled>
-                <mg-input-date-labeled v-model="filterData.date.end" class="ml-2"
+                <mg-input-date-labeled v-model="filterData.date_start" >Дата - начало</mg-input-date-labeled>
+                <mg-input-date-labeled v-model="filterData.date_end" class="ml-2"
                 >Дата - конец
                 </mg-input-date-labeled>
             </div>
@@ -69,8 +69,8 @@
             </div>
 
             <div class="date-start-end flex mt-3">
-                <mg-input-labeled v-model="filterData.sum.start" >Сумма начальная</mg-input-labeled>
-                <mg-input-labeled v-model="filterData.sum.end" class="ml-2"
+                <mg-input-labeled v-model="filterData.sum_start" >Сумма начальная</mg-input-labeled>
+                <mg-input-labeled v-model="filterData.sum_end" class="ml-2"
                 >Сумма конечная
                 </mg-input-labeled>
             </div>
@@ -94,19 +94,15 @@
 import {mapActions, mapState} from "vuex";
 
 export default {
-    name: 'evento-filter',
+    name: 'evento-filter-modal',
     emits: ['doFilterEventos'],
     data(){
         return {
             filterData: {
-                date: {
-                    start: 1,
-                    end: 1,
-                },
-                sum: {
-                    start: 0,
-                    end: 107000,
-                },
+                date_start: 1,
+                date_end: 2,
+                sum_start: 0,
+                sum_end: 107000,
                 filter_text: '',
                 tag_arr: [], //[122, 123],
                 orderById: 'desc / asc',
@@ -118,22 +114,25 @@ export default {
             'filterItems': 'evento/filterItems',
         }),
         doFilterEventos(){
-            console.log('doFilterEventos');
+            //console.log('doFilterEventos');
+            //console.log(this.filterData);
             this.filterItems(this.filterData)
                 .then(response => {
-                    console.log('filter is done!');
-                    window.history.pushState(
-                        null,
-                        document.title,
-                        `${window.location.pathname}/filter?page=${response.data.data.current_page}`
-                    )
+                    if (response.data.success){
+                        //console.log('filter is done!');
+                        window.history.pushState(
+                            null,
+                            document.title,
+                            `eventos?${response.data.QUERY_STRING}`,
+                        )
+                    }
                 });
         },
 
         setDatesForFilterForm(){
             //console.log('set new data!');
-            this.filterData.date.start = this.getCurrentDate;
-            this.filterData.date.end = this.getCurrentDate;
+            this.filterData.date_start = this.getCurrentDate;
+            this.filterData.date_end = this.getCurrentDate;
         },
         removeFilterTagId(id){
             //console.log('removeFilterTagId: ', id);

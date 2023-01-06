@@ -6,6 +6,7 @@ import Register from "../views/Register.vue"
 import store from "../store"
 import Eventos from "../views/Eventos.vue";
 import TagIndex from "../components/tag/TagIndex.vue";
+import EventosFilter from "../views/EventosFilter.vue";
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
                 path: '/eventos',
                 name: 'Eventos',
                 component: Eventos,
+            },
+            {
+                path: '/eventos/filter',
+                name: 'EventosFilter',
+                component: EventosFilter,
             },
             {
                 path: '/tags',

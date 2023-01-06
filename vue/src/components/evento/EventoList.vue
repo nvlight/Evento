@@ -45,7 +45,7 @@
         <mg-modal v-model:show="filterFormVisible" class=""
             :dialog_content_classes="'overflow-auto '"
             >
-            <evento-filter @doFilterEventos="doFilterEventos"/>
+            <evento-filter-modal @doFilterEventos="doFilterEventos"/>
         </mg-modal>
 
     </div>
@@ -54,12 +54,12 @@
 <script>
 import EventoItem from "./EventoItem.vue";
 import {mapActions, mapMutations, mapState} from "vuex";
-import EventoFilter from "./EventoFilter.vue";
+import EventoFilterModal from "./EventoFilterModal.vue";
 
 export default {
     name: 'evento-list',
     components: {
-        EventoItem, EventoFilter,
+        EventoItem, EventoFilterModal,
     },
     emits: ['doAddFormReset'],
     props: {

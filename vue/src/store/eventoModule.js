@@ -39,14 +39,33 @@ export const eventoModule = {
         }
     },
     actions: {
-        loadItems({commit, state}, {page = 1}){
+        loadItems({commit, state}, payload){
             let response;
+            let url;
             commit('setEventosLoading', true);
-            const modelName = state.itemModelName;
-            let url = `/${modelName}`;
-            if (page != 1){
-                url += `?page=${page}`;
+
+            //const modelName = state.itemModelName;
+            //url = `/${modelName}`;
+            //if (page != 1){
+            //    url += `?page=${page}`;
+            //}
+
+            let {params, params_object} = payload;
+            console.log('-----------')
+            console.log(params);
+            console.log(params_object);
+
+            url = '/evento';
+            if (params) {
+                if ( (Object.keys(params_object).length === 1) ){
+                    console.log('page')
+                    url += `?page=${params_object.page}`;
+                }else{
+                    console.log('filter')
+                    url += `/filter?${params}`;
+                }
             }
+
             response = axiosClient
                 .get(url)
                 .then((res)=>{

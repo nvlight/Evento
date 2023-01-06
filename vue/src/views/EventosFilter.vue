@@ -3,7 +3,7 @@
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold text-gray-900">
-                Eventos
+                Eventos filtered
             </h1>
         </div>
     </header>
@@ -44,7 +44,7 @@ import EventoPaginator from "../components/evento/EventoPaginator.vue";
 import MgLoading from "../components/UI/MgLoading.vue";
 
 export default {
-    name: "Eventos",
+    name: "eventos-filter",
     components: {
         MgLoading,
         MgSelect, MgTrashIconButton,
@@ -53,8 +53,6 @@ export default {
     },
     data(){
         return {
-            // search params Object
-            params_object: {},
         }
     },
     props: {
@@ -92,10 +90,9 @@ export default {
         this.loadTagItems();
 
         // нужно получить page, если он есть и загрузить данные именно с этой страницы
-        const params = (new URL(document.location)).search;
-        const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-        // (new URLSearchParams(od)).toString()
-        this.loadEventos({params, params_object});
+        const windowData = Object.fromEntries(new URL(window.location).searchParams.entries());
+        //console.log(windowData);
+        this.loadEventos(windowData);
     },
 
 }

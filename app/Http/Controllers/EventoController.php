@@ -211,11 +211,15 @@ class EventoController extends Controller
     {
         // validate:
 
-        $date = json_decode($request->get('date'));
-        $sum  = json_decode($request->get('sum'));
-
         /** @var Evento $sql */
         $sql = $this->filterSql();
+
+        $sqlDump = $sql
+            ->  whereIn('tags1.id', $request->get('tag_arr'))
+            ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            ->toSql()
+        ;
+
         $rs = $sql
             ->  whereIn('tags1.id', $request->get('tag_arr'))
             ->orWhereIn('tags2.id', $request->get('tag_arr'))
@@ -224,9 +228,9 @@ class EventoController extends Controller
         ;
 
         return response([
+            //'$sqlDump' => $sqlDump,
+            'QUERY_STRING' => $_SERVER['QUERY_STRING'],
             'response_data' => $request->all(),
-            'date' => $date,
-            'sum' => $sum,
             'data'  => $rs,
             'success' => true,
         ]);
