@@ -174,6 +174,10 @@ class EventoController extends Controller
             $tagValue->description   = $request->description;
             $tagValue->save();
 
+            // todo: add transaction!
+            $evento->date = $request->date;
+            $evento->save();
+
             $dataRowWithNeedSelected = $this->getOneEvento($evento->id);
             $dataRs = $dataRowWithNeedSelected['success'] ? $dataRowWithNeedSelected['data'] : null;
         }catch (QueryException $e){
@@ -228,6 +232,7 @@ class EventoController extends Controller
         $rs = $sql
             ->  whereIn('tags1.id', $request->get('tag_arr'))
             ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            ->orderByDesc('date')
             //->get()
             ->paginate(10)
         ;
