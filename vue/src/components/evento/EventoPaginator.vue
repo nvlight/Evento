@@ -1,3 +1,4 @@
+`
 <template>
     <!-- Pagination -->
     <div v-if="evento_links.length > 3" class="flex justify-center mt-5">
@@ -5,27 +6,14 @@
             class="relative z-0 inline-flex justify-center rounded-md shadow-sm "
             aria-label="Pagination"
         >
-            <a
-                v-for="(link, i) of evento_links"
+            <a v-for="(link, i) of evento_links"
                 :key="i"
                 :disabled="!Number(link.label)"
                 aria-current="page"
-                v-html="i === 0 ? link.label.replace('Previous', 'Назад')
-                    : i === evento_links.length-1 ? link.label.replace('Next', 'Вперед')
-                    : link.label"
-                :href="
-                      i === 0 ? ( current_page-1 > 0 ? `?page=${current_page-1}` : `?page=1`)
-                    : i === evento_links.length-1 ? ( current_page+1 < last_page ? `eventos?page=${current_page+1}` : `?page=${last_page}`)
-                    : '?page='+link.label
-                "
+                v-html="linkHtml(i, link.label)"
+                :href="hrefLink(i, link.label)"
                 class="relative inline-flex items-center px-4 py-2 border test-sm font-medium whitespace-nowrap"
-                :class="[
-                    link.active
-                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100',
-                        i === 0 ? 'rounded-l-md' : '',
-                        i === evento_links.length-1 ? 'rounded-r-md' : '',
-                ]"
+                :class="classes(i, link.active)"
             >
             </a>
         </nav>
@@ -43,18 +31,18 @@ export default {
             type: Object,
             required: true,
         },
-        current_page:{
+        current_page: {
             type: [Number],
         },
-        last_page:{
+        last_page: {
             type: [Number],
         },
     },
-    methods:{
+    methods: {
         //@click="getForPage($event, link)
         getForPage(event, link) {
             event.preventDefault();
-            if (!link.url || link.active){
+            if (!link.url || link.active) {
                 return;
             }
 
@@ -64,7 +52,7 @@ export default {
 
             this.$store.dispatch("evento/loadItems", {url: link.url})
                 .then(response => {
-                    if(response.data.success){
+                    if (response.data.success) {
                         console.log('success', response.data.data.current_page);
                         window.history.pushState(
                             null,
@@ -74,6 +62,36 @@ export default {
 
                     }
                 })
+        },
+        linkHtml(i, link_label) {
+            return i === 0 ? link_label.replace('Previous', 'Назад')
+                : i === this.evento_links.length - 1 ? link_label.replace('Next', 'Вперед')
+                    : link_label
+        },
+        classes(i, link_active) {
+            return [
+                link_active ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-100',
+                i === 0 ? 'rounded-l-md' : '',
+                i === this.evento_links.length - 1 ? 'rounded-r-md' : '',
+            ];
+        },
+        hrefLink(i, link_label) {
+            return i === 0
+                ? this.prev
+                : i === this.evento_links.length - 1 ? this.next
+                    : '?page=' + link_label
+        },
+    },
+    computed: {
+        prev() {
+            return this.current_page - 1 > 0
+                ? `?page=${this.current_page - 1}`
+                : `?page=1`;
+        },
+        next() {
+            return this.current_page + 1 < this.last_page
+                ? `?page=${this.current_page + 1}`
+                : `?page=${this.last_page}`;
         },
     },
     mounted() {
@@ -86,3 +104,4 @@ export default {
 <style scoped>
 
 </style>
+`

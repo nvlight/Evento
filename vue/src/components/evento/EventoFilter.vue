@@ -12,14 +12,14 @@
 
             <div class="mt-2 tag_list">
                 <div class="relative">
-<!--                    <div>filterData.filter_text: {{filterData.filter_text}}</div>-->
                     <div class="relative">
                         <mg-input-labeled v-model="filterData.filter_text" class="block " :classes="'w-full'"
                         >добавить тег
                         </mg-input-labeled>
 
                         <!-- reset add_tag text_filter -->
-                        <div v-if="filterData.filter_text.length > 1" class="bg-red-400 text-white w-fit rounded-md top-8 right-2 absolute cursor-pointer
+                        <div v-if="filterData.filter_text.length > 1"
+                             class="bg-red-400 text-white w-fit rounded-md top-8 right-2 absolute cursor-pointer
                                 hover:bg-red-500 focus:bg-red-600 transition-colors">
                             <svg @click="this.filterData.filter_text=''" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                  class="w-6 h-6">
@@ -59,8 +59,6 @@
                               @click="removeFilterTagId(tag.id)">{{tag.name}}
                         </div>
                     </div>
-<!--                    <div class="bg-green-600 text-white w-fit px-2 py-1 rounded-md cursor-pointer">Доход</div>-->
-<!--                    <div class="ml-1.5 bg-red-400 text-white w-fit px-2 py-1 rounded-md cursor-pointer">Расход</div>-->
                 </div>
                 <div>
 <!--                    tag_arr: {{filterData.tag_arr}}-->
@@ -87,15 +85,8 @@
                 >Фильтровать
                 </button>
             </div>
-
-<!--            <pre>tagTextFilterRs: {{tagTextFilterRs}}</pre>-->
-
         </form>
-        <!--            <div class="mt-2" v-for="(i,index) in [1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,...[1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,]-->
-        <!--                ,[1,4,5,6,6,6,6,6,6,6,6,6,6,6,6,6,]-->
-        <!--                ]">-->
-        <!--                <h3>sdklfjdlkf {{index}}</h3>-->
-        <!--            </div>-->
+
     </div>
 </template>
 
@@ -128,7 +119,15 @@ export default {
         }),
         doFilterEventos(){
             console.log('doFilterEventos');
-            this.filterItems(this.filterData);
+            this.filterItems(this.filterData)
+                .then(response => {
+                    console.log('filter is done!');
+                    window.history.pushState(
+                        null,
+                        document.title,
+                        `${window.location.pathname}/filter?page=${response.data.data.current_page}`
+                    )
+                });
         },
 
         setDatesForFilterForm(){
