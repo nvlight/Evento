@@ -53,17 +53,6 @@ export default {
     },
     data(){
         return {
-            // search params Object
-            params_object: {},
-
-            needKeys: [
-                'date_end',
-                'date_start',
-                'orderById',
-                'sum_end',
-                'sum_start',
-                'tag_arr',
-            ]
         }
     },
     props: {
@@ -72,6 +61,7 @@ export default {
         ...mapActions({
             'loadTagItems': 'tag/loadItems',
             'loadEventos': 'evento/loadItems',
+            'loadFilteredEventos': "evento/filterItems",
         }),
 
         ...mapMutations({
@@ -101,11 +91,16 @@ export default {
         this.loadTagItems();
 
         // нужно получить page, если он есть и загрузить данные именно с этой страницы
-        const params = (new URL(document.location)).search;
-        const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-        // new URLSearchParams(obj).toString();
+        //const params = (new URL(document.location)).search;
+        //const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
+        //const params_string = (new URLSearchParams(obj)).toString();
 
-        this.loadEventos({url : null});
+        let key = 'evento_filter';
+        if (sessionStorage.hasOwnProperty(key)){
+            this.loadFilteredEventos(JSON.parse(sessionStorage.getItem(key)));
+        }else{
+            this.loadEventos({url:null});
+        }
     },
 
 }

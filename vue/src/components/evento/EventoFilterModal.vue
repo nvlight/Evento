@@ -147,6 +147,7 @@ export default {
             if (index === -1) {
                 this.filterData.tag_arr = [id, ...this.filterData.tag_arr, ];
             }
+            this.filterData.filter_text='';
         },
     },
     computed:{
