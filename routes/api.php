@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::resource('/tag', TagController::class);
 
     Route::get('/evento/filter', [EventoController::class, 'filter']);
+    Route::get('/evento/diagram', [EventoController::class, 'diagram']);
     Route::resource('/evento', EventoController::class);
 });
 

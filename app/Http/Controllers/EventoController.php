@@ -247,6 +247,91 @@ class EventoController extends Controller
         ]);
     }
 
+    /**  */
+    public function diagram(Request $request)
+    {
+        /**
+         Получает группировкой сумму по месяцам, тегам и нужному году
+         потом остается лишь сложить руками сумму по тегам, чтобы вышло так
+
+         January доход 150000
+         January расход  37000
+         ...
+
+
+         select
+            tg1.name,
+            tg2.name,
+            tg2.id,
+            sum(tag_values.value) sum,
+            monthname(eventos.date) month,
+            year(eventos.date) year
+        from eventos
+
+        join tag_values on eventos.id = tag_values.evento_id
+        join tags tg1 on tag_values.tag_id_first = tg1.id
+        left join tags tg2 on tag_values.tag_id_second = tg2.id
+
+        where eventos.user_id = 1
+        group by month, tg1.name, tg2.name, tg2.id, year
+        having sum > 0 and year = 2022
+        order by month, tg2.id desc;
+        */
+
+        $year = $request->date ?? date('Y');
+
+        $q_get_years_with_months = DB::table('eventos')
+            ->select( DB::raw('year(eventos.date) as dtr'),
+                DB::raw('month(eventos.date) as mnth'),
+                DB::raw('monthname(eventos.date) as mnthnm'),
+                'events.amount as sm',
+                'events.type_id as tp',
+                'types.name as nm',
+                'types.color as cl')
+            ->from('eventos')
+            ->join('tags','types.id','=','events.type_id')
+            ->where('events.user_id', '=', auth()->id() )
+            ->whereIn('events.type_id',$type_ids)
+            ->where(DB::raw('year(events.date)'), '=', $year)
+            //->groupBy('sm','tp','mnthnm','mnth','dtr')
+            ->orderBy('mnth')->orderBy('tp')
+            //->toSql()
+            ->get()
+        ;
+
+        // validate:
+        return response([
+            'action' => 'diagram',
+            'success' => true,
+        ]);
+
+        /** @var Evento $sql */
+        $sql = $this->filterSql();
+
+        $sqlDump = $sql
+            ->  whereIn('tags1.id', $request->get('tag_arr'))
+            ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            ->toSql()
+        ;
+
+        $rs = $sql
+            ->  whereIn('tags1.id', $request->get('tag_arr'))
+            ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            ->orderByDesc('date')
+            //->get()
+            ->paginate(10)
+        ;
+        //$rs->withPath('eventos' . $_SERVER['QUERY_STRING']);
+
+        return response([
+            //'$sqlDump' => $sqlDump,
+            'QUERY_STRING' => $_SERVER['QUERY_STRING'],
+            'response_data' => $request->all(),
+            'data'  => $rs,
+            'success' => true,
+        ]);
+    }
+
     protected function saveToLog($method, $e)
     {
         logger('error in method: ' . $method. '! '

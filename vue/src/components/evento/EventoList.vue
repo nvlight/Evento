@@ -3,12 +3,20 @@
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-semibold">Список событий</h1>
 
+            <!-- Evento actions -->
             <div class="mr-2 mt-2 flex items-center">
 
-<!--                <div>isFilterSeted: {{isFilterSeted}}</div>-->
+                <!-- show diagrams -->
+                <mg-button class="text-black focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
+                    border-indigo-500 hover:border-red-500" @click="showDiagram"
+                    >Diagram
+                </mg-button>
+                <!--/ show diagrams -->
 
-                <mg-button class="text-black focus:ring-0 focus:ring-offset-0 px-0 py-0 mr-2 "
+                <!-- show/hide filters -->
+                <mg-button class="text-black focus:ring-0 focus:ring-offset-0 px-0 py-0 mr-2"
                 >
+                    <!-- reset filters -->
                     <div v-if="isFilterSeted" class="text-red-500 flex items-center"
                         @click="resetEventoFilters"
                         >
@@ -17,6 +25,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                         </svg> Фильтры
                     </div>
+
+                    <!-- show filters -->
                     <div v-else class="flex items-center"
                          @click="showEventoFilters"
                         >
@@ -26,12 +36,17 @@
                         </svg> Фильтры
                     </div>
                 </mg-button>
+                <!--/ show/hide filters -->
+
+                <!-- Evento create button -->
                 <mg-button class="bg-green-600 hover:bg-green-700 transition-colors focus:bg-green-800
-                    focus:ring-green-700"
-                   @click="addEventoButtonClicked"
-                ><span class="text-xs">Добавить событие</span>
+                    focus:ring-green-700" @click="addEventoButtonClicked">
+                    <span class="text-xs">Добавить событие</span>
                 </mg-button>
+                <!--/ Evento create button -->
             </div>
+
+            <!--/ Evento actions -->
         </div>
 
         <table v-if="eventos.length" class="mt-2 w-full border border-collapse rounded-md p-3 ">
@@ -119,6 +134,10 @@ export default {
             this.filterSeted = false;
 
             this.$store.dispatch('evento/loadItems', {url:null});
+        },
+        showDiagram(){
+            console.log('showDiagram');
+            this.$store.dispatch("evento/getDiagram");
         },
 
     },

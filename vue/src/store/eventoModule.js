@@ -210,7 +210,22 @@ export const eventoModule = {
             commit('setCreateEditFormVisible', false);
             commit('setEditMode', false);
             commit('setCreateMode', false);
-        }
+        },
+
+        getDiagram({commit, state}){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .get(`/${modelName}/diagram`)
+                .then((res)=>{
+                    return res;
+                })
+                .catch( (err) => {
+                    return err;
+                })
+            return response;
+        },
+
     },
     mutations: {
         setEventoItems: (state, items) => {
