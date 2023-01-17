@@ -215,25 +215,39 @@ class EventoController extends Controller
     public function filter(Request $request)
     {
         // validate:
+        $date_start = $request->date_start ?? date('Y');
+        $date_end   = $request->date_end ?? date('Y');
+        $sum_start = $request->sum_start ?? 0;
+        $sum_end = $request->sum_end ?? 1000000;
+        $sum_start = intval($sum_start);
+        $sum_end = intval($sum_end);
+
+        $tags = $request->get('tag_arr') ?? [];
+
 //        return response([
-//            'response_data' => $request->all(),
+//            'response_data' => [$date_start, $date_end, $tags],
 //            'success' => false,
 //        ]);
 
         /** @var Evento $sql */
         $sql = $this->filterSql();
 
-        $sqlDump = $sql
-            ->  whereIn('tags1.id', $request->get('tag_arr'))
-            ->orWhereIn('tags2.id', $request->get('tag_arr'))
-            ->toSql()
-        ;
+//        $sqlDump = $sql
+//            ->  whereIn('tags1.id', )
+//            ->orWhereIn('tags2.id', $tags)
+//            ->toSql()
+//        ;
 
         $rs = $sql
-            ->  whereIn('tags1.id', $request->get('tag_arr'))
-            ->orWhereIn('tags2.id', $request->get('tag_arr'))
+            ->whereBetween('eventos.date',  [$date_start, $date_end])
+            ->whereBetween('tag_values.value', [$sum_start, $sum_end])
+            ->where(function ($query) use($tags){
+                $query->whereIn('tags1.id', $tags)
+                    ->orWhereIn('tags2.id', $tags);
+            })
             ->orderByDesc('date')
             //->get()
+            //->toSql()
             ->paginate(10)
         ;
         //$rs->withPath('eventos' . $_SERVER['QUERY_STRING']);
@@ -247,25 +261,24 @@ class EventoController extends Controller
         ]);
     }
 
-    /**  */
-    public function diagram(Request $request)
-    {
-        /**
-         Получает группировкой сумму по месяцам, тегам и нужному году
-         потом остается лишь сложить руками сумму по тегам, чтобы вышло так
+    /**
+      *
+      *  Diagram
 
-         January доход 150000
-         January расход  37000
-         ...
+        Получает группировкой сумму по месяцам, тегам и нужному году
+        потом остается лишь сложить руками сумму по тегам, чтобы вышло так
 
+        January доход 150000
+        January расход  37000
+        ...
 
-         select
-            tg1.name,
-            tg2.name,
-            tg2.id,
-            sum(tag_values.value) sum,
-            monthname(eventos.date) month,
-            year(eventos.date) year
+        select
+        tg1.name,
+        tg2.name,
+        tg2.id,
+        sum(tag_values.value) sum,
+        monthname(eventos.date) month,
+        year(eventos.date) year
         from eventos
 
         join tag_values on eventos.id = tag_values.evento_id
@@ -276,59 +289,51 @@ class EventoController extends Controller
         group by month, tg1.name, tg2.name, tg2.id, year
         having sum > 0 and year = 2022
         order by month, tg2.id desc;
-        */
+     */
+    public function diagram(Request $request)
+    {
+        $year = $request->year ?? date('Y');
 
-        $year = $request->date ?? date('Y');
+//        return response([
+//            'action' => 'diagram',
+//            'success' => true,
+//            '$year' => $year,
+//        ]);
 
-        $q_get_years_with_months = DB::table('eventos')
-            ->select( DB::raw('year(eventos.date) as dtr'),
-                DB::raw('month(eventos.date) as mnth'),
-                DB::raw('monthname(eventos.date) as mnthnm'),
-                'events.amount as sm',
-                'events.type_id as tp',
-                'types.name as nm',
-                'types.color as cl')
-            ->from('eventos')
-            ->join('tags','types.id','=','events.type_id')
-            ->where('events.user_id', '=', auth()->id() )
-            ->whereIn('events.type_id',$type_ids)
-            ->where(DB::raw('year(events.date)'), '=', $year)
-            //->groupBy('sm','tp','mnthnm','mnth','dtr')
-            ->orderBy('mnth')->orderBy('tp')
-            //->toSql()
-            ->get()
-        ;
+        try{
+            $diagramRs = DB::table('eventos')
+                ->select('tg1.name', 'tg2.name', 'tg2.id',
+                    DB::raw('sum(tag_values.value) sum'),
+                    DB::raw('monthname(eventos.date) as month'),
+                    DB::raw('year(eventos.date) as year'),
+                )
+                ->from('eventos')
+                ->join('tag_values', 'eventos.id', '=', 'tag_values.evento_id')
+                ->join('tags as tg1','tag_values.tag_id_first','=','tg1.id')
+                ->leftJoin('tags as tg2', 'tag_values.tag_id_second', '=', 'tg2.id')
+                ->where('eventos.user_id', '=', Auth::user()->id)
+                ->groupBy('month', 'tg1.name', 'tg2.name', 'tg2.id', 'year')
+                ->having('sum', '>', 0)
+                ->having('year', '=', $year)
+                ->orderBy('month')
+                ->orderBy('tg2.id', 'desc')
+                //->toSql()
+                ->get()
+            ;
+        }catch (QueryException $e){
+            $this->saveToLog(__METHOD__, $e);
+
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!'
+            ]);
+        }
 
         // validate:
         return response([
             'action' => 'diagram',
             'success' => true,
-        ]);
-
-        /** @var Evento $sql */
-        $sql = $this->filterSql();
-
-        $sqlDump = $sql
-            ->  whereIn('tags1.id', $request->get('tag_arr'))
-            ->orWhereIn('tags2.id', $request->get('tag_arr'))
-            ->toSql()
-        ;
-
-        $rs = $sql
-            ->  whereIn('tags1.id', $request->get('tag_arr'))
-            ->orWhereIn('tags2.id', $request->get('tag_arr'))
-            ->orderByDesc('date')
-            //->get()
-            ->paginate(10)
-        ;
-        //$rs->withPath('eventos' . $_SERVER['QUERY_STRING']);
-
-        return response([
-            //'$sqlDump' => $sqlDump,
-            'QUERY_STRING' => $_SERVER['QUERY_STRING'],
-            'response_data' => $request->all(),
-            'data'  => $rs,
-            'success' => true,
+            'diagram' => $diagramRs,
         ]);
     }
 

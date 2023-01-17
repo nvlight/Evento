@@ -2,6 +2,7 @@ import {createStore} from "vuex";
 import axiosClient from "../axios.js"
 import {tagModule} from "./tagModule.js";
 import {eventoModule} from "./eventoModule.js";
+import {diagramModule} from "./diagramModule.js";
 
 const store = createStore({
     state:{
@@ -56,6 +57,7 @@ const store = createStore({
     modules:{
         tag: tagModule,
         evento: eventoModule,
+        diagram: diagramModule,
     },
 });
 
