@@ -46,22 +46,6 @@ export const eventoModule = {
             const modelName = state.itemModelName;
             url = url || `/${modelName}`;
 
-            //let {params, params_object} = payload;
-            //console.log('-----VuexEventoModule: loadItems------')
-            //console.log(params);
-            //console.log(params_object);
-
-            // url = '/evento';
-            // if (params) {
-            //     if ( (Object.keys(params_object).length === 1) ){
-            //         //console.log('page')
-            //         url += `?page=${params_object.page}`;
-            //     }else{
-            //         //console.log('filter')
-            //         url += `/filter?${params}`;
-            //     }
-            // }
-
             response = axiosClient
                 .get(url)
                 .then((res)=>{

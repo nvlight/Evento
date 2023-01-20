@@ -99,7 +99,7 @@ export default {
         if (sessionStorage.hasOwnProperty(key)){
             this.loadFilteredEventos(JSON.parse(sessionStorage.getItem(key)));
         }else{
-            this.loadEventos({url:null});
+            this.loadEventos({});
         }
     },
 

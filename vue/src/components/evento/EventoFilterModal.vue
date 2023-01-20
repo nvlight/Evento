@@ -60,12 +60,6 @@
                         </div>
                     </div>
                 </div>
-                <div>
-<!--                    tag_arr: {{filterData.tag_arr}}-->
-                </div>
-                <div>
-<!--                    filterRs: {{filterRs}}-->
-                </div>
             </div>
 
             <div class="date-start-end flex mt-3">
@@ -107,6 +101,7 @@ export default {
                 tag_arr: [], //[122, 123],
                 orderById: 'desc / asc',
             },
+            sessionFilter: {},
         }
     },
     methods:{
@@ -114,40 +109,36 @@ export default {
             'filterItems': 'evento/filterItems',
         }),
         doFilterEventos(){
-            //console.log('doFilterEventos');
             sessionStorage.setItem('evento_filter', JSON.stringify(this.filterData)),
-            this.filterItems(this.filterData)
-                .then(response => {
-                    // if (response.data.success){
-                    //     //console.log('filter is done!');
-                    //     window.history.pushState(
-                    //         null,
-                    //         document.title,
-                    //         `eventos?${response.data.QUERY_STRING}`,
-                    //     )
-                    // }
-                });
+            this.filterItems(this.filterData);
         },
 
         setDatesForFilterForm(){
-            //console.log('set new data!');
-            this.filterData.date_start = this.getCurrentDate;
-            this.filterData.date_end = this.getCurrentDate;
+            if (! Object.keys(this.sessionFilter).length){
+                this.filterData.date_start = this.getCurrentDate;
+                this.filterData.date_end   = this.getCurrentDate;
+            }
         },
         removeFilterTagId(id){
-            //console.log('removeFilterTagId: ', id);
             let index = this.filterData.tag_arr.indexOf(id);
             if (index !== -1) {
                 this.filterData.tag_arr.splice(index, 1);
             }
         },
         addFilterTagId(id){
-            //console.log(id);
             let index = this.filterData.tag_arr.indexOf(id);
             if (index === -1) {
                 this.filterData.tag_arr = [id, ...this.filterData.tag_arr, ];
             }
             this.filterData.filter_text='';
+        },
+
+        setSessionFilterData(){
+            let key = 'evento_filter';
+            if (sessionStorage.hasOwnProperty(key)) {
+                this.sessionFilter = (JSON.parse(sessionStorage.getItem(key)));
+                this.filterData = this.sessionFilter;
+            }
         },
     },
     computed:{
@@ -184,6 +175,7 @@ export default {
 
     },
     mounted() {
+        this.setSessionFilterData();
         this.setDatesForFilterForm();
     }
 }
