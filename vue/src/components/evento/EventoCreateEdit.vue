@@ -125,14 +125,10 @@ export default {
         }),
 
         closeForm(){
-            this.resetEventoForm();
+            this.resetEvento();
             this.setCurrentEditItemId(0);
 
             this.$store.dispatch('evento/closeForm');
-        },
-
-        resetEventoForm(){
-            this.evento = {};
         },
 
         createEvento(){
@@ -144,12 +140,18 @@ export default {
             const item = {item: this.tag, formData: data}
             this.$store.dispatch('evento/createItemQuery', item)
                 .then((res) => {
-                    this.errors = {};
-                    //console.log('create evento - then: ', res.response);
-                    this.errors = res.response.data.errors;
+                    if (res?.status === 200 && res?.data?.success === 1){
+                        this.resetEvento();
+                    }else{
+                        this.errors = {};
+                        let err = res?.response?.data?.errors;
+                        if (err) {
+                            this.errors = err;
+                        }
+                    }
                 })
                 .catch((err) => {
-                    //console.log('create evento - catch: ', err);
+                    console.log('create evento - catch: ', err);
                 });
         },
 
@@ -166,6 +168,11 @@ export default {
         },
 
         createModeHandler(){
+            this.resetEvento();
+            this.evento.date = this.getCurrentDate;
+        },
+
+        resetEvento(){
             this.evento = Object.assign({}, this.defaultEvento);
             this.evento.date = this.getCurrentDate;
         },
@@ -175,10 +182,6 @@ export default {
         },
 
         mountedHandler(){
-            //console.log('mounted!');
-            //console.log('createMode:', this.createMode);
-            //console.log('editMode:', this.editMode);
-
             if (this.createMode){
                 this.createModeHandler();
             }

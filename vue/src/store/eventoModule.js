@@ -135,9 +135,8 @@ export const eventoModule = {
                 .then((res)=>{
                     commit('setCreateItemLoading', false);
                     if (res.data.success) {
-                        dispatch('addItem', res.data.data);
+                        commit('addItem', res.data.data);
                     }
-                    //console.log('then');
                     return res;
                 })
                 .catch( (err) => {
@@ -146,9 +145,6 @@ export const eventoModule = {
                     return err;
                 })
             return response;
-        },
-        addItem({commit}, item){
-            return commit('addItem', item);
         },
 
         delItem({dispatch, state, commit}, id){
@@ -193,7 +189,7 @@ export const eventoModule = {
                 .then((res)=>{
                     if (res.data.success) {
                         commit('delItem', res.data.data.id);
-                        dispatch('addItem', res.data.data);
+                        commit('addItem', res.data.data);
                     }
                     commit('setUpdateItemLoading', false);
                     return res;

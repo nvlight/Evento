@@ -51,6 +51,11 @@
 
         <td class="buttons_block border text-center p-2">
             <div class="w-full flex justify-center items-center">
+                <mg-pencil-icon-button
+                    @click="editEventoHanlder(evento)"
+                    class="ml-1 border-none text-purple-800  self-end
+                    focus:ring-purple-500 rounded-sm h-4 w-4"
+                ></mg-pencil-icon-button>
                 <mg-trash-icon-button
                     @click="deleteEvento(evento.id)"
                     class="ml-1 border-none text-red-500 self-end
@@ -58,11 +63,6 @@
                             "
                     :svgClass="'h-4 w-4'"
                 ></mg-trash-icon-button>
-                <mg-pencil-icon-button
-                    @click="editEventoHanlder(evento)"
-                    class="ml-1 border-none text-purple-800  self-end
-                    focus:ring-purple-500 rounded-sm h-4 w-4"
-                ></mg-pencil-icon-button>
             </div>
         </td>
     </tr>
