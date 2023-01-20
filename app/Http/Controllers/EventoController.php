@@ -261,6 +261,56 @@ class EventoController extends Controller
         ]);
     }
 
+    /**  */
+    protected function getValuesByMonths($eventos)
+    {
+        //    "diagram": [
+        //    {
+        //        "name": "расход",
+        //        "id": 123,
+        //        "sum": "513",
+        //        "month": "December",
+        //        "year": 2022
+        //    },
+        //    {
+        //        "name": "расход",
+        //        "id": 123,
+        //        "sum": "1800",
+        //        "month": "December",
+        //        "year": 2022
+        //    },
+
+        $res = [];
+        foreach($eventos as $evento){
+            if (!isset($res[$evento->month][$evento->id])){
+                $res[$evento->month][$evento->id] = $evento;
+                $res[$evento->month][$evento->id]->sum = intval($res[$evento->month][$evento->id]->sum);
+            }else{
+                $res[$evento->month][$evento->id]->sum += intval($evento->sum);
+            }
+        }
+
+        return $res;
+    }
+
+    /**  */
+    protected function getSortedByMonthValues($eventos)
+    {
+        $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',];
+
+        $res = [];
+
+        foreach($months as $month){
+            foreach($eventos as $ev_month => $evento){
+                if ($month === $ev_month){
+                    $res[$month] = $evento;
+                }
+            }
+        }
+
+        return $res;
+    }
+
     /**
       *
       *  Diagram
@@ -301,8 +351,8 @@ class EventoController extends Controller
 //        ]);
 
         try{
-            $diagramRs = DB::table('eventos')
-                ->select('tg1.name', 'tg2.name', 'tg2.id',
+            $diagramRs = Evento
+                ::select('tg1.name', 'tg2.name', 'tg2.id',
                     DB::raw('sum(tag_values.value) sum'),
                     DB::raw('monthname(eventos.date) as month'),
                     DB::raw('year(eventos.date) as year'),
@@ -320,6 +370,8 @@ class EventoController extends Controller
                 //->toSql()
                 ->get()
             ;
+            $valuesByMonths = $this->getValuesByMonths($diagramRs);
+            $sortedByMonthValues = $this->getSortedByMonthValues($valuesByMonths);
         }catch (QueryException $e){
             $this->saveToLog(__METHOD__, $e);
 
@@ -329,11 +381,10 @@ class EventoController extends Controller
             ]);
         }
 
-        // validate:
         return response([
             'action' => 'diagram',
             'success' => true,
-            'diagram' => $diagramRs,
+            'diagram' => $sortedByMonthValues,
         ]);
     }
 
