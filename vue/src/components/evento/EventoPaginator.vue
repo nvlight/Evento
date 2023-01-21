@@ -1,4 +1,3 @@
-`
 <template>
     <!-- Pagination -->
     <div v-if="evento_links.length > 3" class="flex justify-center mt-5">
@@ -6,11 +5,10 @@
             class="relative z-0 inline-flex justify-center rounded-md shadow-sm "
             aria-label="Pagination"
         >
-<!--            :href="hrefLink(i, link.label)"-->
             <a v-for="(link, i) of evento_links"
                 :key="i"
                 :disabled="!Number(link.label)"
-                @click="getForPage($event, link)"
+                @click="getPageData($event, link)"
                 aria-current="page"
                 v-html="linkHtml(i, link.label)"
                 href="#"
@@ -45,8 +43,8 @@ export default {
         }
     },
     methods: {
-        //@click="getForPage($event, link)
-        getForPage(event, link) {
+        //@click="getPageData($event, link)
+        getPageData(event, link) {
             event.preventDefault();
             if (!link.url || link.active) {
                 return;
@@ -82,12 +80,7 @@ export default {
             this.$store.dispatch("evento/loadItems", {url: newLink})
                 .then(response => {
                     if (response.data.success) {
-                        //console.log('success', response.data.data.current_page);
-                        //window.history.pushState(
-                        //    null,
-                        //    document.title,
-                        //    `${window.location.pathname}?page=${response.data.data.current_page}`
-                        //)
+                        this.$store.dispatch('evento/saveCurrentPageToSessionStorage', response.data.data.current_page);
                     }
                 })
         },
@@ -103,57 +96,12 @@ export default {
                 i === this.evento_links.length - 1 ? 'rounded-r-md' : '',
             ];
         },
-        hrefLink(i, link_label) {
-            return i === 0
-                ? this.prev
-                : i === this.evento_links.length - 1 ? this.next
-                    : `${this.searchParams}&page=${link_label}`
-        },
     },
     computed: {
-        searchParams(){
-            const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-            let find = false;
-            this.needKeys.forEach(v => {
-                if (params_object.hasOwnProperty(v)){
-                    find = true;
-                }
-            });
-
-            if (!find){
-                return 'eventos?';
-            }
-
-            if (params_object.hasOwnProperty('page')){
-                delete params_object['page'];
-            }
-            console.log('after delete page:');
-            console.log(params_object);
-            return '?' + (new URLSearchParams(params_object)).toString();
-        },
-        prev() {
-            return this.current_page - 1 > 0
-                ? `${this.searchParams}&page=${this.current_page - 1}`
-                : `${this.searchParams}&page=1`;
-        },
-        next() {
-            return this.current_page + 1 < this.last_page
-                ? `${this.searchParams}&page=${this.current_page + 1}`
-                : `${this.searchParams}&page=${this.last_page}`;
-        },
     },
     mounted() {
-        //console.log('current_page:', this.current_page);
-        //console.log('last_page:', this.last_page);
-        //console.log(this.$router.currentRoute);
-
-        //console.log('-----paginator------');
         const params = (new URL(document.location)).search;
         const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-
-        //console.log(params);
-        //console.log(params_object);
-        //console.log((new URLSearchParams(params_object)).toString());
     }
 }
 </script>

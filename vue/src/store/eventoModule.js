@@ -4,12 +4,15 @@ export const eventoModule = {
     state: () => ({
         itemModelName: 'evento',
 
+        current_page: sessionStorage.getItem('current_page') ? sessionStorage.getItem('current_page') : 1,
+
         eventos: {
             items: [],
             loading: false,
             links: [],
             current_page: 0,
             last_page: 0,
+            url_path: '',
         },
 
         createItemLoading: false,
@@ -53,28 +56,9 @@ export const eventoModule = {
                         commit('setEventoItems', res.data.data.data);
                         commit('setEventosLinks', res.data.data.links);
                         commit('setCurrentPage', res.data.data.current_page);
+                        commit('saveCurrentPageToSessionStorage', res.data.data.current_page)
                         commit('setLastPage', res.data.data.last_page);
-                    }
-                    commit('setEventosLoading', false);
-                    return res;
-                })
-                .catch( (err) => {
-                    commit('setEventosLoading', false);
-                })
-            return response;
-        },
-
-        loadItems_copy({commit, state}, {url = null} = {}){
-            let response;
-            commit('setEventosLoading', true);
-            const modelName = state.itemModelName;
-            url = url || `/${modelName}`;
-            response = axiosClient
-                .get(url) // // .get("/tags")
-                .then((res)=>{
-                    if (res.data.success) {
-                        commit('setEventoItems', res.data.data.data);
-                        commit('setEventosLinks', res.data.data.links);
+                        commit('saveUrlPath', res.data.data.path);
                     }
                     commit('setEventosLoading', false);
                     return res;
@@ -205,7 +189,9 @@ export const eventoModule = {
                 })
             return response;
         },
-
+        saveCurrentPageToSessionStorage({commit}, page) {
+            commit('saveCurrentPageToSessionStorage', page);
+        },
     },
     mutations: {
         setEventoItems: (state, items) => {
@@ -266,8 +252,16 @@ export const eventoModule = {
         setCurrentPage(state, value){
             state.eventos.current_page = value;
         },
+        saveCurrentPageToSessionStorage(state, value){
+            sessionStorage.setItem('current_page', value);
+            state.current_page = value;
+        },
         setLastPage(state, value){
             state.eventos.last_page = value;
+        },
+        saveUrlPath(state, value){
+            state.eventos.url_path = value;
+            sessionStorage.setItem('url_path', value);
         },
     },
     namespaced: true,

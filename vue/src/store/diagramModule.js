@@ -28,6 +28,9 @@ export const diagramModule = {
                 })
             return response;
         },
+        resetItems({commit}){
+            commit('setDiagramData', []);
+        }
     },
     mutations: {
         setDiagramData(state, data){

@@ -1,7 +1,11 @@
 <template>
     <div class="mt-1 overflow-x-auto relative">
         <div class="flex justify-between items-center">
-            <h1 class="text-xl font-semibold">Список событий</h1>
+            <div class="flex items-center">
+                <h1 class="text-xl font-semibold">Список событий
+                </h1>
+                <div v-if="current_page !== 1" class="ml-2">(страница {{current_page}})</div>
+            </div>
 
             <!-- Evento actions -->
             <div class="mr-2 mt-2 flex items-center">
@@ -110,7 +114,6 @@ export default {
         },
         isCreateFormButtonVisible:{
             type: Boolean,
-            //default: true,
         },
     },
     data(){
@@ -158,24 +161,14 @@ export default {
     computed:{
         ...mapState({
             'createEditFormVisible': state => state.evento.createEditFormVisible,
-            'tags': state => state.tag.tags,
+            'tags':         state => state.tag.tags,
             'diagramValue': state => state.diagram.diagram,
+            'current_page': state => state.evento.current_page,
         }),
-
-        isFilterSeted(){
-            return this.filterSeted;
-        },
     },
     mounted() {
         this.filterSeted = sessionStorage.hasOwnProperty('evento_filter');
-        //this.setDatesForFilterForm();
-        //this.isLocalCreateFormButtonVisible = this.isCreateFormButtonVisible;
     },
-    // watch: {
-    //     isCreateFormButtonVisible(nv, ov){
-    //         this.isLocalCreateFormButtonVisible = this.isCreateFormButtonVisible;
-    //     }
-    // }
 }
 </script>
 

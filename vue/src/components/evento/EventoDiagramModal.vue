@@ -5,18 +5,17 @@
         <div>
             <form @submit.prevent="loadDiagramData" class="mt-2 flex items-end">
                 <mg-input-labeled v-model="diagramGetParams.year">Выберите год</mg-input-labeled>
-                <mg-button class="ml-2 bg-red-400 focus:ring-red-500">Показать</mg-button>
+                <mg-button class="ml-2 bg-red-400 focus:ring-red-500">
+                    <mg-spin v-if="diagramValue.loading"></mg-spin>Показать
+                </mg-button>
             </form>
         </div>
 
-        <div class="mt-2">
-            <div v-if="diagramValue.loading">Loading...</div>
-            <div v-else>
-                <div v-for="(tag, month) of diagramValue.items">
-                    <div class="font-semibold mt-2">{{month}}</div>
-                    <div v-for="tag_arr of tag">
-                        {{tag_arr.name}}: {{tag_arr.sum}}
-                    </div>
+        <div class="diagram-data-wrapper mt-2">
+            <div v-for="(tag, month) of diagramValue.items">
+                <div class="font-semibold mt-2">{{month}}</div>
+                <div v-for="tag_arr of tag">
+                    {{tag_arr.name}}: {{tag_arr.sum}}
                 </div>
             </div>
         </div>
@@ -51,7 +50,8 @@ export default {
         }),
     },
     mounted() {
-        this.diagramGetParams.year = (new Date()).getFullYear()
+        this.diagramGetParams.year = (new Date()).getFullYear();
+        this.$store.dispatch('diagram/resetItems');
     }
 }
 </script>

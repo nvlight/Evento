@@ -80,6 +80,8 @@ export default {
         ...mapState({
             'eventos': state => state.evento.eventos,
             'formVisible': state => state.evento.createEditFormVisible,
+            'current_page': state => state.evento.current_page,
+            'url_path': state => state.evento.eventos.url_path,
         }),
 
         ...mapGetters({
@@ -99,7 +101,16 @@ export default {
         if (sessionStorage.hasOwnProperty(key)){
             this.loadFilteredEventos(JSON.parse(sessionStorage.getItem(key)));
         }else{
-            this.loadEventos({});
+            let page_key = "current_page";
+            let url_path_key = "url_path";
+            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
+                let page = sessionStorage.getItem(page_key);
+                let url_path = sessionStorage.getItem(url_path_key);
+                let url = { url: url_path + `?page=${page}`};
+                this.loadEventos(url);
+            }else {
+                this.loadEventos({});
+            }
         }
     },
 

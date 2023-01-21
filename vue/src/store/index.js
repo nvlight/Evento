@@ -10,12 +10,6 @@ const store = createStore({
             data:{},
             token: sessionStorage.getItem('TOKEN'),
         },
-        siteImgStaticPath: "http://laravel8-evento:87/storage/",
-    },
-    getters:{
-        getSiteImgStaticPath(state){
-            return state.siteImgStaticPath;
-        }
     },
     actions:{
         register({commit}, user){
