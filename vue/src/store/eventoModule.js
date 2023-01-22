@@ -170,15 +170,13 @@ export const eventoModule = {
                 .patch(`/${modelName}/${item.id}`, item)
                 .then((res)=>{
                     if (res.data.success) {
-                        commit('delItem', res.data.data.id);
-                        commit('addItem', res.data.data);
+                        commit('updateItem', res.data.data);
                     }
                     commit('setUpdateItemLoading', false);
                     return res;
                 })
                 .catch( (err) => {
                     commit('setUpdateItemLoading', false);
-                    //console.log('we got error:',err);
                     return err;
                 })
             return response;
@@ -217,6 +215,17 @@ export const eventoModule = {
         delItem: (state, id) => {
             state.eventos.items = state.eventos.items.filter(
                 t => t.id != id
+            );
+        },
+        updateItem(state, evento){
+            state.eventos.items = state.eventos.items.map(
+                t =>  {
+                    if (t.id === evento.id){
+                        return evento;
+                    }else{
+                        return t;
+                    }
+                }
             );
         },
 
