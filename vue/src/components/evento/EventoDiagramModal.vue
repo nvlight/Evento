@@ -30,7 +30,7 @@ import DateMixin from "../../mixins/DateMixin.vue";
 export default {
     name: 'evento-diagram-modal',
     components: { MgInputLabeled },
-    emits: [],
+    emits: ['closeModalDialog', ],
     mixins: [ DateMixin, ],
     data(){
         return {
@@ -54,6 +54,12 @@ export default {
     mounted() {
         this.diagramGetParams.year = this.getCurrentDateObject.year;
         this.$store.dispatch('diagram/resetItems');
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key == 'Escape') {
+                this.$emit('closeModalDialog');
+            }
+        });
     }
 }
 </script>

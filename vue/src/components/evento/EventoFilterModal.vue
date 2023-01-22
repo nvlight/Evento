@@ -90,7 +90,7 @@ import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-filter-modal',
-    emits: ['doFilterEventos'],
+    emits: ['doFilterEventos', 'closeModalDialog'],
     mixins: [DateMixin, ],
     data(){
         return {
@@ -162,12 +162,18 @@ export default {
             if (this.filterData.filter_text.length < 2){
                 return [];
             }
-            return this.tags.items.filter(t => t.name.includes(this.filterData.filter_text));
+            return this.tags.items.filter(t => t.name.toLowerCase().includes(this.filterData.filter_text.toLowerCase()));
         },
     },
     mounted() {
         this.setSessionFilterData();
         this.setDatesForFilterForm();
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key == 'Escape') {
+                this.$emit('closeModalDialog');
+            }
+        });
     }
 }
 </script>

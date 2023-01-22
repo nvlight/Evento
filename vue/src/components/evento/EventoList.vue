@@ -11,7 +11,7 @@
             <div class="mr-2 mt-2 flex items-center">
 
                 <mg-modal v-model:show="isDiagramVisible">
-                    <evento-diagram-modal/>
+                    <evento-diagram-modal @closeModalDialog="isDiagramVisible=false" />
                 </mg-modal>
 
                 <!-- show diagrams -->
@@ -87,7 +87,10 @@
         <mg-modal v-model:show="filterFormVisible" class=""
             :dialog_content_classes="'overflow-auto '"
             >
-            <evento-filter-modal @doFilterEventos="doFilterEventos"/>
+            <evento-filter-modal
+                @doFilterEventos="doFilterEventos"
+                @closeModalDialog="filterFormVisible=false"
+            />
         </mg-modal>
 
     </div>
