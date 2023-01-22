@@ -103,7 +103,7 @@ export const eventoModule = {
                 .then((res)=>{
                     commit('setCreateItemLoading', false);
                     if (res.data.success) {
-                        commit('addItem', res.data.data);
+                        dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
                     }
                     return res;
                 })
@@ -144,7 +144,8 @@ export const eventoModule = {
                             //console.log('page_url:', page_url);
                             dispatch('loadItems', {url: page_url});
                         }else{
-                            commit('delItem', id);
+                            //commit('delItem', id);
+                            dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
                         }
                     }
                     return res;

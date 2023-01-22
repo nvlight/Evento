@@ -14,6 +14,8 @@ use Illuminate\Database\QueryException;
 
 class EventoController extends Controller
 {
+    protected int $perPage = 10;
+
     private function getEventoSqlPart(){
         return Evento::
               join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
@@ -72,7 +74,7 @@ class EventoController extends Controller
         try{
             $items = $this->getEventoSqlPart()
                 ->orderBy('eventos.date', 'ASC')
-                ->paginate(10)
+                ->paginate($this->perPage)
             ;
             //$items->withPath('eventos' . $_SERVER['QUERY_STRING']);
         }catch (\Exception $e){
@@ -209,7 +211,7 @@ class EventoController extends Controller
 
         $items = $this->getEventoSqlPart()
             ->orderBy('eventos.date', 'ASC')
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         $last_page = $items->lastPage();
 
