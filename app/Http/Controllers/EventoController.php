@@ -194,6 +194,7 @@ class EventoController extends Controller
         ]);
     }
 
+    /**  */
     public function destroy(Evento $evento)
     {
         try{
@@ -206,15 +207,30 @@ class EventoController extends Controller
             ]);
         }
 
+        $items = $this->getEventoSqlPart()
+            ->orderBy('eventos.date', 'ASC')
+            ->paginate(10);
+
+        $last_page = $items->lastPage();
+
+        // delete last id fragment from Url
+        $url = $items->path();
+        $exp = explode('/', $url);
+        unset($exp[count($exp)-1]);
+        $new_url = implode('/', $exp);
+
         return response()->json([
             'success' => 1,
+            'last_page' => $last_page,
+            'path' => $new_url,
         ]);
     }
 
     /**  */
     public function filter(Request $request)
     {
-        // validate:
+        // todo: validate
+
         $date_start = $request->date_start ?? date('Y');
         $date_end   = $request->date_end ?? date('Y');
         $sum_start = $request->sum_start ?? 0;
@@ -224,19 +240,8 @@ class EventoController extends Controller
 
         $tags = $request->get('tag_arr') ?? [];
 
-//        return response([
-//            'response_data' => [$date_start, $date_end, $tags],
-//            'success' => false,
-//        ]);
-
         /** @var Evento $sql */
         $sql = $this->filterSql();
-
-//        $sqlDump = $sql
-//            ->  whereIn('tags1.id', )
-//            ->orWhereIn('tags2.id', $tags)
-//            ->toSql()
-//        ;
 
         $rs = $sql
             ->whereBetween('eventos.date',  [$date_start, $date_end])

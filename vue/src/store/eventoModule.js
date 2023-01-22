@@ -131,7 +131,21 @@ export const eventoModule = {
                             commit('setEditMode', 0);
                             commit('setCreateEditFormVisible', false);
                         }
-                        commit('delItem', id);
+
+                        // if after delete page number is less
+                        let last_page = res.data.last_page;
+                        //console.log('last_page:', last_page);
+                        //console.log('state.current_page:', state.current_page);
+
+                        if (last_page < state.current_page){
+                            commit('saveCurrentPageToSessionStorage', last_page);
+
+                            let page_url = `${res.data.path}?page=${last_page}`;
+                            //console.log('page_url:', page_url);
+                            dispatch('loadItems', {url: page_url});
+                        }else{
+                            commit('delItem', id);
+                        }
                     }
                     return res;
                 })
