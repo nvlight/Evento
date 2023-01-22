@@ -25,11 +25,13 @@
 <script>
 import {mapActions, mapState} from "vuex";
 import MgInputLabeled from "../UI/MgInputLabeled.vue";
+import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-diagram-modal',
-    components: {MgInputLabeled},
+    components: { MgInputLabeled },
     emits: [],
+    mixins: [ DateMixin, ],
     data(){
         return {
             diagramGetParams:{
@@ -50,7 +52,7 @@ export default {
         }),
     },
     mounted() {
-        this.diagramGetParams.year = (new Date()).getFullYear();
+        this.diagramGetParams.year = this.getCurrentDateObject.year;
         this.$store.dispatch('diagram/resetItems');
     }
 }

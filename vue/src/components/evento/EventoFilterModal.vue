@@ -86,10 +86,12 @@
 
 <script>
 import {mapActions, mapState} from "vuex";
+import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-filter-modal',
     emits: ['doFilterEventos'],
+    mixins: [DateMixin, ],
     data(){
         return {
             filterData: {
@@ -115,8 +117,8 @@ export default {
 
         setDatesForFilterForm(){
             if (! Object.keys(this.sessionFilter).length){
-                this.filterData.date_start = this.getCurrentDate;
-                this.filterData.date_end   = this.getCurrentDate;
+                this.filterData.date_start = this.getFormattedCurrentDate;
+                this.filterData.date_end   = this.getFormattedCurrentDate;
             }
         },
         removeFilterTagId(id){
@@ -162,17 +164,6 @@ export default {
             }
             return this.tags.items.filter(t => t.name.includes(this.filterData.filter_text));
         },
-
-        getCurrentDate(){
-            const dt = new Date();
-            let year = dt.getFullYear();
-            let day = dt.getDate();
-            day = day < 10 ? '0' +  day : day;
-            let month = dt.getMonth();
-            month = month < 10 ? '0' + ( month + 1) : month + 1;
-            return [year, month, day,].join('-');
-        },
-
     },
     mounted() {
         this.setSessionFilterData();

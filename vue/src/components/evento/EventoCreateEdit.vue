@@ -97,11 +97,12 @@
 <script>
 import {mapGetters, mapMutations, mapState} from "vuex";
 import Alert from "../Alert.vue";
+import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-create-edit',
     components: { Alert },
-
+    mixins: [DateMixin, ],
     emits: [],
     data(){
         return {
@@ -169,12 +170,12 @@ export default {
 
         createModeHandler(){
             this.resetEvento();
-            this.evento.date = this.getCurrentDate;
+            this.evento.date = this.getFormattedCurrentDate;
         },
 
         resetEvento(){
             this.evento = Object.assign({}, this.defaultEvento);
-            this.evento.date = this.getCurrentDate;
+            this.evento.date = this.getFormattedCurrentDate;
         },
 
         editModeHandler(){
@@ -210,16 +211,6 @@ export default {
             'getCurrentEditedItem': 'evento/getCurrentEditedItem',
             'getItemById': 'evento/getItemById',
         }),
-
-        getCurrentDate(){
-            const dt = new Date();
-            let year = dt.getFullYear();
-            let day = dt.getDate();
-            day = day < 10 ? '0' +  day : day;
-            let month = dt.getMonth();
-            month = month < 10 ? '0' + ( month + 1) : month + 1;
-            return [year, month, day,].join('-');
-        },
 
         editedItem(){
             let filteredItem = this.getItemById(this.getCurrentEditItemId);
