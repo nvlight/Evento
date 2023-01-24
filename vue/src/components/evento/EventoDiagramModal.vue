@@ -4,7 +4,7 @@
 
         <div>
             <form @submit.prevent="loadDiagramData" class="mt-2 flex items-end">
-                <mg-input-labeled v-model="diagramGetParams.year">Выберите год</mg-input-labeled>
+                <mg-input-labeled v-focus v-model="diagramGetParams.year">Выберите год</mg-input-labeled>
                 <mg-button class="ml-2 bg-red-400 focus:ring-red-500">
                     <mg-spin v-if="diagramValue.loading"></mg-spin>Показать
                 </mg-button>

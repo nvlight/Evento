@@ -13,7 +13,10 @@
             <div class="mt-2 tag_list">
                 <div class="relative">
                     <div class="relative">
-                        <mg-input-labeled v-model="filterData.filter_text" class="block " :classes="'w-full'"
+                        <mg-input-labeled
+                            v-focus
+                            v-model="filterData.filter_text" class="block "
+                            :classes="'w-full'"
                         >добавить тег
                         </mg-input-labeled>
 
@@ -117,7 +120,10 @@ export default {
 
         setDatesForFilterForm(){
             if (! Object.keys(this.sessionFilter).length){
-                this.filterData.date_start = this.getFormattedCurrentDate;
+                let dataStart = this.getCurrentDateObject;
+                dataStart = [dataStart.year, dataStart.month, '01',].join('-');
+
+                this.filterData.date_start = dataStart;
                 this.filterData.date_end   = this.getFormattedCurrentDate;
             }
         },
