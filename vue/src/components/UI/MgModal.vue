@@ -1,8 +1,8 @@
 <template>
-    <div class="dialog"
+    <div :class="wrapper_class"
         v-if="show" @click="hideDialog"
     >
-        <div class="dialog__content relative" :class="dialog_content_classes"
+        <div :class="[$style.dialog__content, 'relative' ,dialog_content_classes]"
              @click.stop
         >
             <mg-close-icon-button @click="hideDialog" class="absolute right-1 top-1 border-blue-400">
@@ -29,39 +29,56 @@ export default {
     },
     data(){
         return {
+            wrapper_class: [ this.$style.dialog ],
         }
     },
     methods: {
         hideDialog(){
             this.$emit('update:show', false);
         },
+        transitionHandler(){
+            this.wrapper_class.push(this.$style.tran);
+        },
     },
     computed:{
 
     },
     mounted(){
+
+    },
+    watch:{
+        show(nv){
+            this.wrapper_class =  [ this.$style.dialog ];
+            if (nv){
+                setTimeout(this.transitionHandler, 0);
+            }
+        }
     },
 }
 </script>
 
-<style scoped>
-.dialog{
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    background: rgba(0,0,0,0.5);
-    position: fixed;
-    display: flex;
-    z-index: 1;
-}
-.dialog__content{
-    margin: auto;
-    background: white;
-    border-radius: 12px;
-    min-height: 50px;
-    min-width: 300px;
-    padding: 20px;
-    max-height: 80vh;
-}
+<!--npm i --save-dev sass -->
+<style lang="scss" module>
+    .tran{
+        transition: all ease 0.3s;
+        background: rgba(0,0,0,0.5);
+    }
+    .dialog{
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        position: fixed;
+        display: flex;
+        z-index: 1;
+        &__content{
+            margin: auto;
+            background: white;
+            border-radius: 12px;
+            min-height: 50px;
+            min-width: 300px;
+            padding: 20px;
+            max-height: 80vh;
+        }
+    }
 </style>

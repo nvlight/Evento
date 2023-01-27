@@ -14,6 +14,16 @@
                     <evento-diagram-modal @closeModalDialog="isDiagramVisible=false" />
                 </mg-modal>
 
+                <mg-modal
+                    v-model:show="filterFormVisible" class=""
+                    :dialog_content_classes="'overflow-auto '"
+                >
+                    <evento-filter-modal
+                        @doFilterEventos="doFilterEventos"
+                        @closeModalDialog="filterFormVisible=false"
+                    />
+                </mg-modal>
+
                 <!-- show diagrams -->
                 <mg-button class="flex items-center text-black focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
                     hover:border-indigo-500 transition-colors" @click="showDiagram"
@@ -83,15 +93,6 @@
         <div v-else>
             <div class="text-center">Еще нет добавленных событий</div>
         </div>
-
-        <mg-modal v-model:show="filterFormVisible" class=""
-            :dialog_content_classes="'overflow-auto '"
-            >
-            <evento-filter-modal
-                @doFilterEventos="doFilterEventos"
-                @closeModalDialog="filterFormVisible=false"
-            />
-        </mg-modal>
 
     </div>
 </template>
