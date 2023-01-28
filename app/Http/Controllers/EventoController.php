@@ -101,9 +101,7 @@ class EventoController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $request->tag_id_second = intval($request->tag_id_second);
-
-        if ($request->tag_id_second) {
+        if ($request->input('tag_id_second', 0) ) {
             $this->validate($request, [
                 'tag_id_second' => 'exists:tags,id',
             ]);
@@ -161,8 +159,7 @@ class EventoController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $request->tag_id_second = intval($request->tag_id_second);
-        if ($request->tag_id_second) {
+        if ($request->input('tag_id_second', 0) ) {
             $this->validate($request, [
                 'tag_id_second' => 'exists:tags,id',
             ]);
@@ -170,14 +167,14 @@ class EventoController extends Controller
 
         try{
             $tagValue = $evento->tagValue;
-            $tagValue->tag_id_first  = $request->tag_id_first;
-            $tagValue->tag_id_second = $request->tag_id_second;
-            $tagValue->value         = $request->value;
-            $tagValue->description   = $request->description;
+            $tagValue->tag_id_first  = $request->input('tag_id_first');
+            $tagValue->tag_id_second = $request->input('tag_id_second');
+            $tagValue->value         = $request->input('value');
+            $tagValue->description   = $request->input('description');
             $tagValue->save();
 
             // todo: add transaction!
-            $evento->date = $request->date;
+            $evento->date = $request->date('date') ?? date('Y');
             $evento->save();
 
             $dataRowWithNeedSelected = $this->getOneEvento($evento->id);
@@ -233,14 +230,11 @@ class EventoController extends Controller
     {
         // todo: validate
 
-        $date_start = $request->date_start ?? date('Y');
-        $date_end   = $request->date_end ?? date('Y');
-        $sum_start = $request->sum_start ?? 0;
-        $sum_end = $request->sum_end ?? 1000000;
-        $sum_start = intval($sum_start);
-        $sum_end = intval($sum_end);
-
-        $tags = $request->get('tag_arr') ?? [];
+        $date_start = $request->input('date_start', date('Y'));
+        $date_end   = $request->input('date_end', date('Y'));
+        $sum_start  = $request->integer('sum_start', 0);
+        $sum_end    = $request->integer('sum_end', 1000000);
+        $tags       = $request->input('tag_arr', []);
 
         /** @var Evento $sql */
         $sql = $this->filterSql();
@@ -318,6 +312,36 @@ class EventoController extends Controller
         return $res;
     }
 
+    /**  */
+    public function getDiagramYears()
+    {
+        //    select distinct year(eventos.date) as year
+        //    from eventos
+        //    group by eventos.date
+        try{
+            $yearsRs = Evento
+                ::select( DB::raw('distinct year(eventos.date) as year'))
+                ->from('eventos')
+                ->groupBy('eventos.date')
+                ->orderBy('year', 'asc')
+                ->get()
+            ;
+        }catch (QueryException $e){
+            $this->saveToLog(__METHOD__, $e);
+
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!'
+            ]);
+        }
+
+        return response([
+            'action' => 'diagramYears',
+            'success' => true,
+            'years' => $yearsRs,
+        ]);
+    }
+
     /**
       *
       *  Diagram
@@ -349,7 +373,7 @@ class EventoController extends Controller
      */
     public function diagram(Request $request)
     {
-        $year = $request->year ?? date('Y');
+        $year = $request->date('year', 'Y', 'Europe/Moscow') ?? date('Y');
 
 //        return response([
 //            'action' => 'diagram',

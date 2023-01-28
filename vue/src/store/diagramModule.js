@@ -6,7 +6,7 @@ export const diagramModule = {
             loading: false,
             items: [],
         },
-
+        years: [],
     }),
     getters:{
 
@@ -30,7 +30,20 @@ export const diagramModule = {
         },
         resetItems({commit}){
             commit('setDiagramData', []);
-        }
+        },
+        loadYears({commit}){
+            let response = axiosClient
+                .get(`/evento/diagram-years`)
+                .then((res) => {
+                    if (res.data.success) {
+                        commit('setYears', res.data.years);
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                })
+            return response;
+        },
     },
     mutations: {
         setDiagramData(state, data){
@@ -38,6 +51,9 @@ export const diagramModule = {
         },
         setItemsLoading(state, value){
             state.diagram.loading = value;
+        },
+        setYears(state, years){
+            state.years = years;
         },
     },
     namespaced: true,

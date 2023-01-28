@@ -24,11 +24,12 @@ Route::middleware('auth:sanctum')->group(function ()
     });
     Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
 
-    Route::resource('/tag', TagController::class);
+    Route::apiResource('/tag', TagController::class);
 
     Route::get('/evento/filter', [EventoController::class, 'filter']);
     Route::get('/evento/diagram', [EventoController::class, 'diagram']);
-    Route::resource('/evento', EventoController::class);
+    Route::get('/evento/diagram-years', [EventoController::class, 'getDiagramYears']);
+    Route::apiResource('/evento', EventoController::class);
 });
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);
