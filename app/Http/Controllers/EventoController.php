@@ -16,7 +16,7 @@ class EventoController extends Controller
 {
     protected int $perPage = 10;
 
-    private function getEventoSqlPart(){
+    protected function getEventoSqlPart(){
         return Evento::
               join('tag_values', 'tag_values.evento_id', '=', 'eventos.id')
             ->join('tags as tags1', 'tags1.id', '=', 'tag_values.tag_id_first')
@@ -45,7 +45,6 @@ class EventoController extends Controller
             )
             ->where('eventos.user_id', Auth::user()->id)
             ->where('tags1.user_id', Auth::user()->id)
-            //->orderBy('eventos.date', 'DESC')
         ;
     }
 
@@ -73,7 +72,6 @@ class EventoController extends Controller
     {
         try{
             $items = $this->getEventoSqlPart()
-                ->orderBy('eventos.date', 'ASC')
                 ->paginate($this->perPage)
             ;
             //$items->withPath('eventos' . $_SERVER['QUERY_STRING']);
@@ -106,6 +104,8 @@ class EventoController extends Controller
                 'tag_id_second' => 'exists:tags,id',
             ]);
         }
+
+        $currentPage = $request->integer('current_page', 1);
 
         $eventoId = 0;
         try{
@@ -142,10 +142,27 @@ class EventoController extends Controller
             ]);
         }
 
+        $eventosByPage = $this->getEventoSqlPart()
+            ->paginate(
+                $perPage = $this->perPage,
+                $columns = ['*'],
+                $pageName = 'page',
+                $page = $currentPage
+            );
+        $eventosCollect = collect($eventosByPage->items());
+
+        $filtered = $eventosCollect->filter(function ($value, $key) use ($dataRs) {
+            return $value->id === $dataRs->id;
+        });
+
         return response()->json([
             'success' => 1,
-            'savedId' => 0,
-            'data' => $dataRs,
+            'data'  => $dataRs,
+            //'storedId' => $dataRs->id,
+            //'items' => $eventosByPage->items(),
+            //'currentPage' => $currentPage,
+            //'filtered' => $filtered,
+            'filteredCount' => count($filtered),
         ]);
     }
 

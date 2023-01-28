@@ -103,7 +103,11 @@ export const eventoModule = {
                 .then((res)=>{
                     commit('setCreateItemLoading', false);
                     if (res.data.success) {
-                        dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
+                        if (res.data.filteredCount){
+                            //dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
+                            commit('delItem', state.eventos.items[state.eventos.items.length - 1].id);
+                            commit('addItem', res.data.data);
+                        }
                     }
                     return res;
                 })

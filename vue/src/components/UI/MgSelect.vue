@@ -32,14 +32,14 @@ export default {
     },
     methods: {
         changeOption(event){
-            console.log(event.target)
-            console.log(this.modelValue);
+            //console.log(event.target)
+            //console.log(this.modelValue);
             this.$emit('update:modelValue', this.modelValue);
         },
     },
     mounted() {
-        console.log(this.options);
-        console.log(this.optionFieldName);
+        //console.log(this.options);
+        //console.log(this.optionFieldName);
     },
 }
 </script>

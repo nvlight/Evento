@@ -137,12 +137,14 @@ export default {
             for(let key in this.evento){
                 data.append(key, this.evento[key]);
             }
+            data.append('current_page', this.current_page);
 
             const item = {item: this.tag, formData: data}
             this.$store.dispatch('evento/createItemQuery', item)
                 .then((res) => {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.resetEvento();
+
                     }else{
                         this.errors = {};
                         let err = res?.response?.data?.errors;
@@ -203,7 +205,9 @@ export default {
 
             'createItemLoading': state => state.evento.createItemLoading,
             'updateItemLoading': state => state.evento.updateItemLoading,
+            'current_page': state => state.evento.current_page,
         }),
+
 
         ...mapGetters({
             'createItemStatus': 'evento/getcreateItemStatus',
