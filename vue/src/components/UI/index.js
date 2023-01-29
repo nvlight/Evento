@@ -14,6 +14,7 @@ import MgSelect from "./MgSelect.vue";
 import MgPencilIconButton from "./MgPencilIconButton.vue";
 import MgSpin from "./MgSpin.vue";
 import MgLoading from "./MgLoading.vue";
+import MgCheckbox from "./MgCheckbox.vue";
 
 export default [
     MgButton,
@@ -32,4 +33,5 @@ export default [
     MgPencilIconButton,
     MgSpin,
     MgLoading,
+    MgCheckbox,
 ];

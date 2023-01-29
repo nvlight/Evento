@@ -5,6 +5,7 @@ export const eventoModule = {
         itemModelName: 'evento',
 
         current_page: sessionStorage.getItem('current_page') ? sessionStorage.getItem('current_page') : 1,
+        evento_filter_active: sessionStorage.getItem('evento_filter'),
 
         eventos: {
             items: [],
@@ -154,6 +155,8 @@ export const eventoModule = {
                             commit('delItem', id);
 
                             // 2. добавить 1 новый элемент с текущим page в список снизу
+                            // 2.1 нужно при удалении учесть где мы, если включен режим фильтрации и если есть еще
+                            // элементы - добавить еще 1 элемент!
                             commit('pushItem', res.data.last_item);
                         }
                     }
@@ -299,6 +302,10 @@ export const eventoModule = {
             state.eventos.url_path = value;
             sessionStorage.setItem('url_path', value);
         },
+
+        setEventoFilter(state, value){
+            state.evento_filter_active = value;
+        }
     },
     namespaced: true,
 }

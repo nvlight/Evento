@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="max-w-md">
         <h1 class="text-2xl font-semibold">Фильтр событий</h1>
 
         <form @submit.prevent="doFilterEventos" class="mt-2">
@@ -63,6 +63,10 @@
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    <mg-checkbox class="mt-1" v-model="filterData.pickAllTags">Выбрать все теги</mg-checkbox>
+                </div>
             </div>
 
             <div class="date-start-end flex mt-3">
@@ -70,6 +74,10 @@
                 <mg-input-labeled v-model="filterData.sum_end" class="ml-2"
                 >Сумма конечная
                 </mg-input-labeled>
+            </div>
+
+            <div>
+                <mg-checkbox class="mt-1" v-model="filterData.zeroFill">Показать элементы с нулевыми значениями</mg-checkbox>
             </div>
 
             <div class="flex justify-between">
@@ -83,7 +91,6 @@
                 </button>
             </div>
         </form>
-
     </div>
 </template>
 
@@ -93,10 +100,13 @@ import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-filter-modal',
+    components: {},
+
     emits: ['doFilterEventos', 'closeModalDialog'],
     mixins: [DateMixin, ],
     data(){
         return {
+            filterDataEtalon: {},
             filterData: {
                 date_start: 1,
                 date_end: 2,
@@ -105,6 +115,8 @@ export default {
                 filter_text: '',
                 tag_arr: [], //[122, 123],
                 orderById: 'desc / asc',
+                zeroFill: false,
+                pickAllTags: false,
             },
             sessionFilter: {},
         }
@@ -115,6 +127,7 @@ export default {
         }),
         doFilterEventos(){
             sessionStorage.setItem('evento_filter', JSON.stringify(this.filterData)),
+            this.$store.commit('evento/setEventoFilter', true);
             this.filterItems(this.filterData);
         },
 
@@ -144,6 +157,7 @@ export default {
         setSessionFilterData(){
             let key = 'evento_filter';
             if (sessionStorage.hasOwnProperty(key)) {
+            //if (this.evento_filter_active) {
                 this.sessionFilter = (JSON.parse(sessionStorage.getItem(key)));
                 this.filterData = this.sessionFilter;
             }
@@ -152,6 +166,7 @@ export default {
     computed:{
         ...mapState({
             'tags': state => state.tag.tags,
+            'evento_filter_active': state => state.evento.evento_filter_active,
         }),
 
         filterRs(){
@@ -174,6 +189,12 @@ export default {
     mounted() {
         this.setSessionFilterData();
         this.setDatesForFilterForm();
+
+        this.filterDataEtalon = this.filterData;
+
+        if (!this.evento_filter_active){
+            this.filterData = {...this.filterDataEtalon};
+        }
 
         window.addEventListener('keydown', (e) => {
             if (e.key == 'Escape') {

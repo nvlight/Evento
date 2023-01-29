@@ -251,33 +251,43 @@ class EventoController extends Controller
     {
         // todo: validate
 
-        $date_start = $request->input('date_start', date('Y'));
-        $date_end   = $request->input('date_end', date('Y'));
-        $sum_start  = $request->integer('sum_start', 0);
-        $sum_end    = $request->integer('sum_end', 1000000);
-        $tags       = $request->input('tag_arr', []);
+        $date_start  = $request->input('date_start', date('Y'));
+        $date_end    = $request->input('date_end', date('Y'));
+        $sum_start   = $request->integer('sum_start', 0);
+        $sum_end     = $request->integer('sum_end', 1000000);
+        $tags        = $request->input('tag_arr', []);
+        $zeroFill    = $request->boolean('zeroFill');
+        $pickAllTags = $request->boolean('pickAllTags');
 
         /** @var Evento $sql */
-        $sql = $this->filterSql();
+        $rs = $this->filterSql();
 
-        $rs = $sql
-            ->whereBetween('eventos.date',  [$date_start, $date_end])
-            ->whereBetween('tag_values.value', [$sum_start, $sum_end])
-            ->where(function ($query) use($tags){
-                $query->whereIn('tags1.id', $tags)
-                    ->orWhereIn('tags2.id', $tags);
-            })
-            ->orderByDesc('date')
-            //->get()
-            //->toSql()
-            ->paginate(10)
-        ;
-        //$rs->withPath('eventos' . $_SERVER['QUERY_STRING']);
+        $rs = $rs->whereBetween('eventos.date',  [$date_start, $date_end]);
+
+        //
+        if (!$pickAllTags){
+            $rs = $rs
+                ->where(function ($query) use($tags){
+                    $query->whereIn('tags1.id', $tags)
+                        ->orWhereIn('tags2.id', $tags);
+                });
+        }
+
+        //
+        if (!$zeroFill){
+            $rs = $rs->whereBetween('tag_values.value', [$sum_start, $sum_end]);
+        }
+
+        $rs = $rs->orderByDesc('date')
+                 ->orderByDesc('eventos.id')
+                 ->paginate(10);
 
         return response([
             //'$sqlDump' => $sqlDump,
-            'QUERY_STRING' => $_SERVER['QUERY_STRING'],
-            'response_data' => $request->all(),
+            //'QUERY_STRING' => $_SERVER['QUERY_STRING'],
+            //'response_data' => $request->all(),
+            //'$zeroFill'  => $zeroFill,
+            //'$pickAllTags' => $pickAllTags,
             'data'  => $rs,
             'success' => true,
         ]);
