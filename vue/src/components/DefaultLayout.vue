@@ -6,6 +6,8 @@
             <RouterView></RouterView>
         </main>
 
+        <MgNotification/>
+
         <mg-footer/>
     </div>
 </template>
@@ -13,10 +15,11 @@
 <script>
 import Navbar from "./nav/Navbar.vue";
 import MgFooter from "./footer/MgFooter.vue";
+import MgNotification from "./MgNotification.vue"
 
 export default {
     components: {
-        Navbar, MgFooter,
+        Navbar, MgFooter, MgNotification,
     },
     provide(){
         return {

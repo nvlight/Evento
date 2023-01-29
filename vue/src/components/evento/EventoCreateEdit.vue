@@ -63,7 +63,7 @@
             </div>
 
             <div class="w-full">
-                <mg-textarea v-model="evento.description" class="border-red-400"
+                <mg-textarea v-model="evento.description" :classes="['border-gray-200']"
                 >Описание</mg-textarea>
             </div>
 
@@ -145,12 +145,22 @@ export default {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.resetEvento();
 
+                        this.$store.commit('notify', {
+                            message: 'Evento сохранен!',
+                            type: 'success',
+                            timeout: 2500,
+                        })
                     }else{
                         this.errors = {};
                         let err = res?.response?.data?.errors;
                         if (err) {
                             this.errors = err;
                         }
+
+                        this.$store.commit('notify', {
+                            message: 'Ошибка при сохраненении!',
+                            type: 'error',
+                        })
                     }
                 })
                 .catch((err) => {

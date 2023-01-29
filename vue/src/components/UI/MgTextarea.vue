@@ -7,8 +7,9 @@
             class="border w-full rounded h-20
                 p-3
                 focus:border-indigo-500
-                focus:outline-none
-        "></textarea>
+                focus:outline-none"
+            :class="classes"
+        ></textarea>
     </label>
 </template>
 
@@ -18,13 +19,21 @@ export default {
     props: {
         modelValue: {
             type: [String, Number],
+        },
+        classes: {
+            type: Array,
+            default: [],
         }
     },
 
     methods:{
+
         updateInput(ev){
             this.$emit('update:modelValue', ev.target.value);
         }
+    },
+
+    mounted() {
     }
 }
 </script>
