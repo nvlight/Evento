@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { mapGetters} from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
     name: 'evento-item',
@@ -90,7 +90,19 @@ export default {
     methods:{
         deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
-            this.$store.dispatch('evento/delItem', id);
+            this.$store.dispatch('evento/delItemQuery', {id, 'current_page': this.current_page})
+                .then((res) => {
+                    if (res?.status === 200 && res?.data?.success === 1){
+                        this.$store.commit('notify', {
+                            message: 'Evento удален!',
+                            type: 'error',
+                            timeout: 1500,
+                        })
+                    }
+                })
+                .catch((err) => {
+                    console.log('delete evento - catch: ', err);
+                });
         },
 
         editEventoHanlder(evento){
@@ -103,6 +115,9 @@ export default {
 
     },
     computed:{
+        ...mapState({
+            'current_page': state => state.evento.current_page,
+        }),
         ...mapGetters({
             'currentEditedItem': 'evento/getCurrentEditedItem',
         }),

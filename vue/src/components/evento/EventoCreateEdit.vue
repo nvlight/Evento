@@ -148,7 +148,7 @@ export default {
                         this.$store.commit('notify', {
                             message: 'Evento сохранен!',
                             type: 'success',
-                            timeout: 2500,
+                            timeout: 1500,
                         })
                     }else{
                         this.errors = {};

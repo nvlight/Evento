@@ -119,14 +119,14 @@ export const eventoModule = {
             return response;
         },
 
-        delItem({dispatch, state, commit}, id){
-            dispatch('delItemQuery', id);
+        delItem({dispatch, state, commit}, data){
+            dispatch('delItemQuery', data);
         },
-        delItemQuery({dispatch,state, commit}, id){
+        delItemQuery({dispatch,state, commit}, {id, current_page}){
             let response;
             const modelName = state.itemModelName;
             response = axiosClient
-                .delete(`/${modelName}/${id}`)
+                .delete(`/${modelName}/${id}?current_page=${current_page}`)
                 .then((res)=>{
                     if (res.data.success){
                         //console.log(id, state.currentEditItemId, state.editMode);
@@ -148,8 +148,13 @@ export const eventoModule = {
                             //console.log('page_url:', page_url);
                             dispatch('loadItems', {url: page_url});
                         }else{
-                            //commit('delItem', id);
-                            dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
+                            //dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
+
+                            // 1. удалить текущий элемент
+                            commit('delItem', id);
+
+                            // 2. добавить 1 новый элемент с текущим page в список снизу
+                            commit('pushItem', res.data.last_item);
                         }
                     }
                     return res;
@@ -216,6 +221,9 @@ export const eventoModule = {
         },
         addItem: (state, item) => {
             state.eventos.items.unshift(item);
+        },
+        pushItem(state, item){
+            state.eventos.items.push(item);
         },
         delItem: (state, id) => {
             state.eventos.items = state.eventos.items.filter(

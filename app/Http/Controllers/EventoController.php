@@ -29,7 +29,8 @@ class EventoController extends Controller
             )
             ->where('eventos.user_id', Auth::user()->id)
             ->where('tags1.user_id', Auth::user()->id)
-            ->orderBy('eventos.date', 'DESC');
+            ->orderBy('eventos.date', 'DESC')
+            ->orderBy('eventos.id', 'DESC');
     }
 
     private function filterSql(){
@@ -68,7 +69,7 @@ class EventoController extends Controller
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try{
             $items = $this->getEventoSqlPart()
@@ -84,6 +85,7 @@ class EventoController extends Controller
         }
 
         return json_encode([
+            'current_page' => $request->input('page'),
             'data' => $items,
             'success' => 1,
         ]);
@@ -223,14 +225,15 @@ class EventoController extends Controller
             ]);
         }
 
-        $items = $this->getEventoSqlPart()
-            ->orderBy('eventos.date', 'ASC')
+        $eventos = $this->getEventoSqlPart()
             ->paginate($this->perPage);
+        $items = $eventos->items();
+        $lastItem = $items[count($items)-1];
 
-        $last_page = $items->lastPage();
+        $last_page = $eventos->lastPage();
 
         // delete last id fragment from Url
-        $url = $items->path();
+        $url = $eventos->path();
         $exp = explode('/', $url);
         unset($exp[count($exp)-1]);
         $new_url = implode('/', $exp);
@@ -238,7 +241,8 @@ class EventoController extends Controller
         return response()->json([
             'success' => 1,
             'last_page' => $last_page,
-            'path' => $new_url,
+            'path'      => $new_url,
+            'last_item' => $lastItem,
         ]);
     }
 
