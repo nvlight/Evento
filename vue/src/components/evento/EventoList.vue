@@ -155,6 +155,7 @@ export default {
             sessionStorage.removeItem('evento_filter');
             this.filterSeted = false;
 
+            this.$store.commit('evento/setEventoFilter', null);
             this.$store.dispatch('evento/loadItems', {url:null});
         },
         showDiagram(){

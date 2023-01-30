@@ -90,12 +90,13 @@ export default {
     methods:{
         deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
+            let isFilterActive = this.evento_filter ? 1 : 0;
             const delParams = {
-                id,
                 'current_page': this.current_page,
-                type: this.evento_filter_active,
+                'filter_active': isFilterActive,
+                ...JSON.parse(this.evento_filter),
             }
-            this.$store.dispatch('evento/delItemQuery', delParams)
+            this.$store.dispatch('evento/delItemQuery', {id, params: delParams})
                 .then((res) => {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.$store.commit('notify', {
@@ -122,7 +123,7 @@ export default {
     computed:{
         ...mapState({
             'current_page': state => state.evento.current_page,
-            'evento_filter_active': state => state.evento.evento_filter_active,
+            'evento_filter': state => state.evento.evento_filter_active,
         }),
         ...mapGetters({
             'currentEditedItem': 'evento/getCurrentEditedItem',

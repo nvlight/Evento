@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Session;
 
 class EventoController extends Controller
 {
@@ -213,10 +214,15 @@ class EventoController extends Controller
     }
 
     /**  */
-    public function destroy(Evento $evento)
+    public function destroy(Request $request, Evento $evento)
     {
+//        return response()->json([
+//            'success' => 0,
+//            'filter_active' => $request->filter_active,
+//        ]);
+
         try{
-            $evento->delete();
+            //$evento->delete();
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -225,17 +231,61 @@ class EventoController extends Controller
             ]);
         }
 
-        $eventos = $this->getEventoSqlPart()
-            ->paginate($this->perPage);
-        $items = $eventos->items();
-        $lastItem = $items[count($items)-1];
+        $filter_active = $request->filter_active;
 
-        $last_page = $eventos->lastPage();
+        //
+        if (!$filter_active) {
+            $eventos = $this->getEventoSqlPart()
+                ->paginate($this->perPage);
+            $items = $eventos->items();
+            $lastItem = $items[count($items) - 1];
+            $last_page = $eventos->lastPage();
+
+            $url = $eventos->path();
+        }else{
+            $date_start  = $request->input('date_start', date('Y'));
+            $date_end    = $request->input('date_end', date('Y'));
+            $sum_start   = $request->integer('sum_start', 0);
+            $sum_end     = $request->integer('sum_end', 1000000);
+            $tags        = $request->input('tag_arr', []);
+            $zeroFill    = $request->boolean('zeroFill');
+            $pickAllTags = $request->boolean('pickAllTags');
+
+            /** @var Evento $sql */
+            $rs = $this->filterSql();
+
+            $rs = $rs->whereBetween('eventos.date',  [$date_start, $date_end]);
+
+            //
+            if (!$pickAllTags){
+                $rs = $rs
+                    ->where(function ($query) use($tags){
+                        $query->whereIn('tags1.id', $tags)
+                            ->orWhereIn('tags2.id', $tags);
+                    });
+            }
+
+            //
+            if (!$zeroFill){
+                $rs = $rs->whereBetween('tag_values.value', [$sum_start, $sum_end]);
+            }
+
+            $filteredEventos = $rs->orderByDesc('date')
+                ->orderByDesc('eventos.id')
+                ->paginate(10);
+
+            $items = $filteredEventos->items();
+            $lastItem = $items[count($items) - 1];
+            $last_page = $filteredEventos->lastPage();
+
+            $url = $filteredEventos->path();
+        }
 
         // delete last id fragment from Url
-        $url = $eventos->path();
         $exp = explode('/', $url);
-        unset($exp[count($exp)-1]);
+        if (count($exp)){
+            unset($exp[count($exp)-1]);
+        }
         $new_url = implode('/', $exp);
 
         return response()->json([
@@ -283,12 +333,7 @@ class EventoController extends Controller
                  ->paginate(10);
 
         return response([
-            //'$sqlDump' => $sqlDump,
-            //'QUERY_STRING' => $_SERVER['QUERY_STRING'],
-            //'response_data' => $request->all(),
-            //'$zeroFill'  => $zeroFill,
-            //'$pickAllTags' => $pickAllTags,
-            'data'  => $rs,
+            'data' => $rs,
             'success' => true,
         ]);
     }

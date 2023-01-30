@@ -127,11 +127,11 @@ export const eventoModule = {
         delItem({dispatch, state, commit}, data){
             dispatch('delItemQuery', data);
         },
-        delItemQuery({dispatch,state, commit}, {id, current_page}){
+        delItemQuery({dispatch,state, commit}, {id, params}){
             let response;
             const modelName = state.itemModelName;
             response = axiosClient
-                .delete(`/${modelName}/${id}?current_page=${current_page}`)
+                .delete(`/${modelName}/${id}`, {params: params})
                 .then((res)=>{
                     if (res.data.success){
                         //console.log(id, state.currentEditItemId, state.editMode);
