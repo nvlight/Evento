@@ -5,7 +5,7 @@ export const eventoModule = {
         itemModelName: 'evento',
 
         current_page: sessionStorage.getItem('current_page'),
-        evento_filter_active: sessionStorage.getItem('evento_filter'),
+        evento_filter: sessionStorage.getItem('evento_filter'),
 
         eventos: {
             items: [],
@@ -146,12 +146,15 @@ export const eventoModule = {
                         //console.log('last_page:', last_page);
                         //console.log('state.current_page:', state.current_page);
 
+                        // если это последний элемент на странице - делаем -1 страницу.
                         if (last_page < state.current_page){
                             commit('saveCurrentPageToSessionStorage', last_page);
 
                             let page_url = `${res.data.path}?page=${last_page}`;
                             //console.log('page_url:', page_url);
                             dispatch('loadItems', {url: page_url});
+
+                            // todo: сделать также и для фильтрованных элементов!
                         }else{
                             //dispatch('loadItems', {url: `${state.eventos.url_path}?page=${state.eventos.current_page}`});
 
@@ -161,7 +164,9 @@ export const eventoModule = {
                             // 2. добавить 1 новый элемент с текущим page в список снизу
                             // 2.1 нужно при удалении учесть где мы, если включен режим фильтрации и если есть еще
                             // элементы - добавить еще 1 элемент!
-                            commit('pushItem', res.data.last_item);
+                            if (res.data.isNeedAddLastItem){
+                                commit('pushItem', res.data.last_item);
+                            }
                         }
                     }
                     return res;
@@ -308,7 +313,7 @@ export const eventoModule = {
         },
 
         setEventoFilter(state, value){
-            state.evento_filter_active = value;
+            state.evento_filter = value;
         }
     },
     namespaced: true,

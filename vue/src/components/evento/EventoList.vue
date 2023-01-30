@@ -94,6 +94,8 @@
             <div class="text-center">Еще нет добавленных событий</div>
         </div>
 
+<!--        <div>evento_filter: {{evento_filter}}</div>-->
+
     </div>
 </template>
 
@@ -169,6 +171,7 @@ export default {
             'tags':         state => state.tag.tags,
             'diagramValue': state => state.diagram.diagram,
             'current_page': state => state.evento.current_page,
+            'evento_filter': state => state.evento.evento_filter,
         }),
     },
     mounted() {

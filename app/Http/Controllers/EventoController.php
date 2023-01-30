@@ -213,16 +213,91 @@ class EventoController extends Controller
         ]);
     }
 
+    /** delete last id fragment from Url */
+    private function deleteLastInUrl(string $url):string
+    {
+        $exp = explode('/', $url);
+        if (count($exp)){
+            unset($exp[count($exp)-1]);
+        }
+
+        return implode('/', $exp);
+    }
+
+    /**  */
+    protected function getLastItemAfterEventoDestroyed()
+    {
+        $eventos = $this->getEventoSqlPart()
+            ->paginate($this->perPage);
+
+        $items = $eventos->items();
+        $lastItem = $items[count($items) - 1];
+        $lastPage = $eventos->lastPage();
+        $newUrl = $this->deleteLastInUrl($eventos->path());
+
+        return [
+            'last_page' => $lastPage,
+            'path'      => $newUrl,
+            'last_item' => $lastItem,
+            'paginate' => $eventos,
+            'isNeedAddLastItem' => ($eventos->total() >= $this->perPage),
+        ];
+    }
+
+    /**  */
+    protected function getLastItemAfterFilteredEventoDestroyed($request)
+    {
+        $date_start  = $request->input('date_start', date('Y'));
+        $date_end    = $request->input('date_end', date('Y'));
+        $sum_start   = $request->integer('sum_start', 0);
+        $sum_end     = $request->integer('sum_end', 1000000);
+        $tags        = $request->input('tag_arr', []);
+        $zeroFill    = $request->boolean('zeroFill');
+        $pickAllTags = $request->boolean('pickAllTags');
+
+        /** @var Evento $sql */
+        $rs = $this->filterSql();
+
+        $rs = $rs->whereBetween('eventos.date',  [$date_start, $date_end]);
+
+        //
+        if (!$pickAllTags){
+            $rs = $rs
+                ->where(function ($query) use($tags){
+                    $query->whereIn('tags1.id', $tags)
+                        ->orWhereIn('tags2.id', $tags);
+                });
+        }
+
+        //
+        if (!$zeroFill){
+            $rs = $rs->whereBetween('tag_values.value', [$sum_start, $sum_end]);
+        }
+
+        $filteredEventos = $rs->orderByDesc('date')
+            ->orderByDesc('eventos.id')
+            ->paginate($this->perPage);
+
+        $items = $filteredEventos->items();
+        $lastItem = $items[count($items) - 1];
+        $last_page = $filteredEventos->lastPage();
+
+        $newUrl = $this->deleteLastInUrl($filteredEventos->path());
+
+        return [
+            'last_page' => $last_page,
+            'path'      => $newUrl,
+            'last_item' => $lastItem,
+            'paginate' => $filteredEventos,
+            'isNeedAddLastItem' => ($filteredEventos->total() >= $this->perPage),
+        ];
+    }
+
     /**  */
     public function destroy(Request $request, Evento $evento)
     {
-//        return response()->json([
-//            'success' => 0,
-//            'filter_active' => $request->filter_active,
-//        ]);
-
         try{
-            //$evento->delete();
+            $evento->delete();
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -231,68 +306,20 @@ class EventoController extends Controller
             ]);
         }
 
-        $filter_active = $request->filter_active;
-
-        //
-        if (!$filter_active) {
-            $eventos = $this->getEventoSqlPart()
-                ->paginate($this->perPage);
-            $items = $eventos->items();
-            $lastItem = $items[count($items) - 1];
-            $last_page = $eventos->lastPage();
-
-            $url = $eventos->path();
+        if (!$request->filter_active) {
+            $lastItem = $this->getLastItemAfterEventoDestroyed();
         }else{
-            $date_start  = $request->input('date_start', date('Y'));
-            $date_end    = $request->input('date_end', date('Y'));
-            $sum_start   = $request->integer('sum_start', 0);
-            $sum_end     = $request->integer('sum_end', 1000000);
-            $tags        = $request->input('tag_arr', []);
-            $zeroFill    = $request->boolean('zeroFill');
-            $pickAllTags = $request->boolean('pickAllTags');
-
-            /** @var Evento $sql */
-            $rs = $this->filterSql();
-
-            $rs = $rs->whereBetween('eventos.date',  [$date_start, $date_end]);
-
-            //
-            if (!$pickAllTags){
-                $rs = $rs
-                    ->where(function ($query) use($tags){
-                        $query->whereIn('tags1.id', $tags)
-                            ->orWhereIn('tags2.id', $tags);
-                    });
-            }
-
-            //
-            if (!$zeroFill){
-                $rs = $rs->whereBetween('tag_values.value', [$sum_start, $sum_end]);
-            }
-
-            $filteredEventos = $rs->orderByDesc('date')
-                ->orderByDesc('eventos.id')
-                ->paginate(10);
-
-            $items = $filteredEventos->items();
-            $lastItem = $items[count($items) - 1];
-            $last_page = $filteredEventos->lastPage();
-
-            $url = $filteredEventos->path();
+            $lastItem = $this->getLastItemAfterFilteredEventoDestroyed($request);
         }
-
-        // delete last id fragment from Url
-        $exp = explode('/', $url);
-        if (count($exp)){
-            unset($exp[count($exp)-1]);
-        }
-        $new_url = implode('/', $exp);
+        extract($lastItem);
 
         return response()->json([
             'success' => 1,
             'last_page' => $last_page,
-            'path'      => $new_url,
-            'last_item' => $lastItem,
+            'path' => $path,
+            'last_item' => $last_item,
+            'paginate' => $paginate,
+            'isNeedAddLastItem' => $isNeedAddLastItem,
         ]);
     }
 
@@ -330,7 +357,7 @@ class EventoController extends Controller
 
         $rs = $rs->orderByDesc('date')
                  ->orderByDesc('eventos.id')
-                 ->paginate(10);
+                 ->paginate($this->perPage);
 
         return response([
             'data' => $rs,

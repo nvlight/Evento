@@ -66,6 +66,7 @@
             </div>
         </td>
     </tr>
+
 </template>
 
 <script>
@@ -102,7 +103,7 @@ export default {
                         this.$store.commit('notify', {
                             message: 'Evento удален!',
                             type: 'error',
-                            timeout: 1500,
+                            timeout: 2500,
                         })
                     }
                 })
@@ -123,7 +124,7 @@ export default {
     computed:{
         ...mapState({
             'current_page': state => state.evento.current_page,
-            'evento_filter': state => state.evento.evento_filter_active,
+            'evento_filter': state => state.evento.evento_filter,
         }),
         ...mapGetters({
             'currentEditedItem': 'evento/getCurrentEditedItem',

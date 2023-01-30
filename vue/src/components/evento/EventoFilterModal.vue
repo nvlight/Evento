@@ -126,8 +126,9 @@ export default {
             'filterItems': 'evento/filterItems',
         }),
         doFilterEventos(){
-            sessionStorage.setItem('evento_filter', JSON.stringify(this.filterData)),
-            this.$store.commit('evento/setEventoFilter', true);
+            const jsonFilterData = JSON.stringify(this.filterData);
+            sessionStorage.setItem('evento_filter', jsonFilterData);
+            this.$store.commit('evento/setEventoFilter', jsonFilterData);
             this.filterItems(this.filterData);
         },
 
@@ -166,7 +167,7 @@ export default {
     computed:{
         ...mapState({
             'tags': state => state.tag.tags,
-            'evento_filter_active': state => state.evento.evento_filter_active,
+            'evento_filter': state => state.evento.evento_filter,
         }),
 
         filterRs(){
@@ -192,7 +193,7 @@ export default {
 
         this.filterDataEtalon = this.filterData;
 
-        if (!this.evento_filter_active){
+        if (!this.evento_filter){
             this.filterData = {...this.filterDataEtalon};
         }
 
