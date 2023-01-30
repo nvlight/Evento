@@ -4,7 +4,7 @@ export const eventoModule = {
     state: () => ({
         itemModelName: 'evento',
 
-        current_page: sessionStorage.getItem('current_page') ? sessionStorage.getItem('current_page') : 1,
+        current_page: sessionStorage.getItem('current_page'),
         evento_filter_active: sessionStorage.getItem('evento_filter'),
 
         eventos: {
@@ -80,6 +80,10 @@ export const eventoModule = {
                     if (res.data.success) {
                         commit('setEventoItems', res.data.data.data);
                         commit('setEventosLinks', res.data.data.links);
+                        commit('setCurrentPage', res.data.data.current_page);
+                        commit('saveCurrentPageToSessionStorage', res.data.data.current_page)
+                        commit('setLastPage', res.data.data.last_page);
+                        commit('saveUrlPath', res.data.data.path);
                     }
                     commit('setEventosLoading', false);
                     return res;

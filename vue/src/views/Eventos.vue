@@ -74,7 +74,56 @@ export default {
                     return;
                 }
             this.$store.dispatch("evento/loadItems", {url: link.url})
-        }
+        },
+
+        loadEventosHandler(){
+            // нужно получить page, если он есть и загрузить данные именно с этой страницы
+            //const params = (new URL(document.location)).search;
+            //const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
+            //const params_string = (new URLSearchParams(obj)).toString();
+
+            let page_key = "current_page";
+            let url_path_key = "url_path";
+            let filter_key = 'evento_filter';
+
+            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
+                let page = sessionStorage.getItem(page_key);
+                let url_path = sessionStorage.getItem(url_path_key);
+                let url = { url: url_path + `?page=${page}`};
+
+                if (sessionStorage.hasOwnProperty(filter_key)){
+                    let params = {page: page}
+                    params = {...params, ...JSON.parse(sessionStorage.getItem(filter_key)) };
+                    this.loadFilteredEventos(params);
+                }else{
+                    this.loadEventos(url);
+                }
+            }else{
+                this.loadEventos({});
+            }
+
+            // if (sessionStorage.hasOwnProperty(key)){
+            //     console.log(sessionStorage.getItem(page_key))
+            //     let params = JSON.parse(sessionStorage.getItem(key));
+            //     if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
+            //         params.current_page = +sessionStorage.getItem(page_key);
+            //         let page = sessionStorage.getItem(page_key);
+            //         let url_path = sessionStorage.getItem(url_path_key);
+            //         let url = { url: url_path + `?page=${page}`};
+            //     }else{
+            //         this.loadFilteredEventos(params);
+            //     }
+            //     console.log(params);
+            //
+            // }else{
+            //
+            //     if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
+            //
+            //     }else {
+            //
+            //     }
+            // }
+        },
     },
     computed:{
         ...mapState({
@@ -91,27 +140,7 @@ export default {
     },
     mounted() {
         this.loadTagItems();
-
-        // нужно получить page, если он есть и загрузить данные именно с этой страницы
-        //const params = (new URL(document.location)).search;
-        //const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-        //const params_string = (new URLSearchParams(obj)).toString();
-
-        let key = 'evento_filter';
-        if (sessionStorage.hasOwnProperty(key)){
-            this.loadFilteredEventos(JSON.parse(sessionStorage.getItem(key)));
-        }else{
-            let page_key = "current_page";
-            let url_path_key = "url_path";
-            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
-                let page = sessionStorage.getItem(page_key);
-                let url_path = sessionStorage.getItem(url_path_key);
-                let url = { url: url_path + `?page=${page}`};
-                this.loadEventos(url);
-            }else {
-                this.loadEventos({});
-            }
-        }
+        this.loadEventosHandler();
     },
 
 }

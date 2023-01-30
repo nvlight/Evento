@@ -59,7 +59,7 @@ export default {
                 let tmp = JSON.parse(sessionStorage.getItem(key));
                 //console.log(tmp);
 
-                let keyValues;
+                let keyValues = '';
                 //keyValues = new URLSearchParams(tmp).toString();
                 for(let i in tmp){
                     if (Array.isArray(tmp[i])){
