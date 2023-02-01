@@ -10,7 +10,10 @@
             <!-- Evento actions -->
             <div class="mr-2 mt-2 flex items-center">
 
-                <mg-modal v-model:show="isDiagramVisible">
+                <mg-modal
+                    v-model:show="isDiagramVisible"
+                    :dialog_content_classes="'overflow-auto '"
+                >
                     <evento-diagram-modal @closeModalDialog="isDiagramVisible=false" />
                 </mg-modal>
 

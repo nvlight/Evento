@@ -19,8 +19,9 @@
         <div class="diagram-data-wrapper mt-2">
             <div v-for="(tag, month) of diagramValue.items">
                 <div class="font-semibold mt-2">{{month}}</div>
-                <div v-for="tag_arr of tag">
-                    {{tag_arr.name}}: {{tag_arr.sum}}
+<!--                <pre>tag: {{tag}}</pre>-->
+                <div v-for="(tag_arr,tag_name) of tag">
+                    {{tag_name}}: {{tag_arr.sum}}
                 </div>
             </div>
         </div>

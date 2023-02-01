@@ -118,7 +118,7 @@ class EventoController extends Controller
                 $evento->user_id = Auth::user()->id;
 
                 $evento->date = $request->date;
-                $evento->tag_value_id = 0;
+                //$evento->tag_value_id = 0;
                 $evento->save();
 
                 $tagValue = new TagValue();
@@ -129,7 +129,7 @@ class EventoController extends Controller
                 $tagValue->description   = $request->description;
                 $tagValue->save();
 
-                $evento->tag_value_id = $tagValue->id;
+                //$evento->tag_value_id = $tagValue->id;
                 $evento->save();
 
                 $eventoId = $evento->id;
@@ -366,48 +366,44 @@ class EventoController extends Controller
     }
 
     /**  */
-    protected function getValuesByMonths($eventos)
+    protected function getSortedByMonthValues($eventos, array $allowedTagIds)
     {
-        //    "diagram": [
-        //    {
-        //        "name": "расход",
-        //        "id": 123,
-        //        "sum": "513",
-        //        "month": "December",
-        //        "year": 2022
-        //    },
-        //    {
-        //        "name": "расход",
-        //        "id": 123,
-        //        "sum": "1800",
-        //        "month": "December",
-        //        "year": 2022
-        //    },
+        $months = [
+            'January' => 'Январь',
+            'February' => 'Февраль',
+            'March' => 'Март',
+            'April' => 'Апрель',
+            'May' => 'Май',
+            'June' => 'Июнь',
+            'July' => 'Июль',
+            'August' => 'Август',
+            'September' => 'Сентябрь',
+            'October' => 'Октябрь',
+            'November' => 'Ноябрь',
+            'December' => 'Декабрь',
+        ];
 
         $res = [];
-        foreach($eventos as $evento){
-            if (!isset($res[$evento->month][$evento->id])){
-                $res[$evento->month][$evento->id] = $evento;
-                $res[$evento->month][$evento->id]->sum = intval($res[$evento->month][$evento->id]->sum);
-            }else{
-                $res[$evento->month][$evento->id]->sum += intval($evento->sum);
-            }
-        }
-
-        return $res;
-    }
-
-    /**  */
-    protected function getSortedByMonthValues($eventos)
-    {
-        $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',];
-
-        $res = [];
-
-        foreach($months as $month){
-            foreach($eventos as $ev_month => $evento){
-                if ($month === $ev_month){
-                    $res[$month] = $evento;
+        foreach($months as $monthEn => $monthRu){
+            foreach($eventos as $evento){
+                if ($monthEn === $evento->month){
+                    foreach($allowedTagIds as $tagId){
+                        if ($tagId === $evento->tg1_id) {
+                            if (!isset($res[$monthRu][$evento->tg1_name] )){
+                                $res[$monthRu][$evento->tg1_name] = $evento;
+                                //$res[$monthRu][$evento->tg1_name]->sum = $res[$monthRu][$evento->tg1_name]->sum;
+                            }else{
+                                $res[$monthRu][$evento->tg1_name]->sum += $evento->sum;
+                            }
+                        } elseif ($tagId === $evento->tg2_id){
+                            if (!isset($res[$monthRu][$evento->tg2_name] )){
+                                $res[$monthRu][$evento->tg2_name] = $evento;
+                                //$res[$monthRu][$evento->tg2_name]->sum = $res[$monthRu][$evento->tg2_name]->sum;
+                            }else{
+                                $res[$monthRu][$evento->tg2_name]->sum += $evento->sum;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -486,7 +482,7 @@ class EventoController extends Controller
 
         try{
             $diagramRs = Evento
-                ::select('tg1.name', 'tg2.name', 'tg2.id',
+                ::select('tg1.name as tg1_name', 'tg2.name as tg2_name', 'tg1.id as tg1_id', 'tg2.id as tg2_id',
                     DB::raw('sum(tag_values.value) sum'),
                     DB::raw('monthname(eventos.date) as month'),
                     DB::raw('year(eventos.date) as year'),
@@ -496,7 +492,7 @@ class EventoController extends Controller
                 ->join('tags as tg1','tag_values.tag_id_first','=','tg1.id')
                 ->leftJoin('tags as tg2', 'tag_values.tag_id_second', '=', 'tg2.id')
                 ->where('eventos.user_id', '=', Auth::user()->id)
-                ->groupBy('month', 'tg1.name', 'tg2.name', 'tg2.id', 'year')
+                ->groupBy('month', 'tg1.name', 'tg2.name', 'tg1.id', 'tg2.id', 'year')
                 ->having('sum', '>', 0)
                 ->having('year', '=', $year)
                 ->orderBy('month')
@@ -504,8 +500,17 @@ class EventoController extends Controller
                 //->toSql()
                 ->get()
             ;
-            $valuesByMonths = $this->getValuesByMonths($diagramRs);
-            $sortedByMonthValues = $this->getSortedByMonthValues($valuesByMonths);
+
+//            return response([
+//                'action' => 'diagram',
+//                'success' => true,
+//                'sql' => $diagramRs,
+//                '$year' => $year,
+//            ]);
+
+            // todo: сделать возможность для задания этих фильтрующих тегов!
+            $allowedTagIds = [122, 123];
+            $sortedByMonthValues = $this->getSortedByMonthValues($diagramRs, $allowedTagIds);
         }catch (QueryException $e){
             $this->saveToLog(__METHOD__, $e);
 
