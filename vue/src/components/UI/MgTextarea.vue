@@ -1,10 +1,10 @@
 <template>
-    <label class="mt-3 block">
+    <label class="mt-3 block dark:text-white">
         <span><slot></slot></span>
         <textarea
             :value="modelValue"
             @input="updateInput"
-            class="border w-full rounded h-20
+            class="border w-full rounded h-20 dark:bg-gray-900
                 p-3
                 focus:border-indigo-500
                 focus:outline-none"

@@ -1,13 +1,10 @@
 <template>
-    <div class="material-item border-b border-l-cyan-600">
+    <div class="material-item">
         <div class="flex mt-2 items-center mb-1">
-            <div class="flex items-center">
-                <mg-show-icon-button @click="showHideDescription"></mg-show-icon-button>
-                <mg-edit-icon-button @click="editMaterialHandler(tag.id)"></mg-edit-icon-button>
-                <mg-trash-icon-button @click="deleteItemHandler(tag.id)"
-                    class="text-red-500 border-0"
-                ></mg-trash-icon-button>
-            </div>
+            <tag-item-actions
+                :tag_id="tag.id"
+                @showHideDescription="showHideDescription"
+            />
             <span class="ml-1 cursor-pointer title p-1 px-3 rounded-md"
                   :style="[
                     tag.bg_color ? `background-color: ${tag.bg_color}` : 'background-color: #5CB85C',
@@ -26,10 +23,13 @@
 
 <script>
 import {mapGetters} from "vuex";
+import TagItemActions from "./TagItemActions.vue";
 
 export default {
     name: 'tag-item',
-    components: {},
+    components: {
+        TagItemActions,
+    },
     emits: [],
     props: {
         tag: {

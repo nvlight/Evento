@@ -5,7 +5,7 @@
             :value="modelValue"
             @input="updateInput"
             type="text"
-            class="block px-3 py-2 border border-gray-300 placeholder-gray-500
+            class="block px-3 py-2 border border-gray-300 placeholder-gray-500 dark:bg-gray-900 dark:text-white
                 text-gray-900 sm:text-sm
                 rounded-md
                 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500

@@ -2,7 +2,7 @@
     <select v-model="modelValue"
         @change="changeOption"
         class="border border-gray-300 text-gray-900 text-sm rounded-lg
-        bg-gray-50 block p-2
+        bg-gray-50 block p-2 dark:bg-gray-900 dark:text-white
         focus:border-indigo-500 focus:outline-none">
         <slot></slot>
         <option

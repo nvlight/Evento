@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-md dark:text-black">
+    <div class="max-w-md">
         <h1 class="text-2xl font-semibold">Фильтр событий</h1>
 
         <form @submit.prevent="doFilterEventos" class="mt-2">

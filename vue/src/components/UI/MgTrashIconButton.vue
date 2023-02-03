@@ -1,8 +1,8 @@
 <template>
     <button
         type="button"
-        class="flex items-center justify-center border text-sm
-               focus:ring-2 focus:ring-offset-2 ">
+        class="flex items-center justify-center rounded-full border text-sm
+               focus:ring-1 focus:ring-red-500 ">
         <svg xmlns="http://www.w3.org/2000/svg"
              :class="svgClass"
             class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"

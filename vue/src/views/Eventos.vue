@@ -1,12 +1,5 @@
 <template>
-
-    <header class="dark:bg-gray-900 dark:text-white dark:shadow-amber-700">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold ">
-                Eventos
-            </h1>
-        </div>
-    </header>
+    <evento-menu-header title="Eventos"></evento-menu-header>
 
     <div class="dark:bg-gray-900 dark:text-white">
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
@@ -31,11 +24,9 @@
 </template>
 
 <script>
-import TagCreateForm from "../components/tag/TagCreateForm.vue";
 import TagList from "../components/tag/TagList.vue";
 import TagItem from "../components/tag/TagItem.vue";
 import TagIndex from "../components/tag/TagIndex.vue"
-import TagEditForm from "../components/tag/TagEditForm.vue";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
 import MgTrashIconButton from "../components/UI/MgTrashIconButton.vue";
@@ -44,14 +35,15 @@ import EventoList from "../components/evento/EventoList.vue";
 import EventoCreateEdit from "../components/evento/EventoCreateEdit.vue";
 import EventoPaginator from "../components/evento/EventoPaginator.vue";
 import MgLoading from "../components/UI/MgLoading.vue";
+import EventoMenuHeader from "../components/evento/EventoMenuHeader.vue";
 
 export default {
     name: "Eventos",
     components: {
         MgLoading,
         MgSelect, MgTrashIconButton,
-        TagIndex, TagItem, TagList, TagCreateForm, TagEditForm, TagCreateEditForm,
-        EventoList, EventoCreateEdit, EventoPaginator,
+        TagIndex, TagItem, TagList, TagCreateEditForm,
+        EventoList, EventoCreateEdit, EventoPaginator, EventoMenuHeader,
     },
     data(){
         return {

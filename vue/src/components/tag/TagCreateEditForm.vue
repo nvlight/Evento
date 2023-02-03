@@ -40,7 +40,7 @@
         <mg-input-labeled class="mt-3 block" v-model="tag.name">Название</mg-input-labeled>
         <div class="flex justify-between mt-2">
             <div>
-                <label class="block text-sm font-medium text-gray-700" for="">
+                <label class="block text-sm font-medium" for="">
                     Иконка
                 </label>
                 <div class="mt-1 flex items-center">
@@ -62,11 +62,22 @@
                         </div>
                     </div>
 
-                    <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 relative">
-                        <input type="file"
+                    <button
+                        type="button"
+                        class="ml-5 bg-white dark:bg-gray-900 dark:text-white
+                            py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm
+                            leading-4 font-medium text-gray-700 hover:bg-gray-50
+                            relative
+                        "
+                    >
+                        <div class="cursor-pointer">
+                            <input type="file"
                                @change="onImageChoose"
                                class="absolute left-0 top-0 right-0 bottom-0 opacity-0 cursor-pointer"
-                        >Изменить</button>
+                            >
+                            <div class="block cursor-pointer">Изменить</div>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div>

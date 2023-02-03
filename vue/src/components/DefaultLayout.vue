@@ -1,17 +1,16 @@
 <template>
-    <div
-        class="bg-white dark:bg-gray-900 flex flex-col h-screen justify-between"
-        :class="dark ? 'dark' : 'light'"
-    >
-        <navbar/>
+    <div :class="dark ? 'dark' : 'light'">
+        <div class="bg-white dark:bg-gray-900 flex flex-col h-screen justify-between" >
+            <navbar/>
 
-        <main class="mb-auto">
-            <RouterView></RouterView>
-        </main>
+            <main class="mb-auto dark:bg-gray-900">
+                <RouterView></RouterView>
+            </main>
 
-        <MgNotification/>
+            <MgNotification/>
 
-        <mg-footer/>
+            <mg-footer/>
+        </div>
     </div>
 </template>
 

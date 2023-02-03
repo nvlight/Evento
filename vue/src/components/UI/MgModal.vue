@@ -1,8 +1,11 @@
 <template>
-    <div :class="wrapper_class"
+    <div
+        :class="wrapper_class"
         v-if="show" @click="hideDialog"
     >
-        <div :class="[$style.dialog__content, 'relative' ,dialog_content_classes]"
+        <div
+            class="dark:text-white dark:bg-gray-900"
+            :class="[$style.dialog__content, 'relative' ,dialog_content_classes]"
              @click.stop
         >
             <mg-close-icon-button @click="hideDialog" class="absolute right-1 top-1 border-blue-400">
