@@ -7,6 +7,8 @@ import {diagramModule} from "./diagramModule.js";
 const store = createStore({
     state:{
         mainDevSiteUrl: 'https://mgdev.ru',
+        darkModeSessionStorageKey: 'darkMode',
+        darkMode: Boolean(sessionStorage.getItem('darkMode')),
         user:{
             data:{},
             token: sessionStorage.getItem('TOKEN'),
@@ -15,6 +17,11 @@ const store = createStore({
             show: false,
             type: null,
             message: '',
+        },
+    },
+    getters:{
+        isDarkModeEnabled: () => (state) => {
+            return state.darkMode;
         },
     },
     actions:{
@@ -61,6 +68,17 @@ const store = createStore({
             setTimeout( () => {
                 state.notification.show = false;
             }, timeout ? timeout : 1500)
+        },
+        toggleDarkMode(state){
+            state.darkMode = !state.darkMode;
+            const dmSessKey = state.darkModeSessionStorageKey;
+
+            let sdm = sessionStorage.getItem(dmSessKey);
+            if (Boolean(sdm)) {
+                sessionStorage.setItem(dmSessKey, '');
+            }else{
+                sessionStorage.setItem(dmSessKey, '1');
+            }
         },
     },
     modules:{

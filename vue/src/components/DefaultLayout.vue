@@ -1,5 +1,8 @@
 <template>
-    <div class="flex flex-col h-screen justify-between">
+    <div
+        class="bg-white dark:bg-gray-900 flex flex-col h-screen justify-between"
+        :class="dark ? 'dark' : 'light'"
+    >
         <navbar/>
 
         <main class="mb-auto">
@@ -16,6 +19,7 @@
 import Navbar from "./nav/Navbar.vue";
 import MgFooter from "./footer/MgFooter.vue";
 import MgNotification from "./MgNotification.vue"
+import {mapState} from "vuex";
 
 export default {
     components: {
@@ -32,11 +36,30 @@ export default {
         }
     },
     methods:{
+        toggleThemeColor(){
+            if (sessionStorage.getItem('darkMode') === '0'){
+                sessionStorage.setItem('darkMode', '1');
+                this.darkMode = 1;
+            }else if (sessionStorage.getItem('darkMode') === '1'){
+                sessionStorage.setItem('darkMode', '0');
+                this.darkMode = 0;
+            }
+        },
     },
-    computed:{
+    computed: {
+        ...mapState({
+            'darkMode' : state => state.darkMode,
+        }),
+        dark(){
+            return this.darkMode;
+        },
+        darkIcon(){
+            return Boolean(!this.darkMode);
+        },
     },
+
     mounted() {
-    },
+    }
 }
 
 </script>
