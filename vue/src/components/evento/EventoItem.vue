@@ -1,14 +1,16 @@
 <template>
-    <tr :class="[index % 2 != 0
+    <tr
+        :class="[index % 2 != 0
                 ? 'bg-gray-50 border-b dark:bg-gray-800'
                 : 'bg-white dark:bg-gray-900'
                 , ' border-b dark:border-gray-700'
             ]"
-        >
-        <td class="border text-center p-2">{{ evento.id }}</td>
-        <td class="border text-center p-2 whitespace-nowrap">{{ evento.date }}</td>
+        class=""
+    >
+        <td class="border text-center dark:border-none p-2">{{ evento.id }}</td>
+        <td class="border text-center dark:border-none p-2 whitespace-nowrap">{{ evento.date }}</td>
 
-        <td class="tags_main_info border p-2">
+        <td class="tags_main_info border dark:border-none p-2">
             <div class="border w-fit p-2.5 border-gray-300 rounded-md border-red-100 border-none ">
                 <div class="flex items-center cursor-pointer items-stretch">
                     <div class="py-1.5 px-2 bg-gray-200 text-black flex items-center whitespace-nowrap"
@@ -42,14 +44,14 @@
             </div>
         </td>
 
-        <td class="description border text-center p-2">
+        <td class="description border text-center dark:border-none p-2">
             <span v-if="evento.description">
                 {{ evento.description }}
             </span>
             <span v-else>...</span>
         </td>
 
-        <td class="buttons_block border text-center p-2">
+        <td class="buttons_block border text-center dark:border-none p-2">
             <div class="w-full flex justify-center items-center">
                 <mg-pencil-icon-button
                     @click="editEventoHanlder(evento)"

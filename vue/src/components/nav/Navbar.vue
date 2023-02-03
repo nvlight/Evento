@@ -1,5 +1,5 @@
 <template>
-    <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-white dark:bg-gray-800" v-slot="{ open }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
@@ -14,7 +14,8 @@
                                  :to="{name: item.name,}"
                                  :class="[
                                         item.name == route.name ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                        'px-3 py-2 rounded-md text-sm font-medium'
+                                        'px-3 py-2 rounded-md text-sm font-medium',
+                                        'dark:text-black'
                                     ]"
                                          :aria-current="item.current ? 'page' : undefined"
                             >

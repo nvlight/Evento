@@ -1,29 +1,31 @@
 <template>
 
-    <header class="bg-white shadow">
+    <header class="dark:bg-gray-900 dark:text-white dark:shadow-amber-700">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold text-gray-900">
+            <h1 class="text-3xl font-bold ">
                 Eventos
             </h1>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Replace with your content -->
-        <div class="p-5 border border-gray-300 rounded-md border-dashed">
+    <div class="dark:bg-gray-900 dark:text-white">
+        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
+            <!-- Replace with your content -->
+            <div class="p-5 border border-gray-300 rounded-md border-dashed">
 
-            <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
+                <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
 
-            <div v-else>
-                <evento-create-edit v-if="formVisible" />
-                <evento-list :eventos="eventos.items"/>
-                <evento-paginator :evento_links="eventos.links"
-                  :current_page="eventos.current_page"
-                  :last_page="eventos.last_page"
-                />
+                <div v-else>
+                    <evento-create-edit v-if="formVisible" />
+                    <evento-list :eventos="eventos.items"/>
+                    <evento-paginator :evento_links="eventos.links"
+                      :current_page="eventos.current_page"
+                      :last_page="eventos.last_page"
+                    />
+                </div>
             </div>
+            <!-- /End replace -->
         </div>
-        <!-- /End replace -->
     </div>
 
 </template>

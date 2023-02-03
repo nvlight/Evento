@@ -8,7 +8,7 @@
             </div>
 
             <!-- Evento actions -->
-            <div class="mr-2 mt-2 flex items-center">
+            <div class="mr-1 mt-2 flex items-center">
 
                 <mg-modal
                     v-model:show="isDiagramVisible"
@@ -28,7 +28,7 @@
                 </mg-modal>
 
                 <!-- show diagrams -->
-                <mg-button class="flex items-center text-black focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
+                <mg-button class="flex items-center text-black dark:text-white focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
                     hover:border-indigo-500 transition-colors" @click="showDiagram"
                     >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -39,7 +39,7 @@
                 <!--/ show diagrams -->
 
                 <!-- show/hide filters -->
-                <div class="flex text-black focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
+                <div class="flex text-black dark:text-white focus:ring-0 focus:ring-offset-0 px-2 py-1 mr-2
                     hover:border-indigo-500 transition-colors"
                 >
                     <!-- reset filters -->
@@ -75,7 +75,7 @@
             <!--/ Evento actions -->
         </div>
 
-        <table v-if="eventos.length" class="mt-2 w-full border border-collapse rounded-md p-3 ">
+        <table v-if="eventos.length" class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th class="py-3 px-6">#</th>

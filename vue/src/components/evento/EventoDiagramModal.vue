@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-md">
+    <div class="max-w-md dark:text-black">
         <h1 class="text-xl font-semibold">Диаграммы</h1>
 
         <div>
