@@ -1,14 +1,14 @@
 <template>
-    <div class="mt-1 overflow-x-auto relative">
+    <div class="mt-1 relative overflow-x-auto">
         <div class="flex justify-between items-center">
-            <div class="flex items-center">
+            <div class="flex items-center flex-wrap">
                 <h1 class="text-xl font-semibold">Список событий
                 </h1>
-                <div v-if="current_page !== 1" class="ml-2">(страница {{current_page}})</div>
+                <div v-if="current_page !== 1" class="sm:ml-2">(страница {{current_page}})</div>
             </div>
 
             <!-- Evento actions -->
-            <div class="mr-1 mt-2 flex items-center">
+            <div class="mr-1 mt-2 flex items-center justify-end flex-wrap">
 
                 <mg-modal
                     v-model:show="isDiagramVisible"
@@ -75,7 +75,10 @@
             <!--/ Evento actions -->
         </div>
 
-        <table v-if="eventos.length" class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3 ">
+        <table
+            v-if="eventos.length"
+            class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3"
+        >
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th class="py-3 px-6">#</th>

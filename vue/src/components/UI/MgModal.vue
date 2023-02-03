@@ -4,11 +4,11 @@
         v-if="show" @click="hideDialog"
     >
         <div
-            class="dark:text-white dark:bg-gray-900"
+            class="dark:text-white dark:bg-gray-700"
             :class="[$style.dialog__content, 'relative' ,dialog_content_classes]"
              @click.stop
         >
-            <mg-close-icon-button @click="hideDialog" class="absolute right-1 top-1 border-blue-400">
+            <mg-close-icon-button @click="hideDialog" class="absolute right-2 top-2 border-blue-400">
             </mg-close-icon-button>
             <slot></slot>
         </div>

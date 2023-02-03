@@ -3,9 +3,9 @@
         <h1 class="text-2xl font-semibold">Фильтр событий</h1>
 
         <form @submit.prevent="doFilterEventos" class="mt-2">
-            <div class="date-start-end flex">
-                <mg-input-date-labeled v-model="filterData.date_start" >Дата - начало</mg-input-date-labeled>
-                <mg-input-date-labeled v-model="filterData.date_end" class="ml-2"
+            <div class="date-start-end flex flex-wrap">
+                <mg-input-date-labeled v-model="filterData.date_start" class="mr-1">Дата - начало</mg-input-date-labeled>
+                <mg-input-date-labeled v-model="filterData.date_end"
                 >Дата - конец
                 </mg-input-date-labeled>
             </div>
@@ -69,9 +69,9 @@
                 </div>
             </div>
 
-            <div class="date-start-end flex mt-3">
-                <mg-input-labeled v-model="filterData.sum_start" >Сумма начальная</mg-input-labeled>
-                <mg-input-labeled v-model="filterData.sum_end" class="ml-2"
+            <div class="date-start-end flex mt-3 flex flex-wrap">
+                <mg-input-labeled v-model="filterData.sum_start" class="mr-1">Сумма начальная</mg-input-labeled>
+                <mg-input-labeled v-model="filterData.sum_end"
                 >Сумма конечная
                 </mg-input-labeled>
             </div>
