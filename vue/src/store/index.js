@@ -6,6 +6,7 @@ import {diagramModule} from "./diagramModule.js";
 
 const store = createStore({
     state:{
+        mainDevSiteUrl: 'https://mgdev.ru',
         user:{
             data:{},
             token: sessionStorage.getItem('TOKEN'),

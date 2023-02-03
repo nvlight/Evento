@@ -4,10 +4,13 @@
             <h3 class="text-2xl">
                 <span v-if="isCreatedButtonVisible">Создание </span>
                 <span v-else>Редактирование</span>
-                тега</h3>
+                тега
+            </h3>
             <mg-close-icon-button
                 v-if="!isCreatedButtonVisible"
-                @click="resetFormHandler"></mg-close-icon-button>
+                @click="resetFormHandler"
+            >
+            </mg-close-icon-button>
         </div>
 
 <!--        <div>getCurrentEditMaterialId: {{getCurrentEditMaterialId}}</div>-->
@@ -72,19 +75,23 @@
             <div class="font-semibold">
                 Цвет текста и фона
             </div>
-            <div class="flex items-center">
-                <div class="justify-between">
+            <div class="flex items-center justify-between">
+                <div class="flex-col">
                     <div class="flex justify-between">
-                        <span>text_color: </span>
+                        <span>Цвет текста: </span>
                         <input type="color" v-model="tag.text_color" class="ml-2">
                     </div>
                     <div class="flex justify-between">
-                        bg_color: <input type="color" v-model="tag.bg_color" class="ml-2">
+                        <span>Цвет фона:</span>
+                        <input type="color" v-model="tag.bg_color" class="ml-2">
                     </div>
                 </div>
 
-                <div class="ml-2 w-fit rounded-md cursor-pointer" :style="['background-color: '+tag.bg_color]">
-                    <div class="p-2 " :style="['color: '+tag.text_color]">Gravity</div>
+                <div>
+                    <div class="text-center text-sm">Просмотр тега</div>
+                    <div class="mt-1 w-fit rounded-md cursor-pointer" :style="['background-color: '+tag.bg_color]">
+                        <div class="p-2 " :style="['color: '+tag.text_color]">{{ tag.name }}</div>
+                    </div>
                 </div>
             </div>
         </div>
