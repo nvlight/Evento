@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use App\Models\TagValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -118,7 +119,6 @@ class EventoController extends Controller
                 $evento->user_id = Auth::user()->id;
 
                 $evento->date = $request->date;
-                //$evento->tag_value_id = 0;
                 $evento->save();
 
                 $tagValue = new TagValue();
@@ -129,7 +129,6 @@ class EventoController extends Controller
                 $tagValue->description   = $request->description;
                 $tagValue->save();
 
-                //$evento->tag_value_id = $tagValue->id;
                 $evento->save();
 
                 $eventoId = $evento->id;
@@ -145,18 +144,7 @@ class EventoController extends Controller
             ]);
         }
 
-        $eventosByPage = $this->getEventoSqlPart()
-            ->paginate(
-                $perPage = $this->perPage,
-                $columns = ['*'],
-                $pageName = 'page',
-                $page = $currentPage
-            );
-        $eventosCollect = collect($eventosByPage->items());
-
-        $filtered = $eventosCollect->filter(function ($value, $key) use ($dataRs) {
-            return $value->id === $dataRs->id;
-        });
+        $filtered = $this->isExistsEventoInPaginatePage($currentPage, $dataRs->id);
 
         return response()->json([
             'success' => 1,
@@ -165,8 +153,33 @@ class EventoController extends Controller
             //'items' => $eventosByPage->items(),
             //'currentPage' => $currentPage,
             //'filtered' => $filtered,
-            'filteredCount' => count($filtered),
+            'filteredCount' => $filtered,
         ]);
+    }
+
+    /**
+     * Присутствует ли только что добавленный элемент в текущей странице
+     *
+     * @param int $needPage
+     * @param int $eventoId
+     * @return bool
+     */
+    protected function isExistsEventoInPaginatePage(int $needPage, int $eventoId)
+    {
+        $eventosByPage = $this->getEventoSqlPart()
+            ->paginate(
+                $perPage = $this->perPage,
+                $columns = ['*'],
+                $pageName = 'page',
+                $page = $needPage
+            );
+        $eventosCollect = collect($eventosByPage->items());
+
+        $filtered = $eventosCollect->filter(function ($value, $key) use ($eventoId) {
+            return $value->id === $eventoId;
+        });
+
+        return !!count($filtered);
     }
 
     public function update(Request $request, Evento $evento)
@@ -320,6 +333,33 @@ class EventoController extends Controller
             'last_item' => $last_item,
             'paginate' => $paginate,
             'isNeedAddLastItem' => $isNeedAddLastItem,
+        ]);
+    }
+
+    /**  */
+    public function copy(Request $request, Evento $evento)
+    {
+        // todo: do transaction
+        $newEvento = $evento->replicate()->fill([
+            'created_at' => Carbon::now(),
+            'date' => Carbon::now()->format('Y-m-d'),
+        ]);
+        $newEvento->save();
+
+        $tagValue = $evento->tagValue->replicate();
+        $tagValue->evento_id = $newEvento->id;
+        $tagValue->save();
+        //
+
+        $dataRowWithNeedSelected = $this->getOneEvento($newEvento->id);
+        $dataRs = $dataRowWithNeedSelected['success'] ? $dataRowWithNeedSelected['data'] : null;
+
+        $filtered = $this->isExistsEventoInPaginatePage($request->integer('current_page', 1), $dataRs->id);
+
+        return response()->json([
+            'success' => 1,
+            'data'  => $dataRs,
+            'filteredCount' => $filtered,
         ]);
     }
 

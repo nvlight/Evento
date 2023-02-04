@@ -124,6 +124,26 @@ export const eventoModule = {
             return response;
         },
 
+        copyItemQuery({commit,dispatch,state}, item){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .post(`/${modelName}/copy/${item.id}`)
+                .then((res)=>{
+                    if (res.data.success) {
+                        if (res.data.filteredCount){
+                            commit('delItem', state.eventos.items[state.eventos.items.length - 1].id);
+                            commit('addItem', res.data.data);
+                        }
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                    return err;
+                })
+            return response;
+        },
+
         delItem({dispatch, state, commit}, data){
             dispatch('delItemQuery', data);
         },

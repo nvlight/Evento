@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::apiResource('/tag', TagController::class);
 
+    Route::post('/evento/copy/{evento}', [EventoController::class, 'copy']);
     Route::get('/evento/filter', [EventoController::class, 'filter']);
     Route::get('/evento/diagram', [EventoController::class, 'diagram']);
     Route::get('/evento/diagram-years', [EventoController::class, 'getDiagramYears']);
