@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventoStoreRequest;
 use App\Models\Evento;
 use App\Models\TagValue;
 use Illuminate\Http\Request;
@@ -93,16 +94,8 @@ class EventoController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(EventoStoreRequest $request)
     {
-        $this->validate($request, [
-            'date' => 'required|date',
-            'tag_id_first'  => 'required|integer|exists:tags,id',
-            'tag_id_second' => 'nullable',
-            'value' => 'nullable|integer|min:0',
-            'description' => 'nullable|string',
-        ]);
-
         if ($request->input('tag_id_second', 0) ) {
             $this->validate($request, [
                 'tag_id_second' => 'exists:tags,id',
