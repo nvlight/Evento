@@ -11,11 +11,6 @@
             </mg-close-icon-button>
         </div>
 
-<!--        <div>-->
-<!--            <div>getCurrentEditItemId: {{getCurrentEditItemId}}</div>-->
-<!--            <div>getCurrentEdited: {{typeof getCurrentEditedItem}}</div>-->
-<!--        </div>-->
-
         <form
             @submit.prevent>
             <div class="flex flex-wrap items-center justify-between w-full">
@@ -25,13 +20,22 @@
                     <mg-input-date-labeled v-model="evento.date"></mg-input-date-labeled>
                 </div>
 
-                <div class="tag_first  mt-2">
+                <div class="tag_first mt-2">
                     <span>Тег основной [ {{evento.tag_id_first}} ]</span>
                     <mg-select v-model="evento.tag_id_first"  class=""
                         :options="tags"
                     >
                         <option value="0">Выберите из списка</option>
                     </mg-select>
+                    <div
+                        class="tag_second__alerts"
+                        v-if="this.errors?.tag_id_first"
+                    >
+                        <alert-field
+                            :error="this.errors?.tag_id_first"
+                            @hideError="this.errors.tag_id_first = null"
+                        />
+                    </div>
                 </div>
 
                 <div class="tag_value mt-2">
@@ -47,18 +51,20 @@
 
                 <div v-if="!isMainTagButtonVisible" class="tag_first relative  mt-2">
                     <span>Тег вторичный [ {{evento.tag_id_second}} ]</span>
-                    <mg-select v-model="evento.tag_id_second" class=""
-                               :options="tags"
+                    <mg-select
+                        v-model="evento.tag_id_second" class=""
+                        :options="tags"
                     >
                         <option value="0">Выберите из списка</option>
                     </mg-select>
                     <mg-trash-icon-button
                         v-if="!isMainTagButtonVisible" @click="isMainTagButtonVisible = !isMainTagButtonVisible"
                         class="add_anather_tag absolute border-none text-red-500 self-end
-                                            absolute right-0 top-1 focus:ring-red-500 rounded-sm h-4 w-4
-                                            "
+                            absolute right-0 top-1 focus:ring-red-500 rounded-sm h-4 w-4"
                         :svgClass="'h-4 w-4'"
-                    ></mg-trash-icon-button>
+                    >
+                    </mg-trash-icon-button>
+
                 </div>
             </div>
 
@@ -67,7 +73,7 @@
                 >Описание</mg-textarea>
             </div>
 
-            <Alert :errors="errors" @resetErrors="errors = {}"></Alert>
+            <!-- <Alert :errors="errors" @resetErrors="errors = {}"></Alert>-->
 
             <div class="buttons flex justify-end">
                 <div v-if="createMode" class="self-end mt-2">
@@ -98,10 +104,13 @@
 import {mapGetters, mapMutations, mapState} from "vuex";
 import Alert from "../Alert.vue";
 import DateMixin from "../../mixins/DateMixin.vue";
+import AlertField from "../AlertField.vue";
 
 export default {
     name: 'evento-create-edit',
-    components: { Alert },
+    components: {
+        Alert, AlertField
+    },
     mixins: [DateMixin, ],
     emits: [],
     data(){

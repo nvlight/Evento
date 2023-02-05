@@ -1,6 +1,6 @@
 <template>
-    <div class="mt-1 relative overflow-x-auto">
-        <div class="flex justify-between items-center">
+    <div class="mt-1 relative overflow-x-auto border dark:border-gray-600">
+        <div class="flex justify-between items-center px-1">
             <div class="flex items-center flex-wrap">
                 <h1 class="text-xl font-semibold">Список событий
                 </h1>

@@ -2,15 +2,15 @@
     <evento-menu-header title="Eventos"></evento-menu-header>
 
     <div class="dark:bg-gray-900 dark:text-white">
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
+        <div class="evento-view max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
             <!-- Replace with your content -->
-            <div class="p-2 md:p-5 md:border border-gray-300 rounded-md border-dashed">
+            <div class="p-2 md:p-5 rounded-md">
 
                 <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
 
                 <div v-else>
                     <evento-create-edit v-if="formVisible" />
-                    <evento-list :eventos="eventos.items"/>
+                    <evento-list class="rounded-t-md" :eventos="eventos.items"/>
                     <evento-paginator
                         class="mt-5"
                         :evento_links="eventos.links"

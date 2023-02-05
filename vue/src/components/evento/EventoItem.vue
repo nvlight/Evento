@@ -1,10 +1,6 @@
 <template>
     <tr
-        :class="[index % 2 != 0
-                ? 'bg-gray-50 border-b dark:bg-gray-800'
-                : 'bg-white dark:bg-gray-900'
-                , ' border-b dark:border-gray-700'
-            ]"
+        :class="[trBgc, 'border-b dark:border-gray-700']"
         class=""
     >
         <td class="border text-center dark:border-none p-2">{{ evento.id }}</td>
@@ -51,7 +47,7 @@
             <span v-else>...</span>
         </td>
 
-        <td class="buttons_block border  dark:border-none p-2">
+        <td class="evento_actions buttons_block border  dark:border-none p-2">
             <div class="w-fit flex bg-gray-500 p-2 rounded-md mx-auto">
 
                 <mg-pencil-icon-button
@@ -154,6 +150,12 @@ export default {
         ...mapGetters({
             'currentEditedItem': 'evento/getCurrentEditedItem',
         }),
+
+        trBgc(){
+            return this.index % 2 != 0
+                ? 'bg-gray-50 border-b dark:bg-gray-800'
+                : 'bg-white dark:bg-gray-900';
+        }
     }
 }
 </script>

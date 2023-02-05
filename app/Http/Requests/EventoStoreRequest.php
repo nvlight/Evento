@@ -35,7 +35,7 @@ class EventoStoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'tag_id_first' => 'Тег вторичный',
+            'tag_id_first' => 'Основной тег',
         ];
     }
 
