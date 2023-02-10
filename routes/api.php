@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::apiResource('/tag', TagController::class);
 
+    Route::delete('/evento/destroyIds', [EventoController::class, 'destroyIds']);
     Route::post('/evento/copy/{evento}', [EventoController::class, 'copy']);
     Route::get('/evento/filter', [EventoController::class, 'filter']);
     Route::get('/evento/diagram', [EventoController::class, 'diagram']);
@@ -48,3 +49,5 @@ Route::middleware('auth:sanctum')->group(function ()
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);
 Route::match(['post'], '/login',    [AuthController::class, 'login']);
+
+Route::get('test/eloquent/base', [\App\Http\Controllers\TestController::class, 'eloquent_base']);

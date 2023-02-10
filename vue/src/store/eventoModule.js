@@ -146,6 +146,15 @@ export const eventoModule = {
             return response;
         },
 
+        copyItems({dispatch, state, commit}){
+            state.pickedEventos.forEach( pe => {
+                dispatch('copyItemQuery', {id: pe.id} )
+                    .then( response => {
+                        commit('delPickedEvento', pe.id);
+                    })
+            });
+        },
+
         delItem({dispatch, state, commit}, data){
             dispatch('delItemQuery', data);
         },
@@ -190,6 +199,55 @@ export const eventoModule = {
                                 commit('pushItem', res.data.last_item);
                             }
                         }
+                    }
+                    return res;
+                })
+                .catch( (err) => {
+                    console.log('we got error:',err);
+                })
+            return response;
+        },
+
+        delItems({dispatch, state, commit}){
+            state.pickedEventos.forEach( pe => {
+
+                const delParams = {
+                    'current_page': state.current_page,
+                    'filter_active': state.evento_filter,
+                    ...JSON.parse(state.evento_filter),
+                }
+                // todo: удаление не всегда работает корректно, исправить надо
+                dispatch('delItemQuery', {id: pe.id, params: delParams})
+                    .then( response => {
+                        //commit('delPickedEvento', pe.id);
+                    })
+            });
+            commit('clearPickedEventos');
+        },
+        delItemsByIds({dispatch,state, commit}){
+            let response;
+            const modelName = state.itemModelName;
+            let params = '';
+            state.pickedEventos.forEach( pe => {
+                params += `ids[]=${pe.id}&`;
+            });
+            response = axiosClient
+                .delete(`/${modelName}/destroyIds?${params}`) // params
+                .then((res)=>{
+                    if (res.data.success){
+
+                        let page_url;
+                        let last_page = res.data.last_page;
+                        if (last_page < state.current_page){
+                            commit('saveCurrentPageToSessionStorage', last_page);
+
+                            page_url = `${res.data.path}?page=${last_page}`;
+                        }else{
+                            page_url = `${state.eventos.url_path}?page=${state.eventos.current_page}`;
+                        }
+                        dispatch('loadItems', {url: page_url});
+
+                        commit('clearPickedEventos');
                     }
                     return res;
                 })
@@ -344,7 +402,15 @@ export const eventoModule = {
             }else{
                 state.pickedEventos = state.pickedEventos.filter( e => e.id !== id);
             }
-        }
+        },
+
+        clearPickedEventos(state){
+            state.pickedEventos = [];
+        },
+        delPickedEvento(state, id){
+            state.pickedEventos = state.pickedEventos.filter( pe => pe.id !== id);
+        },
+
     },
     namespaced: true,
 }

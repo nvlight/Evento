@@ -330,13 +330,52 @@ class EventoController extends Controller
         ]);
     }
 
+    public function destroyIds(Request $request)
+    {
+        // todo: validate this
+        $ids = $request->ids;
+
+//        return response()->json([
+//            'success' => 0,
+//            '$ids' => $ids,
+//        ]);
+
+        try{
+            foreach($ids as $id){
+                Evento::find($id)->delete();
+            }
+        }catch (\Exception $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!'
+            ]);
+        }
+
+        if (!$request->filter_active) {
+            $lastItem = $this->getLastItemAfterEventoDestroyed();
+        }else{
+            $lastItem = $this->getLastItemAfterFilteredEventoDestroyed($request);
+        }
+        extract($lastItem);
+
+        return response()->json([
+            'success' => 1,
+            'last_page' => $last_page,
+            'path' => $path,
+            'last_item' => $last_item,
+            'paginate' => $paginate,
+            'isNeedAddLastItem' => $isNeedAddLastItem,
+        ]);
+    }
+
     /**  */
     public function copy(Request $request, Evento $evento)
     {
         // todo: do transaction
         $newEvento = $evento->replicate()->fill([
             'created_at' => Carbon::now(),
-            'date' => Carbon::now()->format('Y-m-d'),
+            'updated_at' => Carbon::now(),
         ]);
         $newEvento->save();
 

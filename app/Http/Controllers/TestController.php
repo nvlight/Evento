@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Evento;
 use App\Rules\Uppercase;
 use Illuminate\Http\Request;
 
@@ -56,5 +57,21 @@ class TestController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function eloquent_base(Request $request)
+    {
+        $eventos = Evento::query()->where('id', '>', 533)->getBindings();
+        dump($eventos);
+
+        $evento = Evento::query()->where('id', '>', 0)->first();
+        //dump($evento);
+        //dump($evento->tagValue);
+
+        $id = Evento::query()->where('id', '>', 0)->value('id');
+        //dump($id);
+
+        //$eventoTag = Evento::query()->tag;
+        //
     }
 }

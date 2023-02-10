@@ -6,22 +6,21 @@
                     {{ title }}
                 </h1>
 
-                <ul class="flex flex-wrap items-center">
-                    <li class="flex items-center flex-wrap ml-5 p-1 text-xl ">
+                <div class="flex flex-wrap items-center">
+                    <div class="flex items-center flex-wrap ml-5 p-1 text-xl ">
                         <CheckCircleIcon class="h-6 w-6 text-white-500 mr-1"/>
                         <div v-if="pickedEventos.length" class="mr-3 flex items-center">
                             {{pickedEventos.length}}
                         </div>
                         <div>Выделить все</div>
-                    </li>
+                    </div>
 
                     <template v-if="pickedEventos.length">
-<!--                            <li class="ml-1">pickedEventos: {{pickedEventos}}</li>-->
-                        <li class="ml-1 p-1 ">копировать</li>
-                        <li class="ml-1 p-1 ">удалить</li>
-                        <li class="ml-1 p-1 ">в папку</li>
+                        <!-- <li class="ml-1">pickedEventos: {{pickedEventos}}</li>-->
+                        <picked-evento-copy-button class="ml-1 p-1 ">копировать</picked-evento-copy-button>
+                        <picked-evento-delete-button class="ml-1 p-1 ">удалить</picked-evento-delete-button>
                     </template>
-                </ul>
+                </div>
             </div>
         </div>
     </header>
@@ -30,10 +29,12 @@
 <script>
 import {mapState} from "vuex";
 import {CheckCircleIcon} from "@heroicons/vue/outline";
+import PickedEventoCopyButton from "./PickedEvento/PickedEventoCopyButton.vue";
+import PickedEventoDeleteButton from "./PickedEvento/PickedEventoDeleteButton.vue";
 
 export default {
     components: {
-        CheckCircleIcon
+        CheckCircleIcon, PickedEventoCopyButton, PickedEventoDeleteButton,
     },
     props:{
         title: {
