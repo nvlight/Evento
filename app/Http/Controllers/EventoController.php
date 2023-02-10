@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventoFilterRequest;
 use App\Http\Requests\EventoStoreRequest;
 use App\Models\Evento;
 use App\Models\TagValue;
@@ -357,25 +358,25 @@ class EventoController extends Controller
     }
 
     /**  */
-    public function filter(Request $request)
+    public function filter(EventoFilterRequest $request)
     {
         // todo: validate
 
-        $date_start  = $request->input('date_start', date('Y'));
-        $date_end    = $request->input('date_end', date('Y'));
-        $sum_start   = $request->integer('sum_start', 0);
-        $sum_end     = $request->integer('sum_end', 1000000);
-        $tags        = $request->input('tag_arr', []);
+        //$tags        = $request->input('tag_arr', []);
         $zeroFill    = $request->boolean('zeroFill');
         $pickAllTags = $request->boolean('pickAllTags');
 
         /** @var Evento $sql */
         $rs = $this->filterSql();
 
-        $rs = $rs->whereBetween('eventos.date',  [$date_start, $date_end]);
+        $rs = $rs->whereBetween('eventos.date', [
+            $request->input('date_start'),
+            $request->input('date_end')
+        ]);
 
         //
         if (!$pickAllTags){
+            $tags = $request->input('tag_arr', []);
             $rs = $rs
                 ->where(function ($query) use($tags){
                     $query->whereIn('tags1.id', $tags)
@@ -385,7 +386,10 @@ class EventoController extends Controller
 
         //
         if (!$zeroFill){
-            $rs = $rs->whereBetween('tag_values.value', [$sum_start, $sum_end]);
+            $rs = $rs->whereBetween('tag_values.value', [
+                $request->integer('sum_start'),
+                $request->integer('sum_end')
+            ]);
         }
 
         $rs = $rs->orderByDesc('date')

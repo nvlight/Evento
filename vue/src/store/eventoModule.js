@@ -16,6 +16,8 @@ export const eventoModule = {
             url_path: '',
         },
 
+        pickedEventos: [],
+
         createItemLoading: false,
         updateItemLoading: false,
 
@@ -334,6 +336,14 @@ export const eventoModule = {
 
         setEventoFilter(state, value){
             state.evento_filter = value;
+        },
+
+        togglePickedEvento(state, {id, value}){
+            if (value){
+                state.pickedEventos = [...state.pickedEventos, {id: id}]
+            }else{
+                state.pickedEventos = state.pickedEventos.filter( e => e.id !== id);
+            }
         }
     },
     namespaced: true,

@@ -31,6 +31,19 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::get('/evento/diagram', [EventoController::class, 'diagram']);
     Route::get('/evento/diagram-years', [EventoController::class, 'getDiagramYears']);
     Route::apiResource('/evento', EventoController::class);
+
+
+    Route::group(
+        [
+            'prefix' => 'test',
+            'name' => 'test.'
+
+        ], function(){
+        Route::get('distinct', [\App\Http\Controllers\TestController::class, 'distinct']);
+    });
+
+    Route::post('test/distinct2', [\App\Http\Controllers\TestController::class, 'distinct']);
+    Route::post('test/customRule', [\App\Http\Controllers\TestController::class, 'customRuse']);
 });
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);

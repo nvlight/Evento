@@ -3,7 +3,13 @@
         :class="[trBgc, 'border-b dark:border-gray-700']"
         class=""
     >
-        <td class="border text-center dark:border-none p-2">{{ evento.id }}</td>
+        <td class="border text-center dark:border-none p-2">
+            <mg-checkbox
+                v-model="itemPicked"
+                class="py-3"
+            >{{evento.id}}
+            </mg-checkbox>
+        </td>
         <td class="border text-center dark:border-none p-2 whitespace-nowrap">{{ evento.date }}</td>
 
         <td class="tags_main_info border dark:border-none p-2">
@@ -81,11 +87,18 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
 
 export default {
     name: 'evento-item',
     components: {},
+
+    data(){
+        return {
+            itemPicked: false,
+            innerEventoId: 0,
+        }
+    },
 
     props: {
         evento: {
@@ -100,6 +113,10 @@ export default {
     emits: [],
 
     methods:{
+        ...mapMutations({
+            'togglePickedEvento': "evento/togglePickedEvento",
+        }),
+
         deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
             let isFilterActive = this.evento_filter ? 1 : 0;
@@ -141,6 +158,8 @@ export default {
                     //console.log('update evento - catch: ', err);
                 });
         },
+
+
     },
     computed:{
         ...mapState({
@@ -156,6 +175,16 @@ export default {
                 ? 'bg-gray-50 border-b dark:bg-gray-800'
                 : 'bg-white dark:bg-gray-900';
         }
+    },
+
+    watch:{
+        itemPicked(nv){
+            this.togglePickedEvento({id: this.innerEventoId, value: nv})
+        }
+    },
+
+    mounted() {
+        this.innerEventoId = this.evento.id;
     }
 }
 </script>

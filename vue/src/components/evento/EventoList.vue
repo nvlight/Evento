@@ -91,8 +91,11 @@
             <tbody>
                 <template v-for="(evento,index) in eventos"
                     :key="evento.id">
-                    <evento-item @doAddFormReset="$emit('doAddFormReset')"
-                        :evento="evento" :index="index"></evento-item>
+                    <evento-item
+                        @doAddFormReset="$emit('doAddFormReset')"
+                        :evento="evento"
+                        :index="index"
+                    />
                 </template>
             </tbody>
         </table>
