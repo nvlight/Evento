@@ -16,8 +16,13 @@ class TagFactory extends Factory
      */
     public function definition()
     {
+        $user_id = 333;
         return [
-            //
+            'user_id' => $user_id,
+            'name' => fake()->streetName(),
+            'description' => fake()->words(random_int(3,5), true),
+            'text_color' => '#ffffff',
+            'bg_color' => '#5CB85C',
         ];
     }
 }

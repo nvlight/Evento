@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PodcastProcessed;
 use App\Models\Evento;
 use App\Rules\Uppercase;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
+    protected $dispatcher;
+
+    public function __construct(Dispatcher $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
     public function distinct(Request $request)
     {
         $validated = $request->validate([
@@ -73,5 +82,10 @@ class TestController extends Controller
 
         //$eventoTag = Evento::query()->tag;
         //
+    }
+
+    public function test_podcast_event_sent()
+    {
+        $this->dispatcher->dispatch(new PodcastProcessed());
     }
 }

@@ -605,13 +605,11 @@ class EventoController extends Controller
 
     protected function saveToLog($method, $e)
     {
-        logger('error in method: ' . $method. '! '
-            . implode(' | ', [
-                'msg: '  . $e->getMessage(),
-                'line: ' . $e->getLine(),
-                'file: ' . $e->getFile(),
-                'code: ' . $e->getCode(),
-            ])
-        );
+        logger("error in method: {$method}", [
+            'msg: '  => $e->getMessage(),
+            'line: ' => $e->getLine(),
+            'file: ' => $e->getFile(),
+            'code: ' => $e->getCode(),
+        ]);
     }
 }
