@@ -7,7 +7,7 @@
                 <RouterView></RouterView>
             </main>
 
-            <MgNotification/>
+            <mg-notification/>
 
             <mg-footer/>
         </div>

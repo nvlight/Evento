@@ -17,4 +17,8 @@ class Tag extends Model
         'text_color',
         'bg_color',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

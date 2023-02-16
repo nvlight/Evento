@@ -156,7 +156,7 @@ export default {
 
                         this.$store.commit('notify', {
                             message: 'Evento сохранен!',
-                            type: 'success',
+                            type: 'created',
                             timeout: 2500,
                         })
                     }else{
@@ -180,9 +180,24 @@ export default {
         updateEvento(){
             this.$store.dispatch('evento/updateItem', this.evento)
                 .then((res) => {
-                    this.errors = {};
-                    //console.log('update evento - then: ', res);
-                    this.errors = res.response.data.errors;
+                    if (res?.status === 200 && res?.data?.success === 1){
+                        this.$store.commit('notify', {
+                            message: 'Evento обновлен!',
+                            type: 'updated',
+                            timeout: 2500,
+                        })
+                    }else{
+                        this.errors = {};
+                        let err = res?.response?.data?.errors;
+                        if (err) {
+                            this.errors = err;
+                        }
+
+                        this.$store.commit('notify', {
+                            message: 'Ошибка при обновлении!',
+                            type: 'error',
+                        })
+                    }
                 })
                 .catch((err) => {
                     //console.log('update evento - catch: ', err);

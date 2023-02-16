@@ -130,7 +130,7 @@ export default {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.$store.commit('notify', {
                             message: 'Evento удален!',
-                            type: 'error',
+                            type: 'deleted',
                             timeout: 2500,
                         })
                     }

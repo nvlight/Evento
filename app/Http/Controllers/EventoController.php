@@ -497,6 +497,7 @@ class EventoController extends Controller
             $yearsRs = Evento
                 ::select( DB::raw('distinct year(eventos.date) as year'))
                 ->from('eventos')
+                ->where('user_id', Auth::user()->id )
                 ->groupBy('eventos.date')
                 ->orderBy('year', 'asc')
                 ->get()
