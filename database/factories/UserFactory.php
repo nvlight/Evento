@@ -10,24 +10,9 @@ class UserFactory extends Factory
 {
     //protected $model = \App\Models\Tag::class;
 
-    public function suspended()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'remember_token' => 'chichini!',
-            ];
-        });
-    }
-
     // $user = User::factory()->has(Tag::factory()->count(3), 'tags')->create();
     // $user = User::factory()->has(Tag::factory()->count(3))->create();
     // $user = User::factory()->hasTags(3)->create();
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
     public function definition()
     {
         return [
@@ -41,11 +26,15 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
+    public function suspended()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'remember_token' => 'chichini!',
+            ];
+        });
+    }
+
     public function unverified()
     {
         return $this->state(function (array $attributes) {

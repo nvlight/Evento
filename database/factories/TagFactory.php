@@ -19,10 +19,10 @@ class TagFactory extends Factory
         $user_id = 333;
         return [
             'user_id' => $user_id,
-            'name' => fake()->streetName(),
+            'name' => fake()->word,
             'description' => fake()->words(random_int(3,5), true),
-            'text_color' => '#ffffff',
-            'bg_color' => '#5CB85C',
+            'text_color' => fake()->hexColor, // '#ffffff',
+            'bg_color' => fake()->hexColor, //'#5CB85C',
         ];
     }
 }
