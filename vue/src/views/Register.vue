@@ -1,6 +1,10 @@
 <template>
     <div>
-        <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
+        <a href="/">
+            <img class="mx-auto h-12 w-auto" :src="mainLogo" alt="Workflow" />
+        </a>
+<!--        <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />-->
+
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Register for free</h2>
         <p class="mt-2 text-center text-sm text-gray-600">
             Or
@@ -55,6 +59,7 @@
 import { LockClosedIcon } from '@heroicons/vue/solid'
 import store from "../store"
 import router from "../router"
+import mainLogo from "../assets/main_logo.svg";
 
 const user = {
     name: '',

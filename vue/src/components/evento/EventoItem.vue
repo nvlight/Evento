@@ -4,11 +4,11 @@
         class=""
     >
         <td class="border text-center dark:border-none p-2">
-            <mg-checkbox
-                v-model="itemPicked"
-                class="py-3"
-            >{{evento.id}}
-            </mg-checkbox>
+            <evento-pickable-checkbox
+                :evento-id="evento.id"
+                :item-picked="itemPicked"
+                @itemPicked="itemPickedHandler"
+            />
         </td>
         <td class="border text-center dark:border-none p-2 whitespace-nowrap">{{ evento.date }}</td>
 
@@ -88,10 +88,13 @@
 
 <script>
 import {mapGetters, mapMutations, mapState} from "vuex";
+import EventoPickableCheckbox from "./EventoPickableCheckbox.vue";
 
 export default {
     name: 'evento-item',
-    components: {},
+    components: {
+        EventoPickableCheckbox,
+    },
 
     data(){
         return {
@@ -159,6 +162,9 @@ export default {
                 });
         },
 
+        itemPickedHandler(p){
+            this.itemPicked = p;
+        },
 
     },
     computed:{

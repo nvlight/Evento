@@ -17,6 +17,7 @@ export const eventoModule = {
         },
 
         pickedEventos: [],
+        pickedEventosCleared: false,
 
         createItemLoading: false,
         updateItemLoading: false,
@@ -151,6 +152,7 @@ export const eventoModule = {
                 dispatch('copyItemQuery', {id: pe.id} )
                     .then( response => {
                         commit('delPickedEvento', pe.id);
+                        commit('clearPickedEventos');
                     })
             });
         },
@@ -406,6 +408,7 @@ export const eventoModule = {
 
         clearPickedEventos(state){
             state.pickedEventos = [];
+            state.pickedEventosCleared = ! state.pickedEventosCleared;
         },
         delPickedEvento(state, id){
             state.pickedEventos = state.pickedEventos.filter( pe => pe.id !== id);

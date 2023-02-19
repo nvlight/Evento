@@ -9,6 +9,12 @@
                 <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
 
                 <div v-else>
+
+                    <div>
+                        <div>i am here!</div>
+                        <div>pickedEventos: {{ pickedEventos }}</div>
+                    </div>
+
                     <evento-create-edit v-if="formVisible" />
                     <evento-list class="rounded-t-md" :eventos="eventos.items"/>
                     <evento-paginator
@@ -127,6 +133,7 @@ export default {
             'formVisible': state => state.evento.createEditFormVisible,
             'current_page': state => state.evento.current_page,
             'url_path': state => state.evento.eventos.url_path,
+            'pickedEventos': state => state.evento.pickedEventos,
         }),
 
         ...mapGetters({
