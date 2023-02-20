@@ -11,7 +11,6 @@
                 <div v-else>
 
                     <div>
-                        <div>i am here!</div>
                         <div>pickedEventos: {{ pickedEventos }}</div>
                     </div>
 

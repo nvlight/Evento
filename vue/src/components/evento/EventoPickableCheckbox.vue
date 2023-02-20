@@ -32,6 +32,8 @@ export default {
     computed:{
         ...mapState({
             'pickedEventosCleared': state => state.evento.pickedEventosCleared,
+            'isPickedAllEventos': state => state.evento.isPickedAllEventos,
+            'pickedEventos': state => state.evento.pickedEventos,
         }),
     },
     mounted() {
@@ -43,6 +45,17 @@ export default {
         },
         pickedEventosCleared(){
             this.picked = false;
+        },
+        isPickedAllEventos(nv){
+            if (nv){
+                if (this.pickedEventos.length) {
+                    this.picked = false;
+                }else {
+                    this.picked = true;
+                }
+            }else{
+                this.picked = false;
+            }
         },
     }
 }

@@ -12,7 +12,7 @@
                         <div v-if="pickedEventos.length" class="mr-3 flex items-center">
                             {{pickedEventos.length}}
                         </div>
-                        <div>Выделить все</div>
+                        <picked-all-eventos-button/>
                     </div>
 
                     <template v-if="pickedEventos.length">
@@ -31,10 +31,11 @@ import {mapState} from "vuex";
 import {CheckCircleIcon} from "@heroicons/vue/outline";
 import PickedEventoCopyButton from "./PickedEvento/PickedEventoCopyButton.vue";
 import PickedEventoDeleteButton from "./PickedEvento/PickedEventoDeleteButton.vue";
+import PickedAllEventosButton from "./PickedEvento/PickedAllEventosButton.vue";
 
 export default {
     components: {
-        CheckCircleIcon, PickedEventoCopyButton, PickedEventoDeleteButton,
+        CheckCircleIcon, PickedEventoCopyButton, PickedEventoDeleteButton, PickedAllEventosButton,
     },
     props:{
         title: {

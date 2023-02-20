@@ -18,6 +18,7 @@ export const eventoModule = {
 
         pickedEventos: [],
         pickedEventosCleared: false,
+        isPickedAllEventos: false,
 
         createItemLoading: false,
         updateItemLoading: false,
@@ -413,6 +414,10 @@ export const eventoModule = {
         delPickedEvento(state, id){
             state.pickedEventos = state.pickedEventos.filter( pe => pe.id !== id);
         },
+
+        toggleAllPickedEventos(state){
+            state.isPickedAllEventos = !state.isPickedAllEventos;
+        }
 
     },
     namespaced: true,
