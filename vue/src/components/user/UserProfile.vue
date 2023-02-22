@@ -32,17 +32,11 @@
                                 </label>
                             </div>
                         </div>
-                        <div v-if="Object.keys(user.avatarErrors).length"
-                             class="bg-red-400 mt-2 p-2 rounded-md"
-                        >
-                            <div v-for="(errorName, i) in user.avatarErrors" :key="i" class="text-white">
-                                <div v-if="errorName.length">
-                                    <div v-for="(error, i2) in errorName">
-                                        <div>{{i2+1}} {{ error }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                        <AlertField
+                            :error="user.avatarErrors?.avatar"
+                            @hideError="user.avatarErrors = []"
+                        />
                     </div>
                 </form>
 
@@ -55,11 +49,14 @@
 <script>
 import MenuHeader from "../MenuHeader.vue";
 import {mapState} from "vuex";
+import Alert from "../Alert.vue";
+import AlertField from "../AlertField.vue";
 
 export default {
 
     components: {
-        MenuHeader,
+        AlertField,
+        MenuHeader, Alert,
     },
 
     data(){

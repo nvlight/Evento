@@ -2,9 +2,6 @@
     <div v-if="Object.keys(errors).length"
          class="bg-red-500 text-white p-3 rounded-md mt-3 relative"
     >
-
-
-        <!--                <div>errors: {{errors}}</div>-->
         <div v-for="(error_array, error_key) in errors" :key="error_key"
              class="">
             <div class="font-semibold">{{ error_key }}:</div>

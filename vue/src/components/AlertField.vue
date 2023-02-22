@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-red-500 text-white p-3 rounded-md mt-3 relative">
+    <div v-if="error" class="bg-red-500 text-white p-3 rounded-md mt-3 relative">
         <div
             v-for="(name, key) in error"
             :key="key"
@@ -27,7 +27,6 @@ export default {
     },
     props: {
         error: {
-            type: Array,
             required: true,
         }
     },
