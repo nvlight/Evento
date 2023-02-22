@@ -58,13 +58,29 @@ class UserController extends Controller
 
     public function delAvatar()
     {
+        $user = User::find(Auth::user()->id);
+
+        if ($user->avatar){
+            try {
+                $avatar = Storage::disk('public')->exists($user->avatar);
+                if ($avatar){
+                    Storage::disk('public')->delete($user->avatar);
+                    $user->save();
+                }
+            }
+            catch (\Throwable $e ){
+                $this->saveToLog(__METHOD__, $e);
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Аватар пользователя удален.',
         ]);
     }
 
-    protected function saveToLog($method, $e){
+    protected function saveToLog($method, $e)
+    {
         logger('error in method: ' . $method. '! '
             . implode(' | ', [
                 'msg: '  . $e->getMessage(),

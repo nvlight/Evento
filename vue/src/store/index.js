@@ -71,7 +71,22 @@ const store = createStore({
 
                     return response;
                 })
-        }
+        },
+        delUserAvatar({commit}){
+            return axiosClient.delete('/user/profile/avatar')
+                .then( response => {
+
+                    if (response.data.success){
+                        commit('setUserData', {});
+                    }
+
+                    return response;
+                })
+                .catch( response => {
+
+                    return response;
+                })
+        },
     },
     mutations:{
         logout: (state) => {

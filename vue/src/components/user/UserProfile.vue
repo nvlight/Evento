@@ -15,9 +15,23 @@
                         <div class="flex items-center">
                             <div
                                 v-if="userStoredAvatar"
-                                class="w-1/12 mt-2"
+                                class="w-1/12 mt-2 relative"
                             >
-                                <img :src="userStoredAvatar" class="rounded-xl" @click="changeAvatar">
+                                <img
+                                    :src="userStoredAvatar"
+                                    class="rounded-xl"
+                                    @click="changeAvatar"
+                                    @mouseover="avatarMouseOver"
+                                    @mouseleave="avatarMouseLeave"
+                                >
+                                <close-icon
+                                    ref="avatarCloseIcon"
+                                    :class="[this.avatarImageHiddenClass,
+                                        'absolute', 'top-1', 'right-1', 'bg-gray-500', 'rounded-md', 'opacity-60',
+                                        'cursor-pointer', 'transition-all delay-1000',
+                                    ]"
+                                    @click="delUserAvatar"
+                                />
                             </div>
                             <div v-show="!userStoredAvatar" class="ml-3">
                                 <div>
@@ -51,12 +65,12 @@ import MenuHeader from "../MenuHeader.vue";
 import {mapState} from "vuex";
 import Alert from "../Alert.vue";
 import AlertField from "../AlertField.vue";
+import CloseIcon from "../icons/CloseIcon.vue";
 
 export default {
 
     components: {
-        AlertField,
-        MenuHeader, Alert,
+        AlertField, MenuHeader, Alert, CloseIcon,
     },
 
     data(){
@@ -65,7 +79,8 @@ export default {
             user:{
                 avatar: '',
                 avatarErrors: {},
-            }
+            },
+            avatarImageHiddenClass: '', // hidden
         }
     },
 
@@ -86,11 +101,26 @@ export default {
         },
 
         changeAvatar(){
-            //console.log(this.$refs);
-            //console.log(this.$refs.avatar_ref);
             this.$refs.avatar_ref.click();
         },
 
+        delUserAvatar(){
+            console.log('delUserAvatar');
+
+            this.$store.dispatch('delUserAvatar');
+                // .then(e => {
+                //     if (e.data.success){
+                //         this.user.avatarErrors = e.response.data.errors;
+                //     }
+                // })
+        },
+
+        avatarMouseOver(){
+            //this.avatarImageHiddenClass = '';
+        },
+        avatarMouseLeave(){
+            //this.avatarImageHiddenClass = 'hidden';
+        },
     },
     computed:{
         ...mapState({
@@ -100,9 +130,6 @@ export default {
 
     mounted() {
         this.$store.dispatch('getUser');
-
-        //console.log(this.$refs);
-        //console.log(this.$refs.avatar_ref);
     }
 
 }
