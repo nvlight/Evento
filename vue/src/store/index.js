@@ -25,6 +25,15 @@ const store = createStore({
         },
     },
     actions:{
+        getUser({commit}){
+            return axiosClient.get('/user')
+                .then( response => {
+                    if (response.data){
+                        commit('setUserData', response.data)
+                    }
+                    return response;
+                })
+        },
         register({commit}, user){
             return axiosClient.post('/register', user)
                 .then( ({data}) => {
@@ -48,6 +57,21 @@ const store = createStore({
                     return response;
                 })
         },
+        setUserAvatar({commit}, data){
+            return axiosClient.post('/user/profile/avatar', data)
+                .then( response => {
+
+                    if (response.data.success){
+                        commit('setUserData', response.data.user);
+                    }
+
+                    return response;
+                })
+                .catch( response => {
+
+                    return response;
+                })
+        }
     },
     mutations:{
         logout: (state) => {
@@ -59,6 +83,9 @@ const store = createStore({
             state.user.token = userData.token;
             state.user.data  = userData.user;
             sessionStorage.setItem('TOKEN', userData.token);
+        },
+        setUserData: (state, userData) => {
+            state.user.data  = userData;
         },
         notify(state, {message, type, timeout}){
             state.notification.show = true;

@@ -6,6 +6,7 @@ import Register from "../views/Register.vue"
 import store from "../store"
 import Eventos from "../views/Eventos.vue";
 import TagIndex from "../components/tag/TagIndex.vue";
+import UserProfile from "../components/user/UserProfile.vue";
 
 const routes = [
     {
@@ -23,6 +24,11 @@ const routes = [
                 path: '/tags',
                 name: 'Tags',
                 component: TagIndex,
+            },
+            {
+                path: '/profile',
+                name: 'Profile',
+                component: UserProfile,
             },
         ],
     },
