@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    protected string $avatarPathPrefix = 'uploads';
+
     public function setAvatar(UserAvatarCreateRequest $request)
     {
         $user = User::find(Auth::user()->id);
@@ -34,8 +36,7 @@ class UserController extends Controller
         // save new
         try {
             $fileName = time().'_'.$request->avatar->getClientOriginalName();
-            $filePath = $request->file('avatar')->storeAs('uploads', $fileName, 'public');
-            //$fullPath = $filePath;
+            $filePath = $request->file('avatar')->storeAs($this->avatarPathPrefix, $fileName, 'public');
             $fullPath = Storage::disk('public')->url($filePath);
         }
         catch (\Throwable $e ){
@@ -46,13 +47,15 @@ class UserController extends Controller
             ]);
         }
 
-        $user->avatar = $fullPath;
+        $user->avatar = $filePath;
         $user->save();
+        $user->full_avatar = $fullPath;
 
         return response()->json([
             'success' => true,
             'message' => 'Аватар для пользователя успешно установлен.',
             'user' => $user,
+
         ]);
     }
 
@@ -65,8 +68,9 @@ class UserController extends Controller
                 $avatar = Storage::disk('public')->exists($user->avatar);
                 if ($avatar){
                     Storage::disk('public')->delete($user->avatar);
-                    $user->save();
                 }
+                $user->avatar = null;
+                $user->save();
             }
             catch (\Throwable $e ){
                 $this->saveToLog(__METHOD__, $e);

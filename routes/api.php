@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,12 @@ use App\Http\Controllers\AuthController;
 Route::middleware('auth:sanctum')->group(function ()
 {
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        $user = $request->user();
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)){
+            $fullPath = Storage::disk('public')->url($user->avatar);
+            $user->full_avatar = $fullPath;
+        }
+        return $user;
     });
     Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
 

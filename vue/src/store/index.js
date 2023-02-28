@@ -18,6 +18,7 @@ const store = createStore({
             type: null,
             message: '',
         },
+        avatarLoading: false,
     },
     getters:{
         isDarkModeEnabled: () => (state) => {
@@ -58,32 +59,36 @@ const store = createStore({
                 })
         },
         setUserAvatar({commit}, data){
+            commit('setAvatarLoading', true);
             return axiosClient.post('/user/profile/avatar', data)
                 .then( response => {
 
                     if (response.data.success){
                         commit('setUserData', response.data.user);
+                        commit('setAvatarLoading', false);
                     }
 
                     return response;
                 })
                 .catch( response => {
-
+                    commit('setAvatarLoading', false);
                     return response;
                 })
         },
         delUserAvatar({commit}){
+            commit('setAvatarLoading', true);
             return axiosClient.delete('/user/profile/avatar')
                 .then( response => {
 
                     if (response.data.success){
                         commit('setUserData', {});
+                        commit('setAvatarLoading', false);
                     }
 
                     return response;
                 })
                 .catch( response => {
-
+                    commit('setAvatarLoading', false);
                     return response;
                 })
         },
@@ -122,6 +127,9 @@ const store = createStore({
                 sessionStorage.setItem(dmSessKey, '1');
             }
         },
+        setAvatarLoading(state, value){
+            state.avatarLoading = value;
+        }
     },
     modules:{
         tag: tagModule,

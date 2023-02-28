@@ -8,40 +8,52 @@
 
                 <form @submit.prevent="setAvatar">
                     <div>
-                        <span class="mt-3">Загрузка аватара</span>
+                        <span class="mt-3 text-xl">Загрузка аватара</span>
                     </div>
 
-                    <div>
+                    <div v-if="userAvatarLoadingStatus" class="mt-3">
+
+                    </div>
+                    <div v-else class="mt-3">
                         <div class="flex items-center">
                             <div
                                 v-if="userStoredAvatar"
                                 class="w-1/12 mt-2 relative"
                             >
-                                <img
-                                    :src="userStoredAvatar"
-                                    class="rounded-xl"
+                                <a :href="userStoredAvatar">
+                                    <img
+                                        :src="userStoredAvatar"
+                                        class="rounded-xl"
+                                        @mouseover="avatarMouseOver"
+                                        @mouseleave="avatarMouseLeave"
+                                    >
+                                </a>
+
+                                <pencil-icon
+                                    :class="[this.avatarImageHiddenClass,
+                                        'absolute', 'bottom-1', 'right-8', 'bg-gray-500', 'rounded-md', 'opacity-60',
+                                        'cursor-pointer', 'transition-all delay-100',
+                                    ]"
                                     @click="changeAvatar"
-                                    @mouseover="avatarMouseOver"
-                                    @mouseleave="avatarMouseLeave"
-                                >
+                                />
                                 <close-icon
                                     ref="avatarCloseIcon"
                                     :class="[this.avatarImageHiddenClass,
-                                        'absolute', 'top-1', 'right-1', 'bg-gray-500', 'rounded-md', 'opacity-60',
+                                        'absolute', 'bottom-1', 'right-1', 'bg-gray-500', 'rounded-md', 'opacity-60',
                                         'cursor-pointer', 'transition-all delay-1000',
                                     ]"
                                     @click="delUserAvatar"
                                 />
                             </div>
                             <div v-show="!userStoredAvatar" class="ml-3">
-                                <div>
-                                    Аватара нет!
-                                </div>
-                                <label>
+                                <label class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                          class="w-8 h-8">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                                     </svg>
+                                    <div class="ml-1">
+                                        Установить <br> аватар
+                                    </div>
                                     <input ref="avatar_ref" @change="avatarInputChanged" type="file" class="mt-2 hidden">
                                 </label>
                             </div>
@@ -66,11 +78,12 @@ import {mapState} from "vuex";
 import Alert from "../Alert.vue";
 import AlertField from "../AlertField.vue";
 import CloseIcon from "../icons/CloseIcon.vue";
+import PencilIcon from "../icons/PencilIcon.vue";
 
 export default {
 
     components: {
-        AlertField, MenuHeader, Alert, CloseIcon,
+        AlertField, MenuHeader, Alert, CloseIcon, PencilIcon,
     },
 
     data(){
@@ -105,7 +118,9 @@ export default {
         },
 
         delUserAvatar(){
-            console.log('delUserAvatar');
+            if (! confirm('Действительно удалить аватар? Дествие невозможно отменить!')) {
+                return
+            }
 
             this.$store.dispatch('delUserAvatar');
                 // .then(e => {
@@ -124,7 +139,8 @@ export default {
     },
     computed:{
         ...mapState({
-            userStoredAvatar: state => state.user.data.avatar,
+            userStoredAvatar: state => state.user.data.full_avatar,
+            userAvatarLoadingStatus: state => state.avatarLoading,
         })
     },
 
