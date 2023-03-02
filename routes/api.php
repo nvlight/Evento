@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventoController;
+use App\Http\Controllers\OpenaiController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
@@ -63,3 +64,5 @@ Route::match(['post'], '/register', [AuthController::class, 'register']);
 Route::match(['post'], '/login',    [AuthController::class, 'login']);
 
 Route::get('test/eloquent/base', [TestController::class, 'eloquent_base']);
+Route::get('test/openai/foobar', [OpenaiController::class, 'foobar']);
+
