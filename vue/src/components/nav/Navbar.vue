@@ -110,11 +110,11 @@
             <div class="pt-4 pb-3 border-t border-gray-700">
                 <div class="flex items-center px-5">
                     <div class="flex-shrink-0">
-                        <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+                        <img class="h-10 w-10 rounded-full" :src="userStoredAvatar" alt="" />
                     </div>
                     <div class="ml-3">
-                        <div class="text-base font-medium leading-none text-white">{{ user.name }}</div>
-                        <div class="text-sm font-medium leading-none text-gray-400">{{ user.email }}</div>
+                        <div class="text-base font-medium leading-none text-white">{{ userData.name }}</div>
+                        <div class="text-sm font-medium leading-none text-gray-400">{{ userData.email }}</div>
                     </div>
                     <button type="button" class="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span class="sr-only">View notifications</span>
@@ -122,13 +122,23 @@
                     </button>
                 </div>
                 <div class="mt-3 px-2 space-y-1">
+                    <DisclosureButton>
+                        <router-link
+                            to="profile"
+                            class="
+                                block px-3 py-2 rounded-md text-base font-medium text-gray-400
+                                hover:text-white hover:bg-gray-700 cursor-pointer
+                                "
+                        >Профиль пользователя
+                        </router-link>
+                    </DisclosureButton>
                     <DisclosureButton
                         @click="logout"
                         class="
                                 block px-3 py-2 rounded-md text-base font-medium text-gray-400
                                 hover:text-white hover:bg-gray-700 cursor-pointer
                                 "
-                    >Sign out
+                    >Выйти из профиля
                     </DisclosureButton>
                 </div>
             </div>
@@ -187,6 +197,7 @@ export default {
     },
     computed: {
         ...mapState({
+            'userData': state => state.user.data,
             'darkMode': state => state.darkMode,
             'userStoredAvatar': state => state.user.data.full_avatar,
             'userAvatarLoadingStatus': state => state.avatarLoading,
