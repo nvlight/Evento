@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventoController;
+use App\Http\Controllers\Onepass\CategoryController;
 use App\Http\Controllers\OpenaiController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
@@ -42,7 +43,12 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::get('/evento/diagram-years', [EventoController::class, 'getDiagramYears']);
     Route::apiResource('/evento', EventoController::class);
 
+    Route::post('user/profile/avatar', [UserController::class, 'setAvatar']);
+    Route::delete('user/profile/avatar', [UserController::class, 'delAvatar']);
 
+    Route::apiResource('/onepass/category', CategoryController::class);
+
+    // test api section
     Route::group(
         [
             'prefix' => 'test',
@@ -52,9 +58,6 @@ Route::middleware('auth:sanctum')->group(function ()
 
         Route::get('distinct', [TestController::class, 'distinct']);
     });
-
-    Route::post('user/profile/avatar', [UserController::class, 'setAvatar']);
-    Route::delete('user/profile/avatar', [UserController::class, 'delAvatar']);
 
     Route::post('test/distinct2', [TestController::class, 'distinct']);
     Route::post('test/customRule', [TestController::class, 'customRuse']);

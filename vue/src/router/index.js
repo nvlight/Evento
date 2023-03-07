@@ -7,8 +7,30 @@ import store from "../store"
 import Eventos from "../views/Eventos.vue";
 import TagIndex from "../components/tag/TagIndex.vue";
 import UserProfile from "../components/user/UserProfile.vue";
+import OnepassEntries from "../components/onepass/OnepassEntries.vue";
+import OnepassCategories from "../components/onepass/OnepassCategories.vue";
 
 const routes = [
+    {
+        path: '/auth',
+        redirect: '/login',
+        name: 'Auth',
+        component: AuthLayout,
+        meta: { isGuest: true,},
+        children: [
+            {
+                path: '/login',
+                name: 'Login',
+                component: Login,
+            },
+            {
+                path: '/register',
+                name: 'Register',
+                component: Register,
+            },
+        ],
+    },
+
     {
         path: '/',
         redirect: '/eventos',
@@ -34,24 +56,24 @@ const routes = [
     },
 
     {
-        path: '/auth',
-        redirect: '/login',
-        name: 'Auth',
-        component: AuthLayout,
-        meta: { isGuest: true,},
+        path: '/onepass',
+        redirect: '/onepass/entries',
+        meta: { requiresAuth: true },
+        component: DefaultLayout,
         children: [
             {
-                path: '/login',
-                name: 'Login',
-                component: Login,
+                path: '/onepass/entries',
+                name: 'OnepassEntries',
+                component: OnepassEntries,
             },
             {
-                path: '/register',
-                name: 'Register',
-                component: Register,
+                path: '/onepass/entries',
+                name: 'OnepassCategories',
+                component: OnepassCategories,
             },
         ],
     },
+
 ];
 
 const router = createRouter({
