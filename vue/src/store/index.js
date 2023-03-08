@@ -3,6 +3,7 @@ import axiosClient from "../axios.js"
 import {tagModule} from "./tagModule.js";
 import {eventoModule} from "./eventoModule.js";
 import {diagramModule} from "./diagramModule.js";
+import {onepassCategoryModule} from "./onepassCategoryModule.js";
 
 const store = createStore({
     state:{
@@ -135,6 +136,7 @@ const store = createStore({
         tag: tagModule,
         evento: eventoModule,
         diagram: diagramModule,
+        onepassCategory: onepassCategoryModule,
     },
 });
 

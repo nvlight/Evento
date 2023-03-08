@@ -7,7 +7,7 @@ import store from "../store"
 import Eventos from "../views/Eventos.vue";
 import UserProfile from "../components/user/UserProfile.vue";
 import Onepass from "../views/Onepass.vue";
-import OnepassCategories from "../components/onepass/OnepassCategories.vue";
+import OnepassCategories from "../views/OnepassCategories.vue";
 import Tags from "../views/Tags.vue";
 
 const routes = [
@@ -45,7 +45,7 @@ const routes = [
             {
                 path: '/tags',
                 name: 'Tags',
-                component: Tags, //TagIndex,
+                component: Tags,
             },
             {
                 path: '/profile',
@@ -57,7 +57,7 @@ const routes = [
 
     {
         path: '/onepass',
-        redirect: '/onepass/entries',
+        //redirect: '/onepass/entries',
         meta: { requiresAuth: true },
         component: DefaultLayout,
         children: [

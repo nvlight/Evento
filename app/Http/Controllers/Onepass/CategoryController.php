@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Onepass;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Onepass\CategoryStoreRequest;
 use App\Models\Onepass\Category;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -15,9 +16,17 @@ class CategoryController extends Controller
     {
         try{
             $items = Category::
-            where('user_id', Auth::user()->id)
-                ->orderBy('id', 'DESC')
-                ->get();
+                where('user_id', Auth::user()->id)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+
+            $itemsWithFullImgPaths = $items;
+            foreach($itemsWithFullImgPaths as $item) {
+                if ($item->image){
+                    $item->image_full = Storage::disk('public')->url($item->image);
+                }
+            }
+
         }catch (\Exception $e){
             $this->saveToLog($e);
             return response()->json([
@@ -27,25 +36,21 @@ class CategoryController extends Controller
         }
 
         return json_encode([
-            'data' => $items,
+            'data' => $itemsWithFullImgPaths,
             'success' => 1,
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        $attributes = $this->validate($request, [
-            'name' => 'required|string|max:255|min:2',
-            'img' => 'nullable|image|max:2048',
-            'note' => 'nullable|string',
-        ]);
+        $attributes = $request->validated();
 
         $attributes += ['user_id' => Auth::user()->id ];
 
-        if($request->file('img')) {
-            $file_name = time().'_'.$request->img->getClientOriginalName();
-            $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
-            $attributes['img'] = $file_path;
+        if($request->file('image')) {
+            $file_name = time().'_'.$request->image->getClientOriginalName();
+            $file_path = $request->file('image')->storeAs('uploads', $file_name, 'public');
+            $attributes['image'] = $file_path;
         }
 
         try{
@@ -61,7 +66,8 @@ class CategoryController extends Controller
 
         return response()->json([
             'success' => 1,
-            'img'     => $item->img,
+            'image'      => $item->image,
+            'image_full' => $item->image ? Storage::disk('public')->url($item->image) : '',
             'savedId' => $item->id,
         ]);
     }
@@ -77,27 +83,23 @@ class CategoryController extends Controller
     {
         $attributes = $this->validate($request, [
             'name' => 'required|string|max:255|min:2',
-            'img' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:2048',
             'note' => 'nullable|string',
         ]);
 
-        //foreach($attributes as $key => $value){
-        //    $tag->$key = $value;
-        //}
-
         $item = $category;
-        if($request->file('img')) {
+        if($request->file('image')) {
 
             // delete if exists old file
-            $img = Storage::disk('public')->exists($item->img);
-            if ($img){
-                Storage::disk('public')->delete($item->img);
+            $image = Storage::disk('public')->exists($item->image);
+            if ($image){
+                Storage::disk('public')->delete($item->image);
             }
 
             // create new file
-            $file_name = time().'_'.$request->img->getClientOriginalName();
-            $file_path = $request->file('img')->storeAs('uploads', $file_name, 'public');
-            $item->img = $file_path;
+            $file_name = time().'_'.$request->image->getClientOriginalName();
+            $file_path = $request->file('image')->storeAs('uploads', $file_name, 'public');
+            $item->image = $file_path;
         }
 
         try{
@@ -113,7 +115,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'success'   => 1,
-            'img'       => $item->img,
+            'image'     => $item->image,
             'updatedId' => $item->id,
         ]);
     }
@@ -122,10 +124,10 @@ class CategoryController extends Controller
     {
         $item = $category;
         try{
-            if ( $item->img ){
-                $img = Storage::disk('public')->exists($item->img);
-                if ($img){
-                    Storage::disk('public')->delete($item->img);
+            if ( $item->image ){
+                $image = Storage::disk('public')->exists($item->image);
+                if ($image){
+                    Storage::disk('public')->delete($item->image);
                 }
             }
             $item->delete();

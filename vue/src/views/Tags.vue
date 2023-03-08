@@ -7,10 +7,8 @@
                 <mg-loading v-if="tags.loading" class="m-auto">Загрузка...</mg-loading>
 
                 <div v-else class="flex">
-                    <tag-create-edit-form class="w-5/12 border border p-3"></tag-create-edit-form>
-
-                    <tag-list class="w-7/12 w-full ml-5 border-2 border-dotted border p-3" :tags="tags.items">
-                    </tag-list>
+                    <tag-create-edit-form class="w-5/12 border p-3" />
+                    <tag-list class="w-7/12 w-full ml-5 border-2 border-dotted border p-3" :tags="tags.items" />
                 </div>
             </div>
         </div>

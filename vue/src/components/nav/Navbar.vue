@@ -60,7 +60,7 @@
 
                                     <MenuItem>
                                         <router-link
-                                            to="profile"
+                                            :to="{name: 'Profile'}"
                                             :class="['block px-4 py-2 text-sm text-gray-700 cursor-pointer ']"
                                         >Профиль пользователя
                                         </router-link>
@@ -73,7 +73,6 @@
                                         >Выйти из профиля
                                         </a>
                                     </MenuItem>
-
 
                                 </MenuItems>
                             </transition>

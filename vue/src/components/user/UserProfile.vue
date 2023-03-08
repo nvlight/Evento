@@ -44,9 +44,9 @@
                                             <close-icon
                                                 ref="avatarCloseIcon"
                                                 :class="[this.avatarImageHiddenClass,
-                                            'ml-1', 'bg-gray-500', 'rounded-md', 'opacity-60',
-                                            'cursor-pointer', 'transition-all delay-1000',
-                                        ]"
+                                                    'ml-1', 'bg-gray-500', 'rounded-md', 'opacity-60',
+                                                    'cursor-pointer', 'transition-all delay-1000',
+                                                ]"
                                                 @click="delUserAvatar"
                                             />
                                         </div>
