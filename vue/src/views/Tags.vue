@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import Navbar from "../nav/Navbar.vue";
-import TagCreateEditForm from "./TagCreateEditForm.vue";
-import TagList from "./TagList.vue";
+import Navbar from "../components/nav/Navbar.vue";
+import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
+import TagList from "../components/tag/TagList.vue";
 import {mapActions, mapState} from "vuex";
-import MgFooter from "../footer/MgFooter.vue";
-import EventoMenuHeader from "../../components/evento/EventoMenuHeader.vue";
+import MgFooter from "../components/footer/MgFooter.vue";
+import EventoMenuHeader from "../components/evento/EventoMenuHeader.vue";
 
 export default {
     name: 'tag-index',

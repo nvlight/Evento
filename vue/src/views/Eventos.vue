@@ -33,7 +33,6 @@
 <script>
 import TagList from "../components/tag/TagList.vue";
 import TagItem from "../components/tag/TagItem.vue";
-import TagIndex from "../components/tag/TagIndex.vue"
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import TagCreateEditForm from "../components/tag/TagCreateEditForm.vue";
 import MgTrashIconButton from "../components/UI/MgTrashIconButton.vue";
@@ -49,7 +48,7 @@ export default {
     components: {
         MgLoading,
         MgSelect, MgTrashIconButton,
-        TagIndex, TagItem, TagList, TagCreateEditForm,
+        TagItem, TagList, TagCreateEditForm,
         EventoList, EventoCreateEdit, EventoPaginator, EventoMenuHeader,
     },
     data(){

@@ -5,10 +5,10 @@ import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 import store from "../store"
 import Eventos from "../views/Eventos.vue";
-import TagIndex from "../components/tag/TagIndex.vue";
 import UserProfile from "../components/user/UserProfile.vue";
-import OnepassEntries from "../components/onepass/OnepassEntries.vue";
+import Onepass from "../views/Onepass.vue";
 import OnepassCategories from "../components/onepass/OnepassCategories.vue";
+import Tags from "../views/Tags.vue";
 
 const routes = [
     {
@@ -45,7 +45,7 @@ const routes = [
             {
                 path: '/tags',
                 name: 'Tags',
-                component: TagIndex,
+                component: Tags, //TagIndex,
             },
             {
                 path: '/profile',
@@ -64,10 +64,10 @@ const routes = [
             {
                 path: '/onepass/entries',
                 name: 'OnepassEntries',
-                component: OnepassEntries,
+                component: Onepass,
             },
             {
-                path: '/onepass/entries',
+                path: '/onepass/categories',
                 name: 'OnepassCategories',
                 component: OnepassCategories,
             },
