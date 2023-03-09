@@ -10,9 +10,7 @@
 
                 <div v-else>
 
-                    <div>
-                        <div>pickedEventos: {{ pickedEventos }}</div>
-                    </div>
+                    <!-- <div>pickedEventos: {{ pickedEventos }}</div>-->
 
                     <evento-create-edit v-if="formVisible" />
                     <evento-list class="rounded-t-md" :eventos="eventos.items"/>

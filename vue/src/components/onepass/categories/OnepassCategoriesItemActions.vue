@@ -33,7 +33,7 @@ export default {
             this.show = !this.show;
         },
         editItemHandler(id){
-            console.log('editItemHandler:', id);
+            //console.log('editItemHandler:', id);
             //this.$store.commit('tag/setCurrentEditItemId', id);
             this.$store.commit('onepassCategory/itemEditBtnClickChanged');
             this.onepassCategorySetCurrentEditItemIdMutation(id);

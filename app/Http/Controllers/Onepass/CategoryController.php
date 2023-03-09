@@ -127,9 +127,11 @@ class CategoryController extends Controller
         ]);
         if( ($req_image->passes()) && $request->file('image')) {
             // delete if exists old file
-            $image = Storage::disk('public')->exists($item->image);
-            if ($image){
-                Storage::disk('public')->delete($item->image);
+            if ($item->image){
+                $image = Storage::disk('public')->exists($item->image);
+                if ($image){
+                    Storage::disk('public')->delete($item->image);
+                }
             }
 
             // create new file

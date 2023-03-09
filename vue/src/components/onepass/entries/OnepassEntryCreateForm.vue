@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="">
         <h1>OnepassCreateCategoryForm</h1>
 
         <form
@@ -97,10 +97,17 @@
 export default {
     data(){
         return {
-            tmpCategory:{
-                name: '',
-                note: '',
-                image: '',
+            entryDefault:{
+                category: null,
+                url: "",
+                password: "",
+
+                email: "", // nullable
+                login: "", // nullable
+                phone: "", // nullable
+                name: "",  // nullable
+
+                note: "",  // nullable
             },
             category: {
 

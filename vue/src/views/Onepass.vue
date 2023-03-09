@@ -12,7 +12,15 @@
                 </router-link>
 
                 <div class="py-2 md:py-5 rounded-md">
+                    <div class="flex">
+                        <!-- entry create form -->
+                        <onepass-entry-create-form class="w-4/12" />
+
+                        <!-- entry lists -->
+                        <onepass-entry-list class="w-8/12" />
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -20,9 +28,12 @@
 
 <script>
 import MenuHeader from "../components/MenuHeader.vue";
+import OnepassEntryCreateForm from "../components/onepass/entries/OnepassEntryCreateForm.vue";
+import OnepassEntryList from "../components/onepass/entries/OnepassEntryList.vue";
+
 export default {
     components: {
-        MenuHeader,
+        MenuHeader, OnepassEntryCreateForm, OnepassEntryList,
     }
 }
 </script>
