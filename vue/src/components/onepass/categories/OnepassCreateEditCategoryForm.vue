@@ -19,6 +19,7 @@
             <div class="shadow sm:overflow-hidden sm:rounded-md">
 
                 <div class="space-y-6  px-4 py-5 sm:p-6">
+
                     <!-- name -->
                     <div>
                         <mg-input-labeled v-model="category.name">Имя</mg-input-labeled>
@@ -167,15 +168,10 @@ export default {
                     data.append(key, this.category[key]);
                 }
             }
-            //data.append('name', this.category.name);
-            //data.append('note', this.category.note);
-            //data.append('image', this.category.image);
 
             const item = {item: this.category, formData: data}
             this.$store.dispatch('onepassCategory/createItem', item)
                 .then(data => {
-                    //console.log('onepassCategory/createItem - dispatch success');
-                    //console.log(response);
                     if (data?.response?.status === 422) {
                         console.log(data.response.data.errors);
                         this.categoryErrors = data.response.data.errors;
@@ -191,16 +187,28 @@ export default {
         editItem() {
             this.$store.commit('onepassCategory/setCreateItemStatus', false);
 
+            // тут вылезает ошибка, null он воспринимает как текст! вот уж formData !!
             let data = new FormData();
-            data.append('name', this.category.name);
-            data.append('description', this.category.description);
-            data.append('image', this.category.image);
+            for(let key in this.category){
+                if ( this.category[key] !== null ){
+                    data.append(key, this.category[key]);
+                }
+            }
 
             data.append('_method', 'PUT');
 
             const item = {item: this.category, formData: data}
 
-            this.$store.dispatch('onepassCategory/editItem', item);
+            this.$store.dispatch('onepassCategory/editItem', item)
+                .then(data => {
+                    if (data?.response?.status === 422) {
+                        console.log(data.response.data.errors);
+                        this.categoryErrors = data.response.data.errors;
+                    }
+                })
+                .catch(error => {
+                    console.log('onepassCategory/updateItem - dispatch error');
+                });
         },
 
         onImageChoose(ev) {
@@ -280,7 +288,6 @@ export default {
             this.category = Object.assign({}, currEditItem);
 
             this.isCreatedButtonVisible = false;
-
         },
         getCurrentEditItemId(nv){
             if (nv === 0){

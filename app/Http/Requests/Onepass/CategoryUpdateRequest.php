@@ -4,7 +4,7 @@ namespace App\Http\Requests\Onepass;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryStoreRequest extends FormRequest
+class CategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,8 @@ class CategoryStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|min:2',
-            'image' => 'nullable|image|max:2048',
+            //'image' => 'nullable|image|string|max:2048',
+            'image2' => 'nullable|string|max:255',
             'note' => 'nullable|string',
         ];
     }

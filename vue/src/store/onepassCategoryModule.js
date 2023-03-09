@@ -105,7 +105,8 @@ export const onepassCategoryModule = {
                 .then((res)=>{
                     if (res.data.success) {
                         const updItem = Object.assign({}, item.item);
-                        updItem.img = res.data.img;
+                        updItem.image = res.data.image;
+                        updItem.image_full = res.data.image_full;
                         commit('editItem', updItem);
                     }
                     return res;

@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::post('user/profile/avatar', [UserController::class, 'setAvatar']);
     Route::delete('user/profile/avatar', [UserController::class, 'delAvatar']);
 
+    Route::patch('/onepass/category/image_validator/{category}', [CategoryController::class, 'image_validator']);
     Route::apiResource('/onepass/category', CategoryController::class);
 
     // test api section
