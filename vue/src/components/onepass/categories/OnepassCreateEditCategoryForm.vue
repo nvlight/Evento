@@ -1,6 +1,16 @@
 <template>
     <div>
-        <h1 class="font-semibold text-2xl">Создание</h1>
+        <div class="flex justify-between items-center">
+            <h3 class="text-2xl">
+                <span v-if="isCreatedButtonVisible">Создание </span>
+                <span v-else>Редактирование</span>
+            </h3>
+            <mg-close-icon-button
+                v-if="!isCreatedButtonVisible"
+                @click="resetFormHandler"
+            >
+            </mg-close-icon-button>
+        </div>
 
         <form
             @submit.prevent
@@ -20,8 +30,6 @@
 
                             <alert-field @hideError="delete categoryErrors.name" :error="categoryErrors.name"/>
                         </div>
-
-
                     </div>
 
                     <!-- image -->
@@ -35,7 +43,7 @@
                             >
                                 <img
                                     :src="upload_image_src" alt=""
-                                    class="w-auto h-auto rounded-md"
+                                    class="w-24 h-24 rounded-md bg-contain"
                                 >
 
                                 <div class="actions">
@@ -108,7 +116,7 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import { TrashIcon } from "@heroicons/vue/solid";
 import { LockClosedIcon } from "@heroicons/vue/solid";
 import AlertField from "../../AlertField.vue";
@@ -217,14 +225,67 @@ export default {
     },
 
     computed: {
+        ...mapGetters({
+            getCurrentEditItemId: "onepassCategory/getCurrentEditItemId",
+            getCurrentEditItem: "onepassCategory/getCurrentEditItem",
+            getCreateItemStatus: "onepassCategory/getCreateItemStatus",
+            getCreatedItemId: "onepassCategory/getCreatedItemId",
+            getiItemEditBtnClickChanged: "onepassCategory/getiItemEditBtnClickChanged",
+        }),
+
         categoryName(){
             return this.category?.name;
-        }
+        },
     },
 
     watch:{
         categoryName(){
             this.categoryErrors.name = null;
+        },
+
+        // getCurrentEditItem(nv,ov){
+        //     const currEditItem = this.getCurrentEditItem;
+        //
+        //     if ( currEditItem ){
+        //
+        //         // image
+        //         this.upload_image_src = null;
+        //         if (currEditItem?.image_full){
+        //             this.upload_image_src = currEditItem.image_full;
+        //         }
+        //
+        //         this.category = Object.assign({}, currEditItem);
+        //
+        //         this.isCreatedButtonVisible = false;
+        //     }else{
+        //         console.log('are we here?!');
+        //         this.resetFormHandler();
+        //     }
+        // },
+
+        getCreateItemStatus(nv,ov){
+            if (nv){
+                this.setCurrentEditId(this.getCreatedItemId);
+            }
+        },
+        getiItemEditBtnClickChanged(nv){
+            const currEditItem = this.getCurrentEditItem;
+
+            // image
+            this.upload_image_src = null;
+            if (currEditItem?.image_full){
+                this.upload_image_src = currEditItem.image_full;
+            }
+
+            this.category = Object.assign({}, currEditItem);
+
+            this.isCreatedButtonVisible = false;
+
+        },
+        getCurrentEditItemId(nv){
+            if (nv === 0){
+                this.resetFormHandler();
+            }
         },
     },
 

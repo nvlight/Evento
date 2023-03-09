@@ -13,6 +13,9 @@ export const onepassCategoryModule = {
         crudModalVisible: true,
         createItemStatus: false,
         createdItemId: 0,
+
+        // если кнопка редактирования на итем нажата - фиксирует изменения, чтобы потом отследить!
+        itemEditBtnClickChanged: false,
     }),
     getters: {
         getCrudModalVisible(state){
@@ -32,7 +35,10 @@ export const onepassCategoryModule = {
         },
         getCreatedItemId(state){
             return state.createdItemId;
-        }
+        },
+        getiItemEditBtnClickChanged(state){
+            return state.itemEditBtnClickChanged;
+        },
     },
     actions: {
         loadItems({commit, state}){
@@ -172,6 +178,10 @@ export const onepassCategoryModule = {
         setItemsLoading(state, value){
             state.items.loading = value;
         },
+
+        itemEditBtnClickChanged(state, value){
+            state.itemEditBtnClickChanged = ! state.itemEditBtnClickChanged;
+        }
     },
     namespaced: true,
 }

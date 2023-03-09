@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center bg-gray-400 px-2 py-1 rounded-md">
         <mg-show-icon-button @click="$emit('showHideDescription')"></mg-show-icon-button>
-        <mg-edit-icon-button @click="editMaterialHandler(item_id)"></mg-edit-icon-button>
+        <mg-edit-icon-button @click="editItemHandler(item_id)"></mg-edit-icon-button>
         <mg-trash-icon-button
             @click="deleteItemHandler(item_id)"
             class="text-red-500 border-0"
@@ -32,8 +32,10 @@ export default {
         showHideDescription(){
             this.show = !this.show;
         },
-        editMaterialHandler(id){
+        editItemHandler(id){
+            console.log('editItemHandler:', id);
             //this.$store.commit('tag/setCurrentEditItemId', id);
+            this.$store.commit('onepassCategory/itemEditBtnClickChanged');
             this.onepassCategorySetCurrentEditItemIdMutation(id);
         },
         deleteItemHandler(id){
