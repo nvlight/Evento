@@ -10,8 +10,21 @@
             <div class="shadow sm:overflow-hidden sm:rounded-md">
 
                 <div class="space-y-6  px-4 py-5 sm:p-6">
+
+<!--                    <pre>entry.category: {{ this.entry.category }}</pre>-->
+
+<!--                    <pre>categories: {{ categories.list[0] }}-->
+<!--                    </pre>-->
+
+                    <ComboboxBasic
+                        labelName="Категория"
+                        @categoryChanged="categoryChanged"
+                        :people="categories.list"
+                        v-if="!categories.loading"
+                    />
+
                     <div>
-                        <mg-input-labeled v-model="category.name">Имя</mg-input-labeled>
+                        <mg-input-labeled v-model="entry.name">Имя</mg-input-labeled>
                     </div>
                     <div class="grid grid-cols-3 gap-6">
                         <div class="col-span-3 sm:col-span-2">
@@ -94,11 +107,18 @@
 </template>
 
 <script>
+import ComboboxBasic from "../../../components/UI_v2.0/ComboboxBasic.vue"
+import {mapState} from "vuex";
+
 export default {
+    components: {
+        ComboboxBasic,
+    },
+
     data(){
         return {
             entryDefault:{
-                category: null,
+                category: 0,
                 url: "",
                 password: "",
 
@@ -109,9 +129,38 @@ export default {
 
                 note: "",  // nullable
             },
-            category: {
-
+            entry: {
             },
+
+        }
+    },
+
+    methods:{
+        categoryChanged(v){
+            console.log('categoryChanged:', v);
+            this.entry.category = v;
+        }
+    },
+
+    computed: {
+        ...mapState({
+            categories: state => state.onepassCategory.items,
+        }),
+    },
+
+    mounted() {
+        this.entry = Object.assign({}, this.entryDefault);
+        this.$store.dispatch("onepassCategory/loadItems");
+    },
+
+    watch:{
+        categories:{
+            handler(nv, ov){
+                if (nv.loading === false){
+                    this.entry.category = this.categories.list[0];
+                }
+            },
+            deep: true,
         }
     },
 }
