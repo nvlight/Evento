@@ -13,7 +13,11 @@
                 "
                 :class="classes"
                 :placeholder="placeholder"
-                ref="input"
+
+                readonly
+                onfocus="this.removeAttribute('readonly');"
+
+                autocomplete="new-password"
             >
             <eye-icon
                 v-if="!passwordEyeOpened"
@@ -70,7 +74,7 @@ export default {
 
     mounted() {
         this.passwordFieldType = 'password';
-        //this.passwordFieldType = 'input';
+        //this.passwordFieldType = 'text';
     }
 }
 </script>

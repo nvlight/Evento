@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <h1>OnepassCreateCategoryForm</h1>
+        <h1>Onepass - create Entry</h1>
 
         <form
             @submit.prevent="saveEntry"
@@ -29,7 +29,7 @@
                     <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name"/>
 
                     <hr>
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password"/>
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password"  />
                     <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation"/>
 
                     <mg-textarea placeholder="Здесь можно указать все, что будет связано с добавляемой записью. ">Примечание</mg-textarea>
