@@ -4,33 +4,78 @@
 
         <form
             @submit.prevent="saveEntry"
-            class="text-black dark:text-white border-indigo-500 border rounded-md"
+            class="mt-2 mr-2 text-black dark:text-white border-indigo-500 border rounded-md"
             method="POST"
         >
             <div class="shadow sm:overflow-hidden sm:rounded-md">
                 <div class="space-y-6  px-4 py-5 sm:p-6">
-<!--                    <pre>entry.category: {{ this.entry.category }}</pre>-->
+                    <!--                    <pre>entry.category: {{ this.entry.category }}</pre>-->
 
-<!--                    <pre>categories: {{ categories.list[0] }}-->
-<!--                    </pre>-->
+                    <!--                    <pre>categories: {{ categories.list[0] }}-->
+                    <!--                    </pre>-->
 
-                    <ComboboxBasic
-                        labelName="Категория"
-                        @categoryChanged="categoryChanged"
-                        :people="categories.list"
-                        v-if="!categories.loading"
-                        class="block"
-                    />
+                    <div>
+                        <ComboboxBasic
+                            labelName="Категория"
+                            @categoryChanged="categoryChanged"
+                            :people="categories.list"
+                            v-if="!categories.loading"
+                            class="block"
+                        />
+                        <div v-if="formErrors.hasOwnProperty('category')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.category" :error="formErrors.category"/>
+                        </div>
+                    </div>
 
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Url" v-model="entry.url"/>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Емейл" v-model="entry.email"/>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Телефон" v-model="entry.phone"/>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Логин" v-model="entry.login"/>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name"/>
+                    <div>
+                        <mg-input-labeled class="block" :classes="'w-full'" placeholder="Url" v-model="entry.url"/>
+                        <div v-if="formErrors.hasOwnProperty('url')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.url" :error="formErrors.url"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <mg-input-labeled class="block" :classes="'w-full'" placeholder="Емейл" v-model="entry.email"/>
+                        <div v-if="formErrors.hasOwnProperty('email')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.email" :error="formErrors.email"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <mg-input-labeled class="block" :classes="'w-full'" placeholder="Телефон" v-model="entry.phone"/>
+                        <div v-if="formErrors.hasOwnProperty('phone')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.phone" :error="formErrors.phone"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <mg-input-labeled class="block" :classes="'w-full'" placeholder="Логин" v-model="entry.login"/>
+                        <div v-if="formErrors.hasOwnProperty('login')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.login" :error="formErrors.login"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name"/>
+                        <div v-if="formErrors.hasOwnProperty('name')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.name" :error="formErrors.name"/>
+                        </div>
+                    </div>
 
                     <hr>
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password"  />
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation"/>
+                    <div>
+                        <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password" />
+                        <div v-if="formErrors.hasOwnProperty('password')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.password" :error="formErrors.password"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password_confirmation" />
+                        <div v-if="formErrors.hasOwnProperty('password_confirmation')" class="mt-1">
+                            <alert-field @hideError="delete formErrors.password_confirmation" :error="formErrors.password_confirmation"/>
+                        </div>
+                    </div>
 
                     <mg-textarea placeholder="Здесь можно указать все, что будет связано с добавляемой записью. ">Примечание</mg-textarea>
 
@@ -92,10 +137,11 @@
 <script>
 import ComboboxBasic from "../../../components/UI_v2.0/ComboboxBasic.vue"
 import {mapState} from "vuex";
+import AlertField from "../../AlertField.vue";
 
 export default {
     components: {
-        ComboboxBasic,
+        ComboboxBasic, AlertField,
     },
 
     data(){
@@ -116,16 +162,44 @@ export default {
             entry: {
             },
 
+            formErrors: {},
         }
     },
 
     methods:{
+        resetForm() {
+            this.category = Object.assign({}, this.entryDefault);
+            this.formErrors = {};
+        },
+
         categoryChanged(v){
             console.log('categoryChanged:', v);
             this.entry.category = v;
         },
         saveEntry(){
             console.log('saveEntry...');
+
+            // тут вылезает ошибка, null он воспринимает как текст! вот уж formData !!
+            let data = new FormData();
+            for(let key in this.entry){
+                if ( this.entry[key] !== null ){
+                    data.append(key, this.entry[key]);
+                }
+            }
+
+            const item = {item: this.entry, formData: data}
+            this.$store.dispatch('onepassEntry/createItem', item)
+                .then(data => {
+                    if (data?.response?.status === 422) {
+                        console.log(data.response.data.errors);
+                        this.formErrors = data.response.data.errors;
+                    }else{
+                        this.resetForm();
+                    }
+                })
+                .catch(error => {
+                    console.log('onepassEntry/createItem - dispatch error');
+                });
         },
     },
 

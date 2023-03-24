@@ -98,7 +98,6 @@ class CategoryController extends Controller
             'request_all' => $request->all(),
             'v - fails' => $v->passes(),
             'v - messages' => $v->messages(),
-
         ]);
     }
 

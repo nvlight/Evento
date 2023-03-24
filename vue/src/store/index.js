@@ -4,6 +4,7 @@ import {tagModule} from "./tagModule.js";
 import {eventoModule} from "./eventoModule.js";
 import {diagramModule} from "./diagramModule.js";
 import {onepassCategoryModule} from "./onepassCategoryModule.js";
+import {onepassEntryModule} from "./onepassEntryModule.js";
 
 const store = createStore({
     state:{
@@ -137,6 +138,7 @@ const store = createStore({
         evento: eventoModule,
         diagram: diagramModule,
         onepassCategory: onepassCategoryModule,
+        onepassEntry: onepassEntryModule,
     },
 });
 

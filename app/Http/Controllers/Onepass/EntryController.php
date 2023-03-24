@@ -7,6 +7,7 @@ use App\Http\Requests\Onepass\EntryStoreRequest;
 use Illuminate\Http\Request;
 use App\Models\Onepass\Entry;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 
 class EntryController extends Controller
 {
@@ -29,9 +30,18 @@ class EntryController extends Controller
 
         return response()->json([
             'success' => 1,
-            'image'      => $item->image,
-            'image_full' => $item->image ? Storage::disk('public')->url($item->image) : '',
-            'savedId' => $item->id,
+            'storedId' => $item->id,
         ]);
+    }
+
+    protected function saveToLog($method, $e){
+        logger('error in method: ' . $method. '! '
+            . implode(' | ', [
+                'msg: '  . $e->getMessage(),
+                'line: ' . $e->getLine(),
+                'file: ' . $e->getFile(),
+                'code: ' . $e->getCode(),
+            ])
+        );
     }
 }

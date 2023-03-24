@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\Onepass\CategoryController;
+use App\Http\Controllers\Onepass\EntryController;
 use App\Http\Controllers\OpenaiController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
@@ -48,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::patch('/onepass/category/image_validator/{category}', [CategoryController::class, 'image_validator']);
     Route::apiResource('/onepass/category', CategoryController::class);
+    Route::apiResource('/onepass/entry', EntryController::class);
 
     // test api section
     Route::group(
@@ -61,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function ()
     });
 
     Route::post('test/distinct2', [TestController::class, 'distinct']);
-    Route::post('test/customRule', [TestController::class, 'customRuse']);
+    Route::post('test/customRule', [TestController::class, 'customRule']);
 });
 
 Route::match(['post'], '/register', [AuthController::class, 'register']);

@@ -57,7 +57,7 @@ class TestController extends Controller
         ]);
     }
 
-    public function customRuse(Request $request )
+    public function customRule(Request $request )
     {
         $request->validate([
             'name' => ['required', 'string', new Uppercase()],
