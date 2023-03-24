@@ -11,7 +11,8 @@
                 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
             "
             :class="classes"
-            :placeholder="placeholder">
+            :placeholder="placeholder"
+        >
     </label>
 </template>
 

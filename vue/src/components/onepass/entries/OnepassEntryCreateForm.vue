@@ -3,14 +3,12 @@
         <h1>OnepassCreateCategoryForm</h1>
 
         <form
-            @submit.prevent="add"
+            @submit.prevent="saveEntry"
             class="text-black dark:text-white border-indigo-500 border rounded-md"
             method="POST"
         >
             <div class="shadow sm:overflow-hidden sm:rounded-md">
-
                 <div class="space-y-6  px-4 py-5 sm:p-6">
-
 <!--                    <pre>entry.category: {{ this.entry.category }}</pre>-->
 
 <!--                    <pre>categories: {{ categories.list[0] }}-->
@@ -21,36 +19,26 @@
                         @categoryChanged="categoryChanged"
                         :people="categories.list"
                         v-if="!categories.loading"
+                        class="block"
                     />
 
-                    <div>
-                        <mg-input-labeled v-model="entry.name">Имя</mg-input-labeled>
-                    </div>
-                    <div class="grid grid-cols-3 gap-6">
-                        <div class="col-span-3 sm:col-span-2">
-                            <label for="company-website"
-                                   class="block text-sm font-medium leading-6">Website</label>
-                            <div class="mt-2 flex rounded-md shadow-sm">
-                                <span class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 px-3 text-gray-500 sm:text-sm">http://</span>
-                                <input
-                                    type="text" name="company-website" id="company-website"
-                                    class="block w-full flex-1 rounded-none rounded-r-md border-0 py-1.5 dark:bg-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    placeholder="www.example.com"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Url" v-model="entry.url"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Емейл" v-model="entry.email"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Телефон" v-model="entry.phone"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Логин" v-model="entry.login"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name"/>
 
-                    <div>
-                        <label for="about" class="block text-sm font-medium leading-6 ">About</label>
-                        <div class="mt-2">
-                                    <textarea
-                                        id="about" name="about" rows="3"
-                                        class="mt-1 block w-full rounded-md border-0 dark:bg-gray-900  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                                        placeholder="you@example.com"
-                                    />
-                        </div>
-                        <p class="mt-2 text-sm text-gray-500">Brief description for your profile. URLs are hyperlinked.</p>
+                    <hr>
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password"/>
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation"/>
+
+                    <mg-textarea placeholder="Здесь можно указать все, что будет связано с добавляемой записью. ">Примечание</mg-textarea>
+
+                    <div class="text-right py-3">
+                        <button type="submit"
+                                class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                            Сохранить
+                        </button>
                     </div>
 
                     <div>
@@ -95,12 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="px-4 py-3 text-right sm:px-6">
-                    <button type="submit"
-                            class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                        Save
-                    </button>
-                </div>
+
             </div>
         </form>
     </div>
@@ -121,6 +104,7 @@ export default {
                 category: 0,
                 url: "",
                 password: "",
+                password_confirmation: "",
 
                 email: "", // nullable
                 login: "", // nullable
@@ -139,7 +123,10 @@ export default {
         categoryChanged(v){
             console.log('categoryChanged:', v);
             this.entry.category = v;
-        }
+        },
+        saveEntry(){
+            console.log('saveEntry...');
+        },
     },
 
     computed: {

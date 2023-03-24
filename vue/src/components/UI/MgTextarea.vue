@@ -9,6 +9,7 @@
                 focus:border-indigo-500
                 focus:outline-none"
             :class="classes"
+            :placeholder="placeholder"
         ></textarea>
     </label>
 </template>
@@ -23,6 +24,9 @@ export default {
         classes: {
             type: Array,
             default: [],
+        },
+        placeholder: {
+            type: [String, Number],
         }
     },
 

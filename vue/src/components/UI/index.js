@@ -15,6 +15,7 @@ import MgPencilIconButton from "./MgPencilIconButton.vue";
 import MgSpin from "./MgSpin.vue";
 import MgLoading from "./MgLoading.vue";
 import MgCheckbox from "./MgCheckbox.vue";
+import MgPasswordInputLabeled from "./MgPasswordInputLabeled.vue";
 
 export default [
     MgButton,
@@ -34,4 +35,5 @@ export default [
     MgSpin,
     MgLoading,
     MgCheckbox,
+    MgPasswordInputLabeled,
 ];
