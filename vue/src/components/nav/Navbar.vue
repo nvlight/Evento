@@ -99,9 +99,9 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <router-link
                     v-for="item in navigation"
-                    :to="item.name"
+                    :to="{name: item.name,}"
                     :key="item.name"
-                    as="a" :href="item.href"
+                    as="a"
                     :class="[ route.name === item.name ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block px-3 py-2 rounded-md text-base font-medium']"
                     :aria-current="item.current ? 'page' : undefined">{{ item.name }}
                 </router-link>
@@ -123,7 +123,7 @@
                 <div class="mt-3 px-2 space-y-1">
                     <DisclosureButton>
                         <router-link
-                            to="profile"
+                            :to="{name: 'Profile'}"
                             class="
                                 block px-3 py-2 rounded-md text-base font-medium text-gray-400
                                 hover:text-white hover:bg-gray-700 cursor-pointer

@@ -24,7 +24,7 @@ class EntryStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'category' => 'required|integer|min:1',
+            'category_id' => 'required|integer|min:1',
             'url' => 'required|string|min:2',
 
             'email' => 'nullable|email',

@@ -12,13 +12,11 @@
                 </router-link>
 
                 <div class="py-2 md:py-5 rounded-md">
-                    <div class="sm:flex-col md:flex md:flex-row">
-                        <!-- entry create form -->
-                        <onepass-entry-create-form class="md:w-4/12" />
+                    <!-- entry create form -->
+                    <onepass-entry-create-form class="" />
 
-                        <!-- entry lists -->
-                        <onepass-entry-list class="md:w-8/12" />
-                    </div>
+                    <!-- entry lists -->
+                    <onepass-entry-list class="" />
                 </div>
 
             </div>

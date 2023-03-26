@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('onepass_entry', function (Blueprint $table) {
+        Schema::create('onepass_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class, 'user_id');
             $table->foreignId('category_id')->references('id')->on('onepass_categories');
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('onepass_entry');
+        Schema::dropIfExists('onepass_entries');
     }
 };

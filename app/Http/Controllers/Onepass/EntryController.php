@@ -11,6 +11,31 @@ use Illuminate\Support\Facades\Auth;
 
 class EntryController extends Controller
 {
+    public function index()
+    {
+        try{
+            $items = Entry::query()
+                ->leftJoin('onepass_categories', 'onepass_categories.id', '=', 'onepass_entries.category_id')
+                ->where('onepass_entries.user_id', Auth::user()->id)
+                ->select('onepass_entries.*', 'onepass_categories.name')
+                ->orderBy('onepass_entries.id', 'DESC')
+                ->get();
+
+
+        }catch (\Exception $e){
+            $this->saveToLog('index', $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!',
+            ]);
+        }
+
+        return response()->json([
+            'data' => $items,
+            'success' => 1,
+        ]);
+    }
+
     public function store(EntryStoreRequest $request)
     {
         $attributes = $request->validated();

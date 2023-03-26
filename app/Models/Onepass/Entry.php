@@ -11,5 +11,15 @@ class Entry extends Model
 
     protected $table = 'onepass_entries';
 
-
+    protected $fillable = [
+        'user_id',
+        'category_id',
+        'url',
+        'password',
+        'email',
+        'login',
+        'phone',
+        'name',
+        'note',
+    ];
 }
