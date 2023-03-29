@@ -11,9 +11,20 @@
                 >Категории
                 </router-link>
 
+                <div class="mt-5">
+                    <span @click="createFormVisible=true"
+                          class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                        Создать запись
+                    </span>
+                </div>
+
                 <div class="py-2 md:py-5 rounded-md">
                     <!-- entry create form -->
-                    <onepass-entry-create-form class="" />
+                    <onepass-entry-create-form
+                        v-show="createFormVisible"
+                        @closeCreateForm="createFormVisible=false"
+                    />
 
                     <!-- entry lists -->
                     <onepass-entry-list class="" />
@@ -32,7 +43,14 @@ import OnepassEntryList from "../components/onepass/entries/OnepassEntryList.vue
 export default {
     components: {
         MenuHeader, OnepassEntryCreateForm, OnepassEntryList,
-    }
+    },
+
+    data(){
+        return {
+            createFormVisible: false,
+        }
+    },
+
 }
 </script>
 

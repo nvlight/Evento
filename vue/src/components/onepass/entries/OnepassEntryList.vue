@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Список записей</h1>
         <div class="mt-2 p-2 text-black dark:text-white border-indigo-500 border rounded-md ">
             <div>
                 <mg-loading v-if="entries.loading" class="m-auto">Загрузка...</mg-loading>
@@ -9,6 +8,7 @@
                         v-if="entries.list.length"
                         class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3 "
                     >
+                        <caption class="text-left mb-1">Список записей</caption>
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="py-3 px-6">#</th>
