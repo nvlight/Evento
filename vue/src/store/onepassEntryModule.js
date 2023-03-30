@@ -58,9 +58,9 @@ export const onepassEntryModule = {
                 .post(`/${modelName}`, item.formData)
                 .then((res)=>{
                     if (res.data.success) {
-                        const itemClone = Object.assign({}, item.item);
-                        itemClone.id = res.data.storedId;
-                        commit('addItem', itemClone);
+                        //const itemClone = Object.assign({}, item.item);
+                        //itemClone.id = res.data.storedId;
+                        commit('addItem', res.data.item);
                     }
                     commit('setCreatedItemStatus', false);
                     return res;

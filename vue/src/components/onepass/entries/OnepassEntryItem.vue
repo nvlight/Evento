@@ -4,7 +4,7 @@
         class=""
     >
         <td class="item-id border dark:border-none p-2">{{ item.id }}</td>
-        <td class="item-id border dark:border-none p-2">{{ item.name }} ({{ item.category_id }})</td>
+        <td class="item-id border dark:border-none p-2">{{ item.category_name }} ({{ item.category_id }})</td>
         <td class="item-url border dark:border-none p-2">{{ item.url }}</td>
         <td class="item-email border dark:border-none p-2">{{ item.email }}</td>
         <td class="item-password border dark:border-none p-2">{{ item.password }}</td>
@@ -37,7 +37,7 @@
                 </button>
 
                 <mg-trash-icon-button
-                    @click="deleteEvento(item.id)"
+                    @click="deleteItem(item.id)"
                     class="mr-1 border-none text-red-500 self-end
                             focus:ring-red-500 rounded-sm h-4 w-4
                             "
@@ -82,24 +82,19 @@ export default {
 
         deleteItem(id){
             if (!confirm('Действительно удалить?')) return;
-            let isFilterActive = this.evento_filter ? 1 : 0;
-            const delParams = {
-                'current_page': this.current_page,
-                'filter_active': isFilterActive,
-                ...JSON.parse(this.evento_filter),
-            }
-            this.$store.dispatch('evento/delItemQuery', {id, params: delParams})
+
+            this.$store.dispatch('onepassEntry/delItem', id)
                 .then((res) => {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.$store.commit('notify', {
-                            message: 'Evento удален!',
+                            message: 'Запись удален!',
                             type: 'deleted',
                             timeout: 2500,
                         })
                     }
                 })
                 .catch((err) => {
-                    console.log('delete evento - catch: ', err);
+                    console.log('delete item - catch: ', err);
                 });
         },
 

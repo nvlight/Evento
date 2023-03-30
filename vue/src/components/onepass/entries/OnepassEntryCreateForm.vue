@@ -6,16 +6,15 @@
     >
         <div class="shadow sm:overflow-hidden sm:rounded-md relative">
             <div>
-
                 <span class="absolute right-2 top-2 bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-1.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
                 >
                     <x-icon
-                        @click="$emit('closeCreateForm')"
+                        @click="closeCreateFormHandler"
                         class="h-5 w-5 cursor-pointer"
                     />
                 </span>
             </div>
-            <div class="space-y-6  px-4 py-5 sm:p-6">
+            <div class="space-y-6 px-4 py-5 sm:p-6">
                 <!--       <pre>entry.category: {{ this.entry.category_id }}</pre>-->
 
                 <!--                    <pre>categories: {{ categories.list[0] }}-->
@@ -78,7 +77,7 @@
                 </div>
 
                 <div>
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password_confirmation" />
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation" />
                     <div v-if="formErrors.hasOwnProperty('password_confirmation')" class="mt-1">
                         <alert-field @hideError="delete formErrors.password_confirmation" :error="formErrors.password_confirmation"/>
                     </div>
@@ -161,6 +160,12 @@ export default {
                         console.log(data.response.data.errors);
                         this.formErrors = data.response.data.errors;
                     }else{
+                        this.$store.commit('notify', {
+                            message: 'Запись сохранена!',
+                            type: 'created',
+                            timeout: 2500,
+                        })
+
                         this.resetForm();
                     }
                 })
@@ -168,6 +173,10 @@ export default {
                     console.log('onepassEntry/createItem - dispatch error');
                 });
         },
+        closeCreateFormHandler(){
+            this.resetForm();
+            this.$emit('closeCreateForm');
+        }
     },
 
     computed: {
