@@ -79,7 +79,7 @@ export const onepassEntryModule = {
         editItem({dispatch}, item){
             return dispatch('editItemQuery', item);
         },
-        editItemQuery({commit, state}, item){
+        updateItemQuery({commit, state}, item){
             let response;
             const modelName = state.itemModelName;
             response = axiosClient
@@ -87,9 +87,7 @@ export const onepassEntryModule = {
                 .then((res)=>{
                     if (res.data.success) {
                         const updItem = Object.assign({}, item.item);
-                        updItem.image = res.data.image;
-                        updItem.image_full = res.data.image_full;
-                        commit('editItem', updItem);
+                        commit('updateItem', updItem);
                     }
                     return res;
                 })
@@ -138,7 +136,7 @@ export const onepassEntryModule = {
                 t => t.id != id
             );
         },
-        editItem: (state, item) => {
+        updateItem: (state, item) => {
             let find = state.items.list.filter(
                 t => t.id === item.id
             );

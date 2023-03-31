@@ -1,6 +1,6 @@
 <template>
     <form
-        @submit.prevent="saveEntry"
+        @submit.prevent="saveOrUpdateEntry"
         class="text-black dark:text-white border-indigo-500 border rounded-md"
         method="POST"
     >
@@ -14,6 +14,11 @@
                     />
                 </span>
             </div>
+
+            <div class="m-2 p-2 hidden">
+                <pre>getEditedItem: {{getEditedItem}}</pre>
+            </div>
+
             <div class="space-y-6 px-4 py-5 sm:p-6">
                 <!--       <pre>entry.category: {{ this.entry.category_id }}</pre>-->
 
@@ -24,7 +29,6 @@
                 <div v-if="1==2">
                     <ComboboxBasic
                         labelName="Категория"
-                        @categoryChanged="categoryChanged"
                         :people="categories.list"
                         v-if="!categories.loading"
                         class="block"
@@ -37,13 +41,13 @@
                 <div class="mt-5">
                     <mg-select
                         class="block w-full"
-                        v-model="entry.category_id2"
+                        v-model="entry.category_id"
                         v-if="!categories.loading"
                         :options="categories.list"
                     >
                         <option value="0">Выберите из списка</option>
                     </mg-select>
-                    <div v-if="formErrors.hasOwnProperty('category')" class="mt-1">
+                    <div v-if="formErrors.hasOwnProperty('category_id')" class="mt-1">
                         <alert-field @hideError="delete formErrors.category_id" :error="formErrors.category_id"/>
                     </div>
                 </div>
@@ -120,7 +124,7 @@
 
 <script>
 import ComboboxBasic from "../../../components/UI_v2.0/ComboboxBasic.vue"
-import {mapMutations, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
 import AlertField from "../../AlertField.vue";
 import {XIcon} from "@heroicons/vue/solid";
 
@@ -153,19 +157,25 @@ export default {
     },
 
     methods:{
+        ...mapMutations({
+            setFormMode: "onepassEntry/setFormMode",
+            setFormVisible: "onepassEntry/setCreateEditFormVisible",
+            setEditedItemId: "onepassEntry/setEditedItemId",
+        }),
+
         resetForm() {
             this.entry = Object.assign({}, this.entryDefault);
             this.formErrors = {};
-            this.entry.category_id = this.categories.list[0].id;
         },
 
-        categoryChanged(v){
-            console.log('categoryChanged:', v);
-            this.entry.category_id = v.id;
+        saveOrUpdateEntry(){
+            if (this.formMode === 'create'){
+                this.saveEntry();
+            }else if (this.formMode === 'edit'){
+                this.updateEntry();
+            }
         },
         saveEntry(){
-            console.log('saveEntry...');
-
             // тут вылезает ошибка, null он воспринимает как текст! вот уж formData !!
             let data = new FormData();
             for(let key in this.entry){
@@ -187,6 +197,41 @@ export default {
                         })
 
                         this.resetForm();
+                        this.setFormMode(null);
+                        this.setFormVisible(false);
+                        this.setEditedItemId(0);
+                    }
+                })
+                .catch(error => {
+                    console.log('onepassEntry/createItem - dispatch error');
+                });
+        },
+        updateEntry(){
+            // тут вылезает ошибка, null он воспринимает как текст! вот уж formData !!
+            let data = new FormData();
+            for(let key in this.entry){
+                if ( this.entry[key] !== null ){
+                    data.append(key, this.entry[key]);
+                }
+            }
+            data.append('_method','PATCH');
+
+            const item = {item: this.entry, formData: data}
+            this.$store.dispatch('onepassEntry/updateItemQuery', item)
+                .then(data => {
+                    if (data?.response?.status === 422) {
+                        this.formErrors = data.response.data.errors;
+                    }else{
+                        this.$store.commit('notify', {
+                            message: 'Запись обновлена!',
+                            type: 'updated',
+                            timeout: 2500,
+                        })
+
+                        this.resetForm();
+                        this.setFormMode(null);
+                        this.setFormVisible(false);
+                        this.setEditedItemId(0);
                     }
                 })
                 .catch(error => {
@@ -203,6 +248,11 @@ export default {
         ...mapState({
             categories: state => state.onepassCategory.items,
             formMode: state => state.onepassEntry.formMode,
+            editItemId: state => state.onepassEntry.editedItemId,
+            editBtnPressed: state => state.onepassEntry.pressedItemEditBtn,
+        }),
+        ...mapGetters({
+            getEditedItem: "onepassEntry/getEditedItem",
         }),
 
         formSubmitBtnCaption(){
@@ -232,6 +282,19 @@ export default {
     },
 
     watch:{
+        formMode(nv){
+            if (nv === 'edit' && this.editItemId){
+                this.entry = Object.assign({}, this.getEditedItem);
+                this.entry.password_confirmation = this.entry.password;
+            }
+        },
+
+        editBtnPressed(){
+            if (this.formMode === 'edit' && this.editItemId){
+                this.entry = Object.assign({}, this.getEditedItem);
+                this.entry.password_confirmation = this.entry.password;
+            }
+        }
         // categories:{
         //     handler(nv, ov){
         //         if (nv.loading === false){

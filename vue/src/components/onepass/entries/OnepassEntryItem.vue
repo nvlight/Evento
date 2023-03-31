@@ -7,7 +7,14 @@
         <td class="item-id border dark:border-none p-2">{{ item.category_name }} ({{ item.category_id }})</td>
         <td class="item-url border dark:border-none p-2">{{ item.url }}</td>
         <td class="item-email border dark:border-none p-2">{{ item.email }}</td>
-        <td class="item-password border dark:border-none p-2">{{ item.password }}</td>
+        <!-- <td class="item-password border dark:border-none p-2">{{ item.password }}</td>-->
+        <td class="item-password border dark:border-none p-2">
+            <mg-password-input-labeled
+                v-model="item.password"
+                eye_icon_class="right-8"
+                eye_off_icon_class="right-8"
+            />
+        </td>
 
         <td class="item-note border text-center dark:border-none p-2">
             <span v-if="item.note">

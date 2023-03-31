@@ -23,11 +23,13 @@
                 v-if="!passwordEyeOpened"
                 class="absolute right-2 top-2.5 w-4 h-4 cursor-pointer"
                 @click="toggleInputType"
+                :class="eye_icon_class"
             />
             <eye-off-icon
                 v-else
                 class="absolute right-2 top-2.5 w-4 h-4 cursor-pointer"
                 @click="toggleInputType"
+                :class="eye_off_icon_class"
             />
         </div>
     </label>
@@ -52,6 +54,14 @@ export default {
             type: String,
         },
         emits: ['update:modelValue'],
+        eye_icon_class: {
+            type: String,
+            default: '',
+        },
+        eye_off_icon_class: {
+            type: String,
+            default: '',
+        },
     },
     data(){
         return {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Onepass;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Onepass\EntryStoreRequest;
+use App\Http\Requests\Onepass\EntryUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\Onepass\Entry;
 use Illuminate\Database\QueryException;
@@ -67,6 +68,40 @@ class EntryController extends Controller
             'success' => 1,
             'storedId' => $item->id,
             'item' => $item,
+        ]);
+    }
+
+    public function update(EntryUpdateRequest $request, Entry $entry)
+    {
+        $attributes = $request->validated();
+
+        $attributes += ['user_id' => Auth::user()->id ];
+
+        try{
+            // это опять не работает почему-то!
+            // $entry->save($attributes);
+
+            // обходной вариант
+            foreach($attributes as $key => $value){
+                $entry->$key = $value;
+            }
+            $entry->save($attributes);
+
+        }catch (QueryException $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!',
+                'e' => $e,
+            ]);
+        }
+
+        $entry->category_name = $entry->category->name;
+        return response()->json([
+            'success' => 1,
+            'updatedId' => $entry->id,
+            'item' => $entry,
+            'attributes' => $attributes,
         ]);
     }
 

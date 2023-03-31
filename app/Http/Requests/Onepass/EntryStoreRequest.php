@@ -41,7 +41,7 @@ class EntryStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-            'category' => 'Категория',
+            'category_id' => 'Категория',
             'url' => 'Урл',
             'email' => 'Емейл',
             'login' => 'Логин',
