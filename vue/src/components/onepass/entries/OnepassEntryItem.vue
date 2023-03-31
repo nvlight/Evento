@@ -20,14 +20,14 @@
             <div class="w-fit flex bg-gray-500 p-2 rounded-md mx-auto">
 
                 <mg-pencil-icon-button
-                    @click="editEventoHanlder(item)"
+                    @click="editItemHanlder(item)"
                     class="mr-1 border-none text-purple-800  self-end
                     focus:ring-purple-500 rounded-sm h-4 w-4"
                 ></mg-pencil-icon-button>
 
                 <button
                     class="mr-1"
-                    @click="coptyEvento(item.id)"
+                    @click="copyItem(item.id)"
                     type="button"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -83,11 +83,11 @@ export default {
         deleteItem(id){
             if (!confirm('Действительно удалить?')) return;
 
-            this.$store.dispatch('onepassEntry/delItem', id)
+            this.$store.dispatch('onepassEntry/delItemQuery', id)
                 .then((res) => {
                     if (res?.status === 200 && res?.data?.success === 1){
                         this.$store.commit('notify', {
-                            message: 'Запись удален!',
+                            message: 'Запись удалена!',
                             type: 'deleted',
                             timeout: 2500,
                         })
@@ -98,10 +98,10 @@ export default {
                 });
         },
 
-        editItemHanlder(evento){
-            this.$store.dispatch('evento/setCurrentEditItemId', evento.id);
-            this.$store.commit('evento/editButtonClicked');
-            this.$store.commit('evento/setCreateEditFormVisible', true);
+        editItemHanlder(item){
+            this.$store.dispatch('onepassEntry/setEditItemId', item.id);
+            this.$store.commit('onepassEntry/setPressedItemEditBtn');
+            this.$store.commit('onepassEntry/setCreateEditFormVisible', true);
         },
         copyItem(){
             this.$store.dispatch('evento/copyItemQuery', this.evento)

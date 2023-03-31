@@ -14,6 +14,10 @@ export const onepassEntryModule = {
 
         // чтобы сделать watch за итемом. В частности позволяет определить 2-е и более нажатие на один и тот же итем
         pressedItemEditBtn: false, // true/false
+
+        createEditFormVisible: false,
+
+        formMode: null, // save/edit
     }),
     getters: {
         getItemById: (state) => (id) => {
@@ -115,8 +119,8 @@ export const onepassEntryModule = {
             return response;
         },
 
-        setCurrentEditItemId({commit}, id){
-            return commit('setCurrentEditItemId', id);
+        setEditItemId({commit}, id){
+            return commit('setEditedItemId', id);
         },
         setCreatedItemId({commit}, id){
             return commit('setCreatedItemId', id);
@@ -157,6 +161,14 @@ export const onepassEntryModule = {
 
         setPressedItemEditBtn(state){
             state.pressedItemEditBtn = ! state.pressedItemEditBtn;
+        },
+
+        setCreateEditFormVisible(state, value){
+            state.createEditFormVisible = value;
+        },
+
+        setFormMode(state, value){
+            state.formMode = value;
         }
     },
     namespaced: true,

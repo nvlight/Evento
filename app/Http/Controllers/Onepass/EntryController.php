@@ -72,15 +72,15 @@ class EntryController extends Controller
 
     public function destroy(Entry $entry)
     {
-//        try{
-//            $entry->delete();
-//        }catch (\Exception $e){
-//            $this->saveToLog(__METHOD__, $e);
-//            return response()->json([
-//                'success' => 0,
-//                'error' => 'some error!'
-//            ]);
-//        }
+        try{
+            $entry->delete();
+        }catch (\Exception $e){
+            $this->saveToLog(__METHOD__, $e);
+            return response()->json([
+                'success' => 0,
+                'error' => 'some error!'
+            ]);
+        }
 
         return response()->json([
             'success' => 1,

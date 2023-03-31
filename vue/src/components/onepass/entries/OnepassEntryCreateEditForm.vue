@@ -20,7 +20,8 @@
                 <!--                    <pre>categories: {{ categories.list[0] }}-->
                 <!--                    </pre>-->
 
-                <div>
+                <!-- comboBasic - эта штука так и не сработала у меня !!! -->
+                <div v-if="1==2">
                     <ComboboxBasic
                         labelName="Категория"
                         @categoryChanged="categoryChanged"
@@ -28,6 +29,20 @@
                         v-if="!categories.loading"
                         class="block"
                     />
+                    <div v-if="formErrors.hasOwnProperty('category')" class="mt-1">
+                        <alert-field @hideError="delete formErrors.category_id" :error="formErrors.category_id"/>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <mg-select
+                        class="block w-full"
+                        v-model="entry.category_id2"
+                        v-if="!categories.loading"
+                        :options="categories.list"
+                    >
+                        <option value="0">Выберите из списка</option>
+                    </mg-select>
                     <div v-if="formErrors.hasOwnProperty('category')" class="mt-1">
                         <alert-field @hideError="delete formErrors.category_id" :error="formErrors.category_id"/>
                     </div>
@@ -86,9 +101,14 @@
                 <mg-textarea placeholder="Причания для записи.">Примечание</mg-textarea>
 
                 <div class="text-right py-3">
-                    <button type="submit"
-                            class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                        Сохранить
+                    <button
+                        type="submit"
+                        :class="[
+                            isFormSubmitModeCreated ? 'focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800': '',
+                            isFormSubmitModeUpdated ? 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800': '',
+                        ]"
+                    >
+                        {{ formSubmitBtnCaption }}
                     </button>
                 </div>
 
@@ -100,7 +120,7 @@
 
 <script>
 import ComboboxBasic from "../../../components/UI_v2.0/ComboboxBasic.vue"
-import {mapState} from "vuex";
+import {mapMutations, mapState} from "vuex";
 import AlertField from "../../AlertField.vue";
 import {XIcon} from "@heroicons/vue/solid";
 
@@ -113,6 +133,7 @@ export default {
         return {
             entryDefault:{
                 category_id: 0,
+                category_id2: 0,
                 url: "",
                 password: "",
                 password_confirmation: "",
@@ -157,7 +178,6 @@ export default {
             this.$store.dispatch('onepassEntry/createItem', item)
                 .then(data => {
                     if (data?.response?.status === 422) {
-                        console.log(data.response.data.errors);
                         this.formErrors = data.response.data.errors;
                     }else{
                         this.$store.commit('notify', {
@@ -182,7 +202,27 @@ export default {
     computed: {
         ...mapState({
             categories: state => state.onepassCategory.items,
+            formMode: state => state.onepassEntry.formMode,
         }),
+
+        formSubmitBtnCaption(){
+            let caption = '';
+
+            if (this.formMode === 'create'){
+                caption = 'Сохранить';
+            }else if (this.formMode === 'edit'){
+                caption = 'Обновить';
+            }
+
+            return caption;
+        },
+
+        isFormSubmitModeCreated(){
+            return this.formMode === 'create';
+        },
+        isFormSubmitModeUpdated(){
+            return this.formMode === 'edit';
+        },
     },
 
     mounted() {
@@ -192,14 +232,14 @@ export default {
     },
 
     watch:{
-        categories:{
-            handler(nv, ov){
-                if (nv.loading === false){
-                    this.entry.category_id = this.categories.list[0].id;
-                }
-            },
-            deep: true,
-        }
+        // categories:{
+        //     handler(nv, ov){
+        //         if (nv.loading === false){
+        //             this.entry.category_id = this.categories.list[0].id;
+        //         }
+        //     },
+        //     deep: true,
+        // }
     },
 }
 </script>
