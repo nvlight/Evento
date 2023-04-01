@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function ()
 
     Route::patch('/onepass/category/image_validator/{category}', [CategoryController::class, 'image_validator']);
     Route::apiResource('/onepass/category', CategoryController::class);
+    Route::post('/onepass/entry/copy/{entry}', [EntryController::class, 'copy']);
     Route::apiResource('/onepass/entry', EntryController::class);
 
     // test api section

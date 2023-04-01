@@ -8,11 +8,15 @@
         <td class="item-url border dark:border-none p-2">{{ item.url }}</td>
         <td class="item-email border dark:border-none p-2">{{ item.email }}</td>
         <!-- <td class="item-password border dark:border-none p-2">{{ item.password }}</td>-->
-        <td class="item-password border dark:border-none p-2">
+        <td class="item-password border dark:border-none p-2 flex items-center">
             <mg-password-input-labeled
                 v-model="item.password"
-                eye_icon_class="right-8"
-                eye_off_icon_class="right-8"
+                eye_icon_class=""
+                eye_off_icon_class=""
+            />
+            <clipboard-icon
+                @click="passwordCopyHandler(item.password)"
+                class="w-6 h-6 cursor-pointer ml-1"
             />
         </td>
 
@@ -34,7 +38,7 @@
 
                 <button
                     class="mr-1"
-                    @click="copyItem(item.id)"
+                    @click="copyItem(item)"
                     type="button"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -57,11 +61,13 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations, mapState} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import {ClipboardIcon} from "@heroicons/vue/solid";
 
 export default {
     name: 'evento-item',
     components: {
+        ClipboardIcon,
     },
 
     data(){
@@ -84,7 +90,13 @@ export default {
     emits: [],
 
     methods:{
+        ...mapActions({
+            copyItemQuery: "onepassEntry/copyItemQuery",
+        }),
         ...mapMutations({
+            setFormMode: "onepassEntry/setFormMode",
+            setFormVisible: "onepassEntry/setCreateEditFormVisible",
+            setEditedItemId: "onepassEntry/setEditedItemId",
         }),
 
         deleteItem(id){
@@ -98,6 +110,10 @@ export default {
                             type: 'deleted',
                             timeout: 2500,
                         })
+
+                        this.setFormMode(null);
+                        this.setFormVisible(false);
+                        this.setEditedItemId(0);
                     }
                 })
                 .catch((err) => {
@@ -111,10 +127,13 @@ export default {
             this.$store.commit('onepassEntry/setCreateEditFormVisible', true);
         },
         copyItem(){
-            this.$store.dispatch('evento/copyItemQuery', this.evento)
+            this.copyItemQuery(this.item.id)
                 .then((res) => {
-                    this.errors = {};
-                    this.errors = res.response.data.errors;
+                    this.$store.commit('notify', {
+                        message: 'Запись скопирована!',
+                        type: 'copy',
+                        timeout: 2500,
+                    })
                 })
                 .catch((err) => {
                 });
@@ -124,6 +143,15 @@ export default {
             this.itemPicked = p;
         },
 
+        passwordCopyHandler(pass){
+            navigator.clipboard.writeText(pass);
+
+            this.$store.commit('notify', {
+                message: 'Пароль скопирован!',
+                type: 'copy_code',
+                timeout: 2500,
+            })
+        }
     },
     computed:{
         ...mapState({

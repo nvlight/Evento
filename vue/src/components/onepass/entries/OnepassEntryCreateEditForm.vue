@@ -39,70 +39,72 @@
                 </div>
 
                 <div class="mt-5">
-                    <mg-select
-                        class="block w-full"
-                        v-model="entry.category_id"
-                        v-if="!categories.loading"
-                        :options="categories.list"
-                    >
-                        <option value="0">Выберите из списка</option>
-                    </mg-select>
+                    <label>
+                        <span>Категория</span>
+                        <mg-select
+                            class="block w-full"
+                            v-model="entry.category_id"
+                            v-if="!categories.loading"
+                            :options="categories.list"
+                        >
+                            <option value="0">Выберите категорию</option>
+                        </mg-select>
+                    </label>
                     <div v-if="formErrors.hasOwnProperty('category_id')" class="mt-1">
                         <alert-field @hideError="delete formErrors.category_id" :error="formErrors.category_id"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Url" v-model="entry.url"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Url" v-model="entry.url">Url адрес веб-приложения</mg-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('url')" class="mt-1">
                         <alert-field @hideError="delete formErrors.url" :error="formErrors.url"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Емейл" v-model="entry.email"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Емейл" v-model="entry.email">Емейл</mg-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('email')" class="mt-1">
                         <alert-field @hideError="delete formErrors.email" :error="formErrors.email"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Телефон" v-model="entry.phone"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Телефон" v-model="entry.phone">Телефон</mg-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('phone')" class="mt-1">
                         <alert-field @hideError="delete formErrors.phone" :error="formErrors.phone"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Логин" v-model="entry.login"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Логин" v-model="entry.login">Логин</mg-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('login')" class="mt-1">
                         <alert-field @hideError="delete formErrors.login" :error="formErrors.login"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name"/>
+                    <mg-input-labeled class="block" :classes="'w-full'" placeholder="Имя" v-model="entry.name">Имя</mg-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('name')" class="mt-1">
                         <alert-field @hideError="delete formErrors.name" :error="formErrors.name"/>
                     </div>
                 </div>
 
-                <hr>
                 <div>
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password" />
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Пароль" v-model="entry.password">Пароль</mg-password-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('password')" class="mt-1">
                         <alert-field @hideError="delete formErrors.password" :error="formErrors.password"/>
                     </div>
                 </div>
 
                 <div>
-                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation" />
+                    <mg-password-input-labeled class="block" :classes="'w-full'" placeholder="Подтверждение пароля" v-model="entry.password_confirmation" >Подтверждение пароля</mg-password-input-labeled>
                     <div v-if="formErrors.hasOwnProperty('password_confirmation')" class="mt-1">
                         <alert-field @hideError="delete formErrors.password_confirmation" :error="formErrors.password_confirmation"/>
                     </div>
                 </div>
 
-                <mg-textarea placeholder="Причания для записи.">Примечание</mg-textarea>
+                <mg-textarea v-model="entry.note" placeholder="Причания для записи.">Примечание</mg-textarea>
 
                 <div class="text-right py-3">
                     <button
@@ -126,7 +128,7 @@
 import ComboboxBasic from "../../../components/UI_v2.0/ComboboxBasic.vue"
 import {mapGetters, mapMutations, mapState} from "vuex";
 import AlertField from "../../AlertField.vue";
-import {XIcon} from "@heroicons/vue/solid";
+import {XIcon, ClipboardIcon} from "@heroicons/vue/solid";
 
 export default {
     components: {

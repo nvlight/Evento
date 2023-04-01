@@ -97,6 +97,25 @@ export const onepassEntryModule = {
             return response;
         },
 
+        copyItemQuery({commit,dispatch,state}, id){
+            let response;
+            const modelName = state.itemModelName;
+            response = axiosClient
+                .post(`/${modelName}/copy/${id}`)
+                .then((res)=>{
+                    if (res.data.success) {
+                        commit('addItem', res.data.item);
+                    }
+                    //commit('setCreatedItemStatus', false);
+                    return res;
+                })
+                .catch( (err) => {
+                    //commit('setCreatedItemStatus', false);
+                    return err;
+                })
+            return response;
+        },
+
         delItem({dispatch}, id){
             dispatch('delItemQuery', id);
         },

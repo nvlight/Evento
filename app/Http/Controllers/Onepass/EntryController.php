@@ -8,6 +8,7 @@ use App\Http\Requests\Onepass\EntryUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\Onepass\Entry;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EntryController extends Controller
@@ -119,6 +120,23 @@ class EntryController extends Controller
 
         return response()->json([
             'success' => 1,
+        ]);
+    }
+
+    public function copy(Entry $entry)
+    {
+        // todo: do transaction
+        $newEntry = $entry->replicate()->fill([
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        $newEntry->save();
+
+        $newEntry->category_name = $newEntry->category->name;
+        return response()->json([
+            'success' => 1,
+            'copiedId' => $newEntry->id,
+            'item' => $newEntry,
         ]);
     }
 

@@ -10,6 +10,7 @@
                     text-gray-900 sm:text-sm
                     rounded-md
                     focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
+                    w-full
                 "
                 :class="classes"
                 :placeholder="placeholder"
@@ -85,6 +86,9 @@ export default {
     mounted() {
         this.passwordFieldType = 'password';
         //this.passwordFieldType = 'text';
+
+        //console.log('eye_icon_class:', this.eye_icon_class);
+        //console.log('eye_off_icon_class:', this.eye_off_icon_class);
     }
 }
 </script>

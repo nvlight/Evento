@@ -3,7 +3,7 @@
         <menu-header title="Записи"></menu-header>
 
         <div class="dark:bg-gray-900 dark:text-white">
-            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
+            <div class="max-w-screen-2xl mx-auto py-6 sm:px-6 lg:px-8  ">
 
                 <router-link
                     :to="{name: 'OnepassCategories'}"
@@ -11,12 +11,19 @@
                 >Категории
                 </router-link>
 
-                <div class="mt-5">
+                <div class="mt-5 flex justify-between">
                     <button
                         @click="createItemHandler"
                         type="button"
                         class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                     >Создать запись
+                    </button>
+
+                    <button
+                        type="button"
+                        class="flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                        <adjustments-icon class="w-6 h-6" />
+                        <span class="ml-3">Фильтры</span>
                     </button>
                 </div>
 
@@ -47,10 +54,11 @@ import MenuHeader from "../components/MenuHeader.vue";
 import OnepassEntryCreateEditForm from "../components/onepass/entries/OnepassEntryCreateEditForm.vue";
 import OnepassEntryList from "../components/onepass/entries/OnepassEntryList.vue";
 import {mapActions, mapMutations, mapState} from "vuex";
+import {AdjustmentsIcon} from "@heroicons/vue/solid"
 
 export default {
     components: {
-        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList,
+        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, AdjustmentsIcon
     },
 
     data(){
