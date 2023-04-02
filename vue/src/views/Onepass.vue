@@ -20,12 +20,18 @@
                     </button>
 
                     <button
+                        @click="togglefilterModalVisible"
                         type="button"
                         class="flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                         <adjustments-icon class="w-6 h-6" />
                         <span class="ml-3">Фильтры</span>
                     </button>
                 </div>
+
+                <!-- filter modal -->
+                <mg-modal v-model:show="filterModalVisible">
+                    <onepass-filter-modal/>
+                </mg-modal>
 
                 <div v-if="1==2">
                     <div class="mt-3">formVisibleStatus: {{ formVisibleStatus }}</div>
@@ -55,14 +61,16 @@ import OnepassEntryCreateEditForm from "../components/onepass/entries/OnepassEnt
 import OnepassEntryList from "../components/onepass/entries/OnepassEntryList.vue";
 import {mapActions, mapMutations, mapState} from "vuex";
 import {AdjustmentsIcon} from "@heroicons/vue/solid"
+import OnepassFilterModal from "../components/onepass/entries/OnepassFilterModal.vue";
 
 export default {
     components: {
-        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, AdjustmentsIcon
+        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, AdjustmentsIcon, OnepassFilterModal
     },
 
     data(){
         return {
+            filterModalVisible: false,
         }
     },
 
@@ -85,6 +93,10 @@ export default {
             this.setFormMode(null);
             this.setFormVisible(false);
             this.setEditedItemId(0);
+        },
+
+        togglefilterModalVisible(){
+            this.filterModalVisible = ! this.filterModalVisible;
         }
     },
 
