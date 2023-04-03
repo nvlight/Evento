@@ -7,7 +7,7 @@
                 Выберите категории
             </div>
 
-            <mg-input-labeled class="block mt-2" :classes="'w-full'" placeholder="Url" v-model="filter.url">Url</mg-input-labeled>
+            <mg-input-labeled v-focus class="block mt-2" :classes="'w-full'" placeholder="Url" v-model="filter.url">Url</mg-input-labeled>
             <mg-input-labeled class="block mt-2" :classes="'w-full'" placeholder="Емейл" v-model="filter.email">Емейл</mg-input-labeled>
             <mg-input-labeled class="block mt-2" :classes="'w-full'" placeholder="Телефон" v-model="filter.phone">Телефон</mg-input-labeled>
             <mg-input-labeled class="block mt-2" :classes="'w-full'" placeholder="Логин" v-model="filter.login">Логин</mg-input-labeled>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import {mapActions, mapMutations, mapState} from "vuex";
+
 export default {
 
     data(){
@@ -43,13 +45,29 @@ export default {
     },
 
     methods:{
+        ...mapActions({
+            doFilter: 'onepassEntry/filterItems',
+        }),
+        ...mapMutations({
+            setFilterModalVisible: 'onepassEntry/setFilterModalVisible',
+        }),
+
         resetFilter(){
             this.filter = Object.assign({}, this.filterDefault)
         },
 
         filterhandler(){
-            console.log('filterhandler...');
+            const jsonFilterData = JSON.stringify(this.filter);
+            this.doFilter(this.filter);
+
+            this.setFilterModalVisible(false);
         }
+    },
+
+    computed: {
+        ...mapState({
+            filterModalVisible: state => state.onepassEntry.filterModalVisible,
+        })
     },
 
     mounted() {

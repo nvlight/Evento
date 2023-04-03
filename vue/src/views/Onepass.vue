@@ -2,6 +2,7 @@
     <div>
         <menu-header title="Записи"></menu-header>
 
+
         <div class="dark:bg-gray-900 dark:text-white">
             <div class="max-w-screen-2xl mx-auto py-6 sm:px-6 lg:px-8  ">
 
@@ -29,7 +30,7 @@
                 </div>
 
                 <!-- filter modal -->
-                <mg-modal v-model:show="filterModalVisible">
+                <mg-modal v-model:show="localFilterModalVisible">
                     <onepass-filter-modal/>
                 </mg-modal>
 
@@ -70,7 +71,7 @@ export default {
 
     data(){
         return {
-            filterModalVisible: false,
+            localFilterModalVisible: false,
         }
     },
 
@@ -82,6 +83,7 @@ export default {
             setFormMode: "onepassEntry/setFormMode",
             setFormVisible: "onepassEntry/setCreateEditFormVisible",
             setEditedItemId: "onepassEntry/setEditedItemId",
+            setFilterModalVisible: 'onepassEntry/setFilterModalVisible',
         }),
 
         createItemHandler(){
@@ -96,7 +98,10 @@ export default {
         },
 
         togglefilterModalVisible(){
-            this.filterModalVisible = ! this.filterModalVisible;
+            console.log('togglefilterModalVisible', this.filterModalVisible);
+
+            this.setFilterModalVisible(! this.filterModalVisible );
+            this.localFilterModalVisible = this.filterModalVisible;
         }
     },
 
@@ -106,6 +111,7 @@ export default {
             formVisibleStatus: state => state.onepassEntry.createEditFormVisible,
             formMode: state => state.onepassEntry.formMode,
             editItemId: state => state.onepassEntry.editedItemId,
+            filterModalVisible: state => state.onepassEntry.filterModalVisible,
         }),
     },
 
@@ -120,7 +126,19 @@ export default {
             }else{
                 this.createEditFormVisible = false;
             }
+        },
+        localFilterModalVisible(nv){
+            this.setFilterModalVisible( this.localFilterModalVisible );
+        },
+        filterModalVisible(nv){
+            if (! nv){
+                this.localFilterModalVisible = false;
+            }
         }
+    },
+
+    mounted() {
+        this.localFilterModalVisible = this.filterModalVisible;
     }
 }
 </script>

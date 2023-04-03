@@ -4,7 +4,7 @@
         v-if="show" @click="hideDialog"
     >
         <div
-            class="dark:text-white dark:bg-gray-700"
+            class="dark:text-white dark:bg-gray-700 overflow-y-auto"
             :class="[$style.dialog__content, 'relative' ,dialog_content_classes]"
              @click.stop
         >

@@ -18,6 +18,8 @@ export const onepassEntryModule = {
         createEditFormVisible: false,
 
         formMode: null, // save/edit
+
+        filterModalVisible: false,
     }),
     getters: {
         getItemById: (state) => (id) => {
@@ -43,6 +45,25 @@ export const onepassEntryModule = {
                 })
                 .catch( (err) => {
                     commit('setItemsLoading', false);
+                    return err;
+                })
+            return response;
+        },
+        filterItems({commit, state}, params){
+            let response;
+            const modelName = state.itemModelName;
+            // commit('setItemsLoading', true);
+            response = axiosClient
+                .get(`/${modelName}/filter`, {params: params} )
+                .then((res)=>{
+                    if (res.data.success) {
+                        commit('setItems', structuredClone(res.data.data));
+                    }
+                    // commit('setItemsLoading', false);
+                    return res;
+                })
+                .catch( (err) => {
+                    // commit('setItemsLoading', false);
                     return err;
                 })
             return response;
@@ -186,7 +207,11 @@ export const onepassEntryModule = {
 
         setFormMode(state, value){
             state.formMode = value;
-        }
+        },
+
+        setFilterModalVisible(state, value){
+            state.filterModalVisible = value;
+        },
     },
     namespaced: true,
 }
