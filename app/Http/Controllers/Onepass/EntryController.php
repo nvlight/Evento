@@ -161,10 +161,10 @@ class EntryController extends Controller
         $needKeys = ['url', 'email', 'login', 'phone', 'name', 'note'];
 
         foreach($needKeys as $key) {
-            if ($request->has($key)) {
+            if ($request->has($key) && !empty($request->input($key))) {
 
                 $queryPart = $queryPart->where('onepass_entries.' . $key, 'LIKE',
-                    implode(['%', $request->string($key), '%']));
+                    implode(['%', $request->input($key), '%']));
             }
         }
 

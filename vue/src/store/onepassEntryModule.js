@@ -20,6 +20,14 @@ export const onepassEntryModule = {
         formMode: null, // save/edit
 
         filterModalVisible: false,
+
+        filterObject: {},
+
+        // чтобы сделать watch за итемом. В частности позволяет определить 2-е и более нажатие на один и тот же итем
+        pressedItemViewBtn: false, // true/false
+        viewItemId: 0,
+        itemViewModalVisible: false,
+
     }),
     getters: {
         getItemById: (state) => (id) => {
@@ -27,6 +35,12 @@ export const onepassEntryModule = {
         },
         getEditedItem(state){
             return state.items.list.filter(t => t.id === state.editedItemId)?.[0];
+        },
+        isFilterEmpty(state){
+            return Object.keys(state.filterObject).length;
+        },
+        getViewItem(state){
+            return state.items.list.filter(t => t.id === state.viewItemId)?.[0];
         },
     },
     actions: {
@@ -163,6 +177,18 @@ export const onepassEntryModule = {
         setCreatedItemId({commit}, id){
             return commit('setCreatedItemId', id);
         },
+
+        setFilterObject( { commit }, value) {
+            return commit('setFilterObject', value);
+        },
+
+        clearFilterObject( { commit, dispatch }) {
+            return dispatch('setFilterObject', {});
+        },
+
+        setViewItemId({commit}, id){
+            return commit('setViewItemId', id);
+        },
     },
     mutations: {
         setItems: (state, items) => {
@@ -212,6 +238,21 @@ export const onepassEntryModule = {
         setFilterModalVisible(state, value){
             state.filterModalVisible = value;
         },
+
+        setFilterObject(state, value){
+            state.filterObject = value;
+        },
+
+        setViewItemId: (state, id) => {
+            state.viewItemId = id;
+        },
+        setPressedItemViewBtn(state){
+            state.pressedItemViewBtn = ! state.pressedItemViewBtn;
+        },
+        setViewModalVisible(state, value){
+            state.itemViewModalVisible = value;
+        },
+
     },
     namespaced: true,
 }

@@ -12,21 +12,38 @@
                 >Категории
                 </router-link>
 
-                <div class="mt-5 flex justify-between">
-                    <button
-                        @click="createItemHandler"
-                        type="button"
-                        class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                    >Создать запись
-                    </button>
+                <div class="entry-actions mt-5 flex flex-wrap justify-between">
+                    <div class="left-side">
+                        <button
+                            @click="createItemHandler"
+                            type="button"
+                            class="mt-1 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        >Создать запись
+                        </button>
+                    </div>
 
-                    <button
-                        @click="togglefilterModalVisible"
-                        type="button"
-                        class="flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                        <adjustments-icon class="w-6 h-6" />
-                        <span class="ml-3">Фильтры</span>
-                    </button>
+                    <div class="right-side flex">
+                        <button
+                            v-if="isFilterEmpty"
+                            @click="clearFilterHandler"
+                            class="mt-1 flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                        >
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
+                                <path fill-rule="evenodd" d="M6.72 5.66l11.62 11.62A8.25 8.25 0 006.72 5.66zm10.56 12.68L5.66 6.72a8.25 8.25 0 0011.62 11.62zM5.105 5.106c3.807-3.808 9.98-3.808 13.788 0 3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ml-3">Сбросить фильтры</span>
+                        </button>
+
+                        &nbsp;&nbsp;
+
+                        <button
+                            @click="togglefilterModalVisible"
+                            type="button"
+                            class="mt-1 flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                            <adjustments-icon class="w-6 h-6" />
+                            <span class="ml-3">Фильтры</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- filter modal -->
@@ -34,10 +51,16 @@
                     <onepass-filter-modal/>
                 </mg-modal>
 
+                <!-- filter modal -->
+                <mg-modal v-model:show="localItemViewModalVisible">
+                    <OnepassEntryViewModal/>
+                </mg-modal>
+
                 <div v-if="1==2">
                     <div class="mt-3">formVisibleStatus: {{ formVisibleStatus }}</div>
                     <div class="mt-0">formMode: {{ formMode }}</div>
                     <div class="mt-0">editItemId: {{ editItemId }}</div>
+                    <div class="mt-0">isFilterEmpty: {{ isFilterEmpty }}</div>
                 </div>
 
                 <div class="py-2 md:py-5 rounded-md">
@@ -60,18 +83,21 @@
 import MenuHeader from "../components/MenuHeader.vue";
 import OnepassEntryCreateEditForm from "../components/onepass/entries/OnepassEntryCreateEditForm.vue";
 import OnepassEntryList from "../components/onepass/entries/OnepassEntryList.vue";
-import {mapActions, mapMutations, mapState} from "vuex";
-import {AdjustmentsIcon} from "@heroicons/vue/solid"
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import {AdjustmentsIcon, AtSymbolIcon} from "@heroicons/vue/solid"
 import OnepassFilterModal from "../components/onepass/entries/OnepassFilterModal.vue";
+import OnepassEntryViewModal from "../components/onepass/entries/OnepassEntryViewModal.vue";
 
 export default {
     components: {
-        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, AdjustmentsIcon, OnepassFilterModal
+        MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, OnepassFilterModal,
+        AdjustmentsIcon, AtSymbolIcon, OnepassEntryViewModal,
     },
 
     data(){
         return {
             localFilterModalVisible: false,
+            localItemViewModalVisible: false,
         }
     },
 
@@ -102,6 +128,11 @@ export default {
 
             this.setFilterModalVisible(! this.filterModalVisible );
             this.localFilterModalVisible = this.filterModalVisible;
+        },
+
+        clearFilterHandler(){
+            // :to="{name: 'OnepassEntries'}"
+            this.$router.go();
         }
     },
 
@@ -112,6 +143,11 @@ export default {
             formMode: state => state.onepassEntry.formMode,
             editItemId: state => state.onepassEntry.editedItemId,
             filterModalVisible: state => state.onepassEntry.filterModalVisible,
+            itemViewModalVisible: state => state.onepassEntry.itemViewModalVisible,
+            pressedItemViewBtnClicked: state => state.onepassEntry.pressedItemViewBtn,
+        }),
+        ...mapGetters({
+            isFilterEmpty: "onepassEntry/isFilterEmpty",
         }),
     },
 
@@ -134,11 +170,22 @@ export default {
             if (! nv){
                 this.localFilterModalVisible = false;
             }
-        }
+        },
+
+        itemViewModalVisible(nv){
+            if (! nv){
+                this.localItemViewModalVisible = false;
+            }
+        },
+
+        pressedItemViewBtnClicked(nv){
+            this.localItemViewModalVisible = true;
+        },
     },
 
     mounted() {
         this.localFilterModalVisible = this.filterModalVisible;
+        this.localItemViewModalVisible = this.itemViewModalVisible;
     }
 }
 </script>

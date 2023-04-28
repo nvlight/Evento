@@ -1,6 +1,6 @@
 <template>
     <div
-        class="cursor-pointer"
+        class="cursor-pointer ml-1 p-1"
         @click="toggleAllPickedEventos"
         >
         <div v-if="! pickedEventos.length">

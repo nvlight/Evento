@@ -30,6 +30,14 @@
         <td class="evento_actions buttons_block border dark:border-none p-2">
             <div class="w-fit flex bg-gray-500 p-2 rounded-md mx-auto">
 
+                <button
+                    class="mr-1"
+                    @click="viewItem(item.id)"
+                    type="button"
+                >
+                    <eye-icon class="w-4 h-4"></eye-icon>
+                </button>
+
                 <mg-pencil-icon-button
                     @click="editItemHanlder(item)"
                     class="mr-1 border-none text-purple-800  self-end
@@ -62,12 +70,12 @@
 
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
-import {ClipboardIcon} from "@heroicons/vue/solid";
+import {ClipboardIcon, EyeIcon} from "@heroicons/vue/solid";
 
 export default {
     name: 'evento-item',
     components: {
-        ClipboardIcon,
+        ClipboardIcon, EyeIcon,
     },
 
     data(){
@@ -151,6 +159,12 @@ export default {
                 type: 'copy_code',
                 timeout: 2500,
             })
+        },
+
+        viewItem(id){
+            this.$store.commit('onepassEntry/setPressedItemViewBtn');
+            this.$store.commit('onepassEntry/setViewItemId', id);
+            this.$store.commit('onepassEntry/setViewModalVisible', true);
         }
     },
     computed:{

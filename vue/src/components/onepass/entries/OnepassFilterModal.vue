@@ -57,7 +57,9 @@ export default {
         },
 
         filterhandler(){
-            const jsonFilterData = JSON.stringify(this.filter);
+            const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
+
+            this.$store.dispatch('onepassEntry/setFilterObject', jsonFilterData);
             this.doFilter(this.filter);
 
             this.setFilterModalVisible(false);
