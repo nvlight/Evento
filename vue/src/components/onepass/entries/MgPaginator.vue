@@ -34,12 +34,6 @@ export default {
             type: Object,
             required: true,
         },
-        current_page: {
-            type: [Number],
-        },
-        last_page: {
-            type: [Number],
-        },
     },
     data(){
         return {
@@ -47,145 +41,26 @@ export default {
     },
     methods: {
         getPageData(event, link) {
-            console.log('link:', link);
-
             if (!link.url || link.active) {
                 return;
             }
 
             let routeName = 'OnepassEntries';
-            let page = {page: link.label};
-            page = {page: (new URL(link.url)).searchParams.get('page')};
-            console.log(page);
+            let params = {page: link.label};
+            params = {page: (new URL(link.url)).searchParams.get('page')};
 
             this.$router
-               .push({ name: routeName, params: page })
-               .then( () => { this.$router.go(0) } )
+               .push({ name: routeName, params: params })
+               //.then( () => { this.$router.go(0) } )
+            ;
 
-            return;
-
-            let newLink = link.url;
-            let key = 'onepassEntry_filter';
-            if (sessionStorage.hasOwnProperty(key)){
-                let tmp = JSON.parse(sessionStorage.getItem(key));
-                //console.log(tmp);
-
-                let keyValues = '';
-                //keyValues = new URLSearchParams(tmp).toString();
-                for(let i in tmp){
-                    if (Array.isArray(tmp[i])){
-
-                        tmp[i].forEach(v => {
-                            keyValues += `${i}[]=${v}&`;
-                        });
-                    }else{
-                        keyValues += `${i}=${tmp[i]}&`;
-                    }
-                }
-
-                newLink += '&' + keyValues;
-                //console.log(newLink);
-            }
-
-            //console.log(link.url);
-            this.$store.dispatch("onepassEntry/loadItems", {url: newLink})
+            this.$store.dispatch("onepassEntry/loadItems", params)
                 .then(response => {
                     if (response.data.success) {
-                        //this.$store.dispatch('evento/saveCurrentPageToSessionStorage', response.data.data.current_page);
+
                     }
                 })
         },
-
-        getPageData_copy2(event, link) {
-            console.log('link:', link);
-
-            if (!link.url || link.active) {
-                return;
-            }
-
-            let routeName = 'OnepassEntries';
-            let page = {page: link.label};
-            page = {page: (new URL(link.url)).searchParams.get('page')};
-            console.log(page);
-
-            this.$router
-               .push({ name: routeName, params: page })
-               .then( () => { this.$router.go(0) } )
-
-            return;
-
-            let newLink = link.url;
-            let key = 'onepassEntry_filter';
-            if (sessionStorage.hasOwnProperty(key)){
-                let tmp = JSON.parse(sessionStorage.getItem(key));
-                //console.log(tmp);
-
-                let keyValues = '';
-                //keyValues = new URLSearchParams(tmp).toString();
-                for(let i in tmp){
-                    if (Array.isArray(tmp[i])){
-
-                        tmp[i].forEach(v => {
-                            keyValues += `${i}[]=${v}&`;
-                        });
-                    }else{
-                        keyValues += `${i}=${tmp[i]}&`;
-                    }
-                }
-
-                newLink += '&' + keyValues;
-                //console.log(newLink);
-            }
-
-            //console.log(link.url);
-            this.$store.dispatch("onepassEntry/loadItems", {url: newLink})
-                .then(response => {
-                    if (response.data.success) {
-                        //this.$store.dispatch('evento/saveCurrentPageToSessionStorage', response.data.data.current_page);
-                    }
-                })
-        },
-
-        getPageData_copy(event, link) {
-            event.preventDefault();
-            if (!link.url || link.active) {
-                return;
-            }
-
-            console.log('link:', link);
-
-            let newLink = link.url;
-            let key = 'onepassEntry_filter';
-            if (sessionStorage.hasOwnProperty(key)){
-                let tmp = JSON.parse(sessionStorage.getItem(key));
-                //console.log(tmp);
-
-                let keyValues = '';
-                //keyValues = new URLSearchParams(tmp).toString();
-                for(let i in tmp){
-                    if (Array.isArray(tmp[i])){
-
-                        tmp[i].forEach(v => {
-                            keyValues += `${i}[]=${v}&`;
-                        });
-                    }else{
-                        keyValues += `${i}=${tmp[i]}&`;
-                    }
-                }
-
-                newLink += '&' + keyValues;
-                //console.log(newLink);
-            }
-
-            //console.log(link.url);
-            this.$store.dispatch("onepassEntry/loadItems", {url: newLink})
-                .then(response => {
-                    if (response.data.success) {
-                        //this.$store.dispatch('evento/saveCurrentPageToSessionStorage', response.data.data.current_page);
-                    }
-                })
-        },
-
 
         linkHtml(i, link_label) {
             return i === 0 ? link_label.replace('Previous', 'Назад')
@@ -205,26 +80,12 @@ export default {
                 return '#';
             }
 
-            let routeName = 'OnepassEntries';
             let page = {page: link.label};
             page = (new URL(link.url)).searchParams.get('page');
             return page;
-
-            if (i === 0) {
-                return `#1___${this.currentPage}`;
-            } else if (i === this.links.length - 1 ) {
-                // return `${link.label} + chich: ${this.currentPage}`;
-                return `#2___${this.currentPage}`
-            }
-
-            return link.label;
         }
     },
-    computed: {
-        currentPage(){
-            return this.$route.params?.page;
-        }
-    },
+
     mounted() {
     }
 }
