@@ -280,7 +280,7 @@ export default {
     mounted() {
         this.entry = Object.assign({}, this.entryDefault);
         this.$store.dispatch("onepassCategory/loadItems");
-        this.$store.dispatch("onepassEntry/loadItems");
+        //this.$store.dispatch("onepassEntry/loadItems");
     },
 
     watch:{

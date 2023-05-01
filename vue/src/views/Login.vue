@@ -12,7 +12,7 @@
             <router-link :to="{name: 'Register'}" class="font-medium text-indigo-600 hover:text-indigo-500"> register for free </router-link>
         </p>
     </div>
-    <form class="mt-8 space-y-6" @submit="login">
+    <form class="mt-8 space-y-6" @submit.prevent="login">
         <input type="hidden" name="remember" value="true" />
         <div class="rounded-md shadow-sm -space-y-px">
             <div>
@@ -86,7 +86,6 @@ let validateErrors = ref('');
 function login(ev)
 {
     // 12345678aA-
-    ev.preventDefault();
     store.dispatch('login', user)
         .then( () => {
             router.push({

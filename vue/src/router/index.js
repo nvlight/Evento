@@ -9,6 +9,7 @@ import UserProfile from "../components/user/UserProfile.vue";
 import Onepass from "../views/Onepass.vue";
 import OnepassCategories from "../views/OnepassCategories.vue";
 import Tags from "../views/Tags.vue";
+import NotFoundComponent from "../components/NotFoundComponent.vue";
 
 const routes = [
     {
@@ -62,9 +63,10 @@ const routes = [
         component: DefaultLayout,
         children: [
             {
-                path: '/onepass/entries',
+                path: '/onepass/entries/:page?',
                 name: 'OnepassEntries',
                 component: Onepass,
+                props: true,
             },
             {
                 path: '/onepass/categories',
@@ -74,12 +76,19 @@ const routes = [
         ],
     },
 
+    {
+        path: '/:catchAll(.*)',
+        name: 'NotFound',
+        component: NotFoundComponent,
+    }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+console.log('router -> index.js');
 
 router.beforeEach( (to,from, next) => {
     if (to.meta.requiresAuth && !store.state.user.token){
@@ -89,6 +98,14 @@ router.beforeEach( (to,from, next) => {
     }else{
         next();
     }
+
+    // if (!store.state.user.token){
+    //     next({name: 'Login'})
+    // }else if (store.state.user.token){
+    //     next({name: 'Eventos'});
+    // } else{
+    //     next();
+    // }
 })
 
 export default router;

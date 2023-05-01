@@ -7,6 +7,35 @@ export const onepassEntryModule = {
         items: {
             list: [],
             loading: false,
+
+            paginatorData: {
+                current_page: 0,
+                first_page_url: "",
+                from: 1,
+                last_page: 1,
+                last_page_url: "",
+                next_page_url: "",
+                path: "",
+                per_page: 10,
+                prev_page_url: null,
+                to: 10,
+                total: 0,
+                links: [],
+            },
+            paginatorDataTmp: {
+                current_page: 1,
+                first_page_url: "http://laravel8-evento:87/api/onepass/entry?page=1",
+                from: 1,
+                last_page: 4,
+                last_page_url: "http://laravel8-evento:87/api/onepass/entry?page=4",
+                links: [{url: null, label: "&laquo; Назад", active: false}],
+                next_page_url: "http://laravel8-evento:87/api/onepass/entry?page=2",
+                path: "http://laravel8-evento:87/api/onepass/entry",
+                per_page: 10,
+                prev_page_url: null,
+                to: 10,
+                total: 33,
+            }
         },
 
         createdItemStatus: false,
@@ -27,14 +56,13 @@ export const onepassEntryModule = {
         pressedItemViewBtn: false, // true/false
         viewItemId: 0,
         itemViewModalVisible: false,
-
     }),
     getters: {
         getItemById: (state) => (id) => {
-            return state.items.list.filter(t => t.id === id)?.[0];
+            return state.items.list?.filter(t => t.id === id)?.[0];
         },
         getEditedItem(state){
-            return state.items.list.filter(t => t.id === state.editedItemId)?.[0];
+            return state.items.list?.filter(t => t.id === state.editedItemId)?.[0];
         },
         isFilterEmpty(state){
             return Object.keys(state.filterObject).length;
@@ -44,15 +72,17 @@ export const onepassEntryModule = {
         },
     },
     actions: {
-        loadItems({commit, state}){
+        loadItems({commit, state}, payload){
             let response;
             const modelName = state.itemModelName;
             commit('setItemsLoading', true);
+            let page_str = payload.page !== 1 ? `?page=${payload.page}` : '';
             response = axiosClient
-                .get(`/${modelName}`)
+                .get(`/${modelName}${page_str}`)
                 .then((res)=>{
                     if (res.data.success) {
-                        commit('setItems', res.data.data);
+                        commit('setItems', res.data.data.data);
+                        commit('setPaginatorData', res.data.data);
                     }
                     commit('setItemsLoading', false);
                     return res;
@@ -253,6 +283,11 @@ export const onepassEntryModule = {
             state.itemViewModalVisible = value;
         },
 
+        setPaginatorData(state, value){
+            state.items.paginatorData.current_page = value.current_page;
+            state.items.paginatorData.last_page = value.last_page;
+            state.items.paginatorData.links = JSON.parse(JSON.stringify(value.links));
+        }
     },
     namespaced: true,
 }

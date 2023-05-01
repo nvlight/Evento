@@ -2,9 +2,8 @@
     <div>
         <menu-header title="Записи"></menu-header>
 
-
         <div class="dark:bg-gray-900 dark:text-white">
-            <div class="max-w-screen-2xl mx-auto py-6 sm:px-6 lg:px-8  ">
+            <div class="max-w-screen-2xl mx-auto py-6 sm:px-6 lg:px-8">
 
                 <router-link
                     :to="{name: 'OnepassCategories'}"
@@ -12,7 +11,8 @@
                 >Категории
                 </router-link>
 
-                <div class="entry-actions mt-5 flex flex-wrap justify-between">
+                <!-- entry-actions -->
+                <div class="mt-5 flex flex-wrap justify-between">
                     <div class="left-side">
                         <button
                             @click="createItemHandler"
@@ -45,23 +45,35 @@
                         </button>
                     </div>
                 </div>
+                <!-- entry-actions /-->
 
                 <!-- filter modal -->
                 <mg-modal v-model:show="localFilterModalVisible">
                     <onepass-filter-modal/>
                 </mg-modal>
+                <!-- filter modal /-->
 
-                <!-- filter modal -->
+                <!-- entry view modal -->
                 <mg-modal v-model:show="localItemViewModalVisible">
                     <OnepassEntryViewModal/>
                 </mg-modal>
+                <!-- entry view modal /-->
 
+                <!-- FOR DEBUG -->
                 <div v-if="1==2">
+                    <div>this.$router.params.page: {{this.$route.params.page}}</div>
+
                     <div class="mt-3">formVisibleStatus: {{ formVisibleStatus }}</div>
                     <div class="mt-0">formMode: {{ formMode }}</div>
                     <div class="mt-0">editItemId: {{ editItemId }}</div>
                     <div class="mt-0">isFilterEmpty: {{ isFilterEmpty }}</div>
+
+                    <!-- <pre>onepassPaginatorData: {{onepassPaginatorData}}</pre>-->
+                    <div>links.length: {{ onepassPaginatorData.links.length }}</div>
+                    <div>links.onepass_current_page: {{ onepassPaginatorData.current_page }}</div>
+                    <div>links.onepass_last_page: {{ onepassPaginatorData.last_page }}</div>
                 </div>
+                <!-- end FOR DEBUG -->
 
                 <div class="py-2 md:py-5 rounded-md">
                     <!-- entry create form -->
@@ -69,9 +81,21 @@
                         v-show="formVisibleStatus"
                         @closeCreateForm="closeFormHandler"
                     />
+                    <!-- entry create form /-->
 
                     <!-- entry lists -->
-                    <onepass-entry-list class="" />
+                    <onepass-entry-list/>
+                    <!-- entry lists /-->
+
+                    <!-- entry pagination -->
+                    <OnepassEntryPaginator
+                        class="mt-3"
+                        v-if="onepassPaginatorData.links.length"
+                        :links=" onepassPaginatorData.links"
+                        :current_page="onepassPaginatorData.current_page"
+                        :last_page="onepassPaginatorData.last_page"
+                    />
+                    <!-- entry pagination -->
                 </div>
 
             </div>
@@ -87,11 +111,12 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import {AdjustmentsIcon, AtSymbolIcon} from "@heroicons/vue/solid"
 import OnepassFilterModal from "../components/onepass/entries/OnepassFilterModal.vue";
 import OnepassEntryViewModal from "../components/onepass/entries/OnepassEntryViewModal.vue";
+import OnepassEntryPaginator from "../components/onepass/entries/MgPaginator.vue";
 
 export default {
     components: {
         MenuHeader, OnepassEntryCreateEditForm, OnepassEntryList, OnepassFilterModal,
-        AdjustmentsIcon, AtSymbolIcon, OnepassEntryViewModal,
+        AdjustmentsIcon, AtSymbolIcon, OnepassEntryViewModal, OnepassEntryPaginator
     },
 
     data(){
@@ -145,6 +170,7 @@ export default {
             filterModalVisible: state => state.onepassEntry.filterModalVisible,
             itemViewModalVisible: state => state.onepassEntry.itemViewModalVisible,
             pressedItemViewBtnClicked: state => state.onepassEntry.pressedItemViewBtn,
+            onepassPaginatorData: state => state.onepassEntry.items.paginatorData,
         }),
         ...mapGetters({
             isFilterEmpty: "onepassEntry/isFilterEmpty",

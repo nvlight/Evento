@@ -68,7 +68,9 @@ export default {
     },
 
     mounted() {
-        this.$store.dispatch("onepassEntry/loadItems");
+        let page = this.$route.params.page || 1;
+        this.$store.dispatch("onepassEntry/loadItems", {page});
+
     },
 
     watch:{

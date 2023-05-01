@@ -13,15 +13,20 @@ use Illuminate\Support\Facades\Auth;
 
 class EntryController extends Controller
 {
+    protected int $perPage = 10;
+
     public function index()
     {
         try{
-            $items = Entry::query()
+            $itemsQueryPart1 = Entry::query()
                 ->leftJoin('onepass_categories', 'onepass_categories.id', '=', 'onepass_entries.category_id')
                 ->where('onepass_entries.user_id', Auth::user()->id)
                 ->select('onepass_entries.*', 'onepass_categories.name as category_name')
                 ->orderBy('onepass_entries.id', 'DESC')
-                ->get();
+            ;
+
+            //$dataRs = $itemsQueryPart1->get();
+            $dataRs = $itemsQueryPart1->paginate($this->perPage);
 
 
         }catch (\Exception $e){
@@ -33,7 +38,7 @@ class EntryController extends Controller
         }
 
         return response()->json([
-            'data' => $items,
+            'data' => $dataRs,
             'success' => 1,
         ]);
     }
