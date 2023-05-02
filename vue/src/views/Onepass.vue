@@ -149,7 +149,7 @@ export default {
         },
 
         togglefilterModalVisible(){
-            console.log('togglefilterModalVisible', this.filterModalVisible);
+            //console.log('togglefilterModalVisible', this.filterModalVisible);
 
             this.setFilterModalVisible(! this.filterModalVisible );
             this.localFilterModalVisible = this.filterModalVisible;

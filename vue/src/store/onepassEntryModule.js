@@ -72,13 +72,13 @@ export const onepassEntryModule = {
         },
     },
     actions: {
-        loadItems({commit, state}, payload){
+        loadItems({commit, state}, queryString = ''){
             let response;
             const modelName = state.itemModelName;
             commit('setItemsLoading', true);
-            let page_str = payload.page !== 1 ? `?page=${payload.page}` : '';
+
             response = axiosClient
-                .get(`/${modelName}${page_str}`)
+                .get(`/${modelName}${queryString}`)
                 .then((res)=>{
                     if (res.data.success) {
                         commit('setItems', res.data.data.data);

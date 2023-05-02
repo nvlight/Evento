@@ -59,7 +59,24 @@ export default {
         filterhandler(){
             const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
 
-            this.$store.dispatch('onepassEntry/setFilterObject', jsonFilterData);
+            const withoutEmpty = {};
+
+            for (let key in jsonFilterData){
+                switch (typeof(jsonFilterData[key])) {
+                     case 'string':
+                        if (jsonFilterData[key] !== ''){
+                            withoutEmpty[key] = jsonFilterData[key];
+                        } break;
+                     case 'object':
+                         if (Array.isArray(jsonFilterData[key])){
+                             if (jsonFilterData[key].length !== 0){
+                                 withoutEmpty[key] = jsonFilterData[key];
+                             }
+                         }
+                }
+            }
+
+            this.$store.dispatch('onepassEntry/setFilterObject', withoutEmpty);
             this.doFilter(this.filter);
 
             this.setFilterModalVisible(false);

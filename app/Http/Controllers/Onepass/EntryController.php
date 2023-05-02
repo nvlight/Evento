@@ -15,7 +15,44 @@ class EntryController extends Controller
 {
     protected int $perPage = 10;
 
-    public function index()
+    public function index(Request $request)
+    {
+        $queryPart = Entry::query()
+            ->leftJoin('onepass_categories', 'onepass_categories.id', '=', 'onepass_entries.category_id')
+            ->where('onepass_entries.user_id', Auth::user()->id);
+
+        // list of keys email=&login=&phone=&name=&note
+        $needKeys = ['url', 'email', 'login', 'phone', 'name', 'note'];
+
+        foreach($needKeys as $key) {
+            if ($request->has($key) && !empty($request->input($key))) {
+
+                $queryPart = $queryPart->where(
+                    'onepass_entries.' . $key, 'LIKE',
+                    implode(['%', $request->input($key), '%'])
+                );
+            }
+        }
+
+        $queryPart = $queryPart
+            ->select('onepass_entries.*', 'onepass_categories.name as category_name')
+            ->orderBy('onepass_entries.id', 'DESC');
+
+        $sql = $queryPart->toSql();
+        $params = $queryPart->getBindings();
+
+        // $rs = $queryPart->get();
+        $rs = $queryPart->paginate($this->perPage);
+
+        return response([
+            'data' => $rs,
+            'success' => true,
+            //'sql' => $sql,
+            //'params' => $params,
+        ]);
+    }
+
+    public function index_old()
     {
         try{
             $itemsQueryPart1 = Entry::query()

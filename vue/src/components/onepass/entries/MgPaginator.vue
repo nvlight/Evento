@@ -49,14 +49,21 @@ export default {
             let params = {page: link.label};
             params = {page: (new URL(link.url)).searchParams.get('page')};
 
+            //let page_str = payload.page !== 1 ? `?page=${payload.page}` : '';
+
             this.$router
                .push({ name: routeName, params: params })
                //.then( () => { this.$router.go(0) } )
             ;
+            let queryString = new URLSearchParams(params).toString();
+            //console.log(queryString);
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
+            }
 
-            this.$store.dispatch("onepassEntry/loadItems", params)
+            this.$store.dispatch("onepassEntry/loadItems", queryString)
                 .then(response => {
-                    if (response.data.success) {
+                    if (response.data?.success) {
 
                     }
                 })
