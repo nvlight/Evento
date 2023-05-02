@@ -56,30 +56,61 @@ export default {
             this.filter = Object.assign({}, this.filterDefault)
         },
 
-        filterhandler(){
-            const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
+        withoutEmpty(value){
+            let withoutEmpty = {};
 
-            const withoutEmpty = {};
-
-            for (let key in jsonFilterData){
-                switch (typeof(jsonFilterData[key])) {
-                     case 'string':
-                        if (jsonFilterData[key] !== ''){
-                            withoutEmpty[key] = jsonFilterData[key];
+            for (let key in value){
+                switch (typeof(value[key])) {
+                    case 'string':
+                        if (value[key] !== ''){
+                            withoutEmpty[key] = value[key];
                         } break;
-                     case 'object':
-                         if (Array.isArray(jsonFilterData[key])){
-                             if (jsonFilterData[key].length !== 0){
-                                 withoutEmpty[key] = jsonFilterData[key];
-                             }
-                         }
+                    case 'object':
+                        if (Array.isArray(value[key])){
+                            if (value[key].length !== 0){
+                                withoutEmpty[key] = value[key];
+                            }
+                        }
                 }
             }
 
-            this.$store.dispatch('onepassEntry/setFilterObject', withoutEmpty);
-            this.doFilter(this.filter);
+            return withoutEmpty;
+        },
 
-            this.setFilterModalVisible(false);
+        filterhandler(){
+            const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
+
+            let withoutEmpty = this.withoutEmpty(jsonFilterData);
+
+            // this.$store.dispatch('onepassEntry/setFilterObject', withoutEmpty);
+            // this.doFilter(this.filter);
+
+            let queryString = new URLSearchParams(withoutEmpty).toString();
+            //console.log('queryString:', queryString);
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
+            }
+
+            this.$store.dispatch('onepassEntry/loadItems', queryString)
+                .then( response => {
+                    //console.log('response:', response)
+                    if (response.data.success) {
+                        //console.log('response.data.success:', response.data.success);
+                        this.$store.dispatch('onepassEntry/setFilterObject', withoutEmpty);
+
+                        let routeName = 'OnepassEntries';
+                        //let params = {page: link.label};
+                        //params = {page: (new URL(link.url)).searchParams.get('page')};
+
+                        //console.log('withoutEmpty:', withoutEmpty);
+                        this.$router.push({ name: routeName, query: withoutEmpty });
+
+                        this.setFilterModalVisible(false);
+                    }
+                })
+                .catch(error => {
+                    //console.log('onepassEntry/filterModal - dispatch error');
+                });
         }
     },
 

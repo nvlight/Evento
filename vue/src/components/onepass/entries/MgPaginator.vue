@@ -37,6 +37,15 @@ export default {
     },
     data(){
         return {
+            filterDefault:{
+                category_ids: [],
+                url: "",
+                email: "",
+                login: "",
+                phone: "",
+                name: "",
+                note: "",
+            },
         }
     },
     methods: {
@@ -49,10 +58,12 @@ export default {
             let params = {page: link.label};
             params = {page: (new URL(link.url)).searchParams.get('page')};
 
-            //let page_str = payload.page !== 1 ? `?page=${payload.page}` : '';
+            const prData = this.prepareFilterData();
+            params = {...params, ...prData};
 
             this.$router
-               .push({ name: routeName, params: params })
+               //.push({ name: routeName, params: params })
+               .push({ name: routeName, query: params })
                //.then( () => { this.$router.go(0) } )
             ;
             let queryString = new URLSearchParams(params).toString();
@@ -67,6 +78,22 @@ export default {
 
                     }
                 })
+        },
+
+        prepareFilterData() {
+            // посмотреть есть ли в queryString нужные нам, если есть отправить их вместе с запросом!
+            //console.log(this.$route.query);
+
+            let filterValues = {}
+            for (let fkey in this.filterDefault){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        filterValues[rkey] = this.$route.query[rkey];
+                    }
+                }
+            }
+
+            return filterValues;
         },
 
         linkHtml(i, link_label) {

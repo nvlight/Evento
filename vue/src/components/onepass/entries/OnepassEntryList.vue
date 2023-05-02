@@ -54,11 +54,42 @@ export default {
     data(){
         return {
 
+            filterDefault:{
+                category_ids: [],
+                url: "",
+                email: "",
+                login: "",
+                phone: "",
+                name: "",
+                note: "",
+            },
         }
     },
 
     methods:{
 
+        prepareFilterData()
+        {
+            // посмотреть есть ли в queryString нужные нам, если есть отправить их вместе с запросом!
+            //console.log(this.$route.query);
+
+            let filterValues = {}
+            for (let fkey in this.filterDefault){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        filterValues[rkey] = this.$route.query[rkey];
+                    }
+                }
+            }
+            //console.log('result:',filterValues);
+            let queryString = new URLSearchParams(filterValues).toString();
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
+            }
+            //console.log(queryString);
+
+            return queryString;
+        },
     },
 
     computed: {
@@ -68,7 +99,9 @@ export default {
     },
 
     mounted() {
-        this.$store.dispatch("onepassEntry/loadItems");
+        const prData = this.prepareFilterData();
+
+        this.$store.dispatch("onepassEntry/loadItems", prData);
     },
 
     watch:{

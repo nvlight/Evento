@@ -63,7 +63,7 @@ const routes = [
         component: DefaultLayout,
         children: [
             {
-                path: '/onepass/entries/:page?',
+                path: '/onepass/entries',
                 name: 'OnepassEntries',
                 component: Onepass,
                 props: true,

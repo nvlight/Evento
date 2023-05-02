@@ -24,7 +24,7 @@
 
                     <div class="right-side flex">
                         <button
-                            v-if="isFilterEmpty"
+                            v-if="!localFilterEmpty"
                             @click="clearFilterHandler"
                             class="mt-1 flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                         >
@@ -61,7 +61,9 @@
 
                 <!-- FOR DEBUG -->
                 <div v-if="1==2">
-                    <div>this.$router.params.page: {{this.$route.params.page}}</div>
+                    <div>this.$route.params: {{this.$route.params}}</div>
+                    <div>this.$route.query:  {{this.$route.query}}</div>
+                    <div>this.$route.params.page: {{this.$route.params.page}}</div>
 
                     <div class="mt-3">formVisibleStatus: {{ formVisibleStatus }}</div>
                     <div class="mt-0">formMode: {{ formMode }}</div>
@@ -72,6 +74,32 @@
                     <div>links.length: {{ onepassPaginatorData.links.length }}</div>
                     <div>links.onepass_current_page: {{ onepassPaginatorData.current_page }}</div>
                     <div>links.onepass_last_page: {{ onepassPaginatorData.last_page }}</div>
+
+                    <button
+                        @click="$router.push({ name: 'OnepassEntries', query: {yoyo: 'Wi!'} })"
+                        type="button"
+                        class="block"
+                    >buttttton</button>
+
+                    <div>localFilterEmpty: {{ localFilterEmpty }}</div>
+
+                    <button
+                        @click="this.$router.push({ name: 'OnepassEntries', query: {url: 'a'} })"
+                        type="button"
+                        class="block"
+                    >addParam</button>
+                    <button
+                        @click="this.$router.push({ name: 'OnepassEntries'})"
+                        type="button"
+                        class="block"
+                    >delete all params</button>
+                    <hr>
+                    <hr>
+                    <button
+                        @click="updateFilterParamExists"
+                        type="button"
+                        class="block"
+                    >check is filter params exists</button>
                 </div>
                 <!-- end FOR DEBUG -->
 
@@ -123,6 +151,18 @@ export default {
         return {
             localFilterModalVisible: false,
             localItemViewModalVisible: false,
+
+            localFilterEmpty: true,
+
+            filterDefault:{
+                category_ids: [],
+                url: "",
+                email: "",
+                login: "",
+                phone: "",
+                name: "",
+                note: "",
+            },
         }
     },
 
@@ -156,9 +196,34 @@ export default {
         },
 
         clearFilterHandler(){
-            // :to="{name: 'OnepassEntries'}"
-            this.$router.go();
-        }
+            this.$router.push({ name: 'OnepassEntries'});
+                //.then( () => { this.$router.go(); })
+
+            this.$store.dispatch("onepassEntry/loadItems");
+        },
+
+        isOneFilterQueryParamExists(){
+            //console.log('this.$route.query:', this.$route.query);
+            //console.log('this.filterDefault', this.filterDefault);
+
+            let isExists = false;
+
+            for (let fkey in this.filterDefault){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        isExists = true;
+                        break;
+                    }
+                }
+            }
+            //console.log('isExists:',isExists);
+
+            return isExists;
+        },
+
+        updateFilterParamExists(){
+            this.localFilterEmpty = !this.isOneFilterQueryParamExists();
+        },
     },
 
     computed:{
@@ -207,6 +272,10 @@ export default {
         pressedItemViewBtnClicked(nv){
             this.localItemViewModalVisible = true;
         },
+    },
+
+    updated() {
+        this.updateFilterParamExists();
     },
 
     mounted() {
