@@ -21,10 +21,7 @@
         </td>
 
         <td class="item-note border text-center dark:border-none p-2">
-            <span v-if="item.note">
-                {{ item.note }}
-            </span>
-            <span v-else>...</span>
+            {{ cutedNoteField(item.note) }}
         </td>
 
         <td class="evento_actions buttons_block border dark:border-none p-2">
@@ -165,6 +162,21 @@ export default {
             this.$store.commit('onepassEntry/setPressedItemViewBtn');
             this.$store.commit('onepassEntry/setViewItemId', id);
             this.$store.commit('onepassEntry/setViewModalVisible', true);
+        },
+
+        cutedNoteField(note){
+            let newNote = '';
+            const maxNoteLength = 17;
+
+            if (note){
+                if (note.length > maxNoteLength){
+                    newNote = note.substring(0, maxNoteLength) + '...';
+                }else{
+                    newNote = note;
+                }
+            }
+
+            return newNote;
         }
     },
     computed:{
@@ -177,7 +189,7 @@ export default {
             return this.index % 2 != 0
                 ? 'bg-gray-50 border-b dark:bg-gray-800'
                 : 'bg-white dark:bg-gray-900';
-        }
+        },
     },
 
     watch:{

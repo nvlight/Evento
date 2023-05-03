@@ -272,6 +272,12 @@ export default {
         pressedItemViewBtnClicked(nv){
             this.localItemViewModalVisible = true;
         },
+
+        localItemViewModalVisible(nv){
+            if (!nv){
+                this.$store.commit('onepassEntry/setViewModalVisible', false);
+            }
+        }
     },
 
     updated() {
