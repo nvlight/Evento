@@ -47,15 +47,13 @@ export const eventoModule = {
         }
     },
     actions: {
-        loadItems({commit, state}, {url = null} = null){
+        loadItems({commit, state}, queryString = ''){
             let response;
             commit('setEventosLoading', true);
-
             const modelName = state.itemModelName;
-            url = url || `/${modelName}`;
 
             response = axiosClient
-                .get(url)
+                .get(`/${modelName}${queryString}`)
                 .then((res)=>{
                     if (res.data.success) {
                         commit('setEventoItems', res.data.data.data);

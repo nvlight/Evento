@@ -9,7 +9,7 @@
                 <li v-for="(link, i) of evento_links" :key="i">
                     <a
                         :disabled="!Number(link.label)"
-                        @click="getPageData($event, link)"
+                        @click.prevent="getPageData($event, link)"
                         aria-current="page"
                         v-html="linkHtml(i, link.label)"
                         href="#"
@@ -46,9 +46,7 @@ export default {
         }
     },
     methods: {
-        //@click="getPageData($event, link)
         getPageData(event, link) {
-            event.preventDefault();
             if (!link.url || link.active) {
                 return;
             }

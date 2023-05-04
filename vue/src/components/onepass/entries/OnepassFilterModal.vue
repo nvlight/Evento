@@ -46,7 +46,6 @@ export default {
 
     methods:{
         ...mapActions({
-            doFilter: 'onepassEntry/filterItems',
         }),
         ...mapMutations({
             setFilterModalVisible: 'onepassEntry/setFilterModalVisible',
@@ -81,9 +80,6 @@ export default {
             const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
 
             let withoutEmpty = this.withoutEmpty(jsonFilterData);
-
-            // this.$store.dispatch('onepassEntry/setFilterObject', withoutEmpty);
-            // this.doFilter(this.filter);
 
             let queryString = new URLSearchParams(withoutEmpty).toString();
             //console.log('queryString:', queryString);

@@ -167,9 +167,7 @@ export default {
             },
             navigation : [
                 { title: 'Eventos', name: 'Eventos', current: true },
-                { title: 'Tags', name: 'Tags', current: false },
                 { title: 'OnePass', name: 'OnepassEntries', current: false },
-                // { name: 'Команда', href: '#', current: false },
             ],
             userNavigation : [
                 { name: 'Your Profile', href: '#' },

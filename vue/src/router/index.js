@@ -58,7 +58,7 @@ const routes = [
 
     {
         path: '/onepass',
-        //redirect: '/onepass/entries',
+        redirect: '/onepass/entries',
         meta: { requiresAuth: true },
         component: DefaultLayout,
         children: [

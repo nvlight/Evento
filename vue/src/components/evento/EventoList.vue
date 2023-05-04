@@ -1,10 +1,10 @@
 <template>
-    <div class="mt-1 relative overflow-x-auto border dark:border-gray-600">
+    <div class="mt-2 p-2 relative overflow-x-auto border border-indigo-500 rounded-md ">
         <div class="flex justify-between items-center px-1">
+
             <div class="flex items-center flex-wrap">
                 <h1 class="text-xl font-semibold">Список событий
                 </h1>
-                <div v-if="current_page !== 1" class="sm:ml-2">(страница {{current_page}})</div>
             </div>
 
             <!-- Evento actions -->
@@ -75,11 +75,16 @@
             <!--/ Evento actions -->
         </div>
 
-        <table
-            v-if="eventos.length"
-            class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3"
-        >
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+
+        <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
+
+        <div v-else>
+
+            <table
+                v-if="eventos.items.length"
+                class="mt-2 w-full border dark:border-none border-collapse rounded-md p-3"
+            >
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th class="py-3 px-6">#</th>
                     <th class="py-3 px-6">Дата</th>
@@ -87,23 +92,30 @@
                     <th class="py-3 px-6">Подробнее</th>
                     <th class="py-3 px-6">Действия</th>
                 </tr>
-            </thead>
-            <tbody>
-                <template v-for="(evento,index) in eventos"
-                    :key="evento.id">
+                </thead>
+                <tbody>
+                <template v-for="(evento,index) in eventos.items"
+                          :key="evento.id">
                     <evento-item
                         @doAddFormReset="$emit('doAddFormReset')"
                         :evento="evento"
                         :index="index"
                     />
                 </template>
-            </tbody>
-        </table>
-        <div v-else>
-            <div class="text-center">Еще нет добавленных событий</div>
-        </div>
+                </tbody>
+            </table>
+            <div v-else>
+                <div class="text-center">Еще нет добавленных событий</div>
+            </div>
 
-<!--        <div>evento_filter: {{evento_filter}}</div>-->
+            <evento-paginator
+                class="mt-5"
+                :evento_links="eventos.links"
+                :current_page="eventos.current_page"
+                :last_page="eventos.last_page"
+            />
+
+        </div>
 
     </div>
 </template>
@@ -114,19 +126,18 @@ import {mapActions, mapMutations, mapState} from "vuex";
 import EventoFilterModal from "./EventoFilterModal.vue";
 import MgInputDateLabeled from "../UI/MgInputDateLabeled.vue";
 import EventoDiagramModal from "./EventoDiagramModal.vue";
+import EventoPaginator from "./EventoPaginator.vue";
+import MgLoading from "../UI/MgLoading.vue";
 
 export default {
     name: 'evento-list',
     components: {
+        MgLoading, EventoPaginator,
         MgInputDateLabeled,
         EventoItem, EventoFilterModal, EventoDiagramModal,
     },
     emits: ['doAddFormReset'],
     props: {
-        eventos:{
-            type: Object,
-            required: true,
-        },
         isCreateFormButtonVisible:{
             type: Boolean,
         },
@@ -140,9 +151,15 @@ export default {
             isDiagramVisible: false,
 
             diagramData: [],
+
+            //eventos: [],
         }
     },
     methods:{
+        ...mapActions({
+            'loadEventos': 'evento/loadItems',
+            'loadFilteredEventos': "evento/filterItems",
+        }),
         ...mapMutations({
             'setCreateEditFormVisible': "evento/setCreateEditFormVisible",
             'setCreateMode': "evento/setCreateMode",
@@ -158,9 +175,6 @@ export default {
             this.filterFormVisible = true;
         },
 
-        doFilterEventos(filterData){
-
-        },
         resetEventoFilters(){
             //console.log('resetEventoFilters');
             sessionStorage.removeItem('evento_filter');
@@ -173,6 +187,37 @@ export default {
             this.isDiagramVisible = true;
         },
 
+
+        loadEventosHandler(){
+            let page_key = "current_page";
+            let url_path_key = "url_path";
+            let filter_key = 'evento_filter';
+
+            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
+                let page = sessionStorage.getItem(page_key);
+                let url_path = sessionStorage.getItem(url_path_key);
+                let url = { url: url_path + `?page=${page}`};
+
+                if (sessionStorage.hasOwnProperty(filter_key)){
+                    let params = {page: page}
+                    params = {...params, ...JSON.parse(sessionStorage.getItem(filter_key)) };
+                    this.loadFilteredEventos(params);
+                }else{
+                    this.loadEventos(url);
+                }
+            }else{
+                this.loadEventos({});
+            }
+        },
+        getForPage(event, link) {
+            event.preventDefault();
+            if (!link.url || link.active){
+                return;
+            }
+            this.$store.dispatch("evento/loadItems", {url: link.url})
+        },
+
+
     },
     computed:{
         ...mapState({
@@ -181,10 +226,15 @@ export default {
             'diagramValue': state => state.diagram.diagram,
             'current_page': state => state.evento.current_page,
             'evento_filter': state => state.evento.evento_filter,
+
+            eventos: state => state.evento.eventos,
         }),
     },
     mounted() {
-        this.filterSeted = sessionStorage.hasOwnProperty('evento_filter');
+        //const prData = this.prepareFilterData();
+        const prData = '';
+
+        this.$store.dispatch('evento/loadItems', prData);
     },
 }
 </script>

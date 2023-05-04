@@ -1,28 +1,25 @@
 <template>
-    <evento-menu-header title="Eventos"></evento-menu-header>
+    <div>
+        <menu-header title="События"></menu-header>
 
-    <div class="dark:bg-gray-900 dark:text-white">
-        <div class="evento-view max-w-7xl mx-auto py-6 sm:px-6 lg:px-8  ">
-            <!-- Replace with your content -->
-            <div class="py-2 md:py-5 rounded-md">
+        <div class="dark:bg-gray-900 dark:text-white">
+            <div class="evento-view max-w-screen-2xl mx-auto py-6 sm:px-6 lg:px-8  ">
+                <!-- Replace with your content -->
 
-                <mg-loading v-if="eventos.loading" class="m-auto">Загрузка...</mg-loading>
+                <router-link
+                    :to="{name: 'Tags'}"
+                    class="underline"
+                >Теги
+                </router-link>
 
-                <div v-else>
-
-                    <!-- <div>pickedEventos: {{ pickedEventos }}</div>-->
+                <div class="py-2 md:py-5 rounded-md">
 
                     <evento-create-edit v-if="formVisible" />
-                    <evento-list class="rounded-t-md" :eventos="eventos.items"/>
-                    <evento-paginator
-                        class="mt-5"
-                        :evento_links="eventos.links"
-                        :current_page="eventos.current_page"
-                        :last_page="eventos.last_page"
-                    />
+                    <evento-list class="rounded-t-md"/>
+
                 </div>
+                <!-- /End replace -->
             </div>
-            <!-- /End replace -->
         </div>
     </div>
 
@@ -40,10 +37,12 @@ import EventoCreateEdit from "../components/evento/EventoCreateEdit.vue";
 import EventoPaginator from "../components/evento/EventoPaginator.vue";
 import MgLoading from "../components/UI/MgLoading.vue";
 import EventoMenuHeader from "../components/evento/EventoMenuHeader.vue";
+import MenuHeader from "../components/MenuHeader.vue";
 
 export default {
     name: "Eventos",
     components: {
+        MenuHeader,
         MgLoading,
         MgSelect, MgTrashIconButton,
         TagItem, TagList, TagCreateEditForm,
@@ -58,70 +57,12 @@ export default {
     methods:{
         ...mapActions({
             'loadTagItems': 'tag/loadItems',
-            'loadEventos': 'evento/loadItems',
-            'loadFilteredEventos': "evento/filterItems",
         }),
 
         ...mapMutations({
             'setCurrentEditItemId': 'evento/setCurrentEditItemId',
         }),
 
-         getForPage(event, link) {
-                event.preventDefault();
-                if (!link.url || link.active){
-                    return;
-                }
-            this.$store.dispatch("evento/loadItems", {url: link.url})
-        },
-
-        loadEventosHandler(){
-            // нужно получить page, если он есть и загрузить данные именно с этой страницы
-            //const params = (new URL(document.location)).search;
-            //const params_object = Object.fromEntries(new URL(window.location).searchParams.entries());
-            //const params_string = (new URLSearchParams(obj)).toString();
-
-            let page_key = "current_page";
-            let url_path_key = "url_path";
-            let filter_key = 'evento_filter';
-
-            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
-                let page = sessionStorage.getItem(page_key);
-                let url_path = sessionStorage.getItem(url_path_key);
-                let url = { url: url_path + `?page=${page}`};
-
-                if (sessionStorage.hasOwnProperty(filter_key)){
-                    let params = {page: page}
-                    params = {...params, ...JSON.parse(sessionStorage.getItem(filter_key)) };
-                    this.loadFilteredEventos(params);
-                }else{
-                    this.loadEventos(url);
-                }
-            }else{
-                this.loadEventos({});
-            }
-
-            // if (sessionStorage.hasOwnProperty(key)){
-            //     console.log(sessionStorage.getItem(page_key))
-            //     let params = JSON.parse(sessionStorage.getItem(key));
-            //     if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
-            //         params.current_page = +sessionStorage.getItem(page_key);
-            //         let page = sessionStorage.getItem(page_key);
-            //         let url_path = sessionStorage.getItem(url_path_key);
-            //         let url = { url: url_path + `?page=${page}`};
-            //     }else{
-            //         this.loadFilteredEventos(params);
-            //     }
-            //     console.log(params);
-            //
-            // }else{
-            //
-            //     if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
-            //
-            //     }else {
-            //
-            //     }
-            // }
-        },
     },
     computed:{
         ...mapState({
@@ -139,7 +80,6 @@ export default {
     },
     mounted() {
         this.loadTagItems();
-        this.loadEventosHandler();
     },
 
 }

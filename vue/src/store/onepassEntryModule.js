@@ -93,25 +93,6 @@ export const onepassEntryModule = {
                 })
             return response;
         },
-        filterItems({commit, state}, params){
-            let response;
-            const modelName = state.itemModelName;
-            // commit('setItemsLoading', true);
-            response = axiosClient
-                .get(`/${modelName}/filter`, {params: params} )
-                .then((res)=>{
-                    if (res.data.success) {
-                        commit('setItems', structuredClone(res.data.data));
-                    }
-                    // commit('setItemsLoading', false);
-                    return res;
-                })
-                .catch( (err) => {
-                    // commit('setItemsLoading', false);
-                    return err;
-                })
-            return response;
-        },
 
         createItem({dispatch, commit}, item){
             commit('setCreatedItemStatus', true);
