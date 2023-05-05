@@ -2,6 +2,9 @@
     <div class="max-w-md">
         <h1 class="text-2xl font-semibold">Фильтр событий</h1>
 
+<!--        <pre>filterData: {{ filterData }}</pre>-->
+<!--        <pre>$route.query: {{ $route.query }}</pre>-->
+
         <form @submit.prevent="filterhandler" class="mt-2">
             <div class="date-start-end flex flex-wrap">
                 <mg-input-date-labeled v-model="filterData.date_start" class="mr-1">Дата - начало</mg-input-date-labeled>
@@ -157,12 +160,18 @@ export default {
             let routeQuery = this.$route.query;
             if (Object.keys(routeQuery).length){
 
+                let booleanKeys = ['zeroFill', 'pickAllTags'];
                 for (let rq in routeQuery){
                     for (let fd in this.filterData){
                         if (rq === fd){
 
-                            if (typeof(this.filterData[fd]) === 'boolean'){
-                                this.filterData[rq] = Boolean(routeQuery[rq]);
+                            if (booleanKeys.includes(rq)){
+                                //this.filterData[rq] = routeQuery[rq] === 'false' ? false : true;
+                                this.filterData[rq] = routeQuery[rq] !== 'false';
+                            }else if (typeof(routeQuery[rq]) === 'object' && Array.isArray(routeQuery[rq])){
+                                this.filterData[rq] = routeQuery[rq];
+                                // предполагается, что значения массива должны быть целыми числами
+                                this.filterData[rq] = this.filterData[rq].map(v => +v );
                             }else{
                                 this.filterData[rq] = routeQuery[rq];
                             }

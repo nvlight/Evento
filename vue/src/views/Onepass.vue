@@ -7,7 +7,7 @@
 
                 <router-link
                     :to="{name: 'OnepassCategories'}"
-                    class="underline"
+                    class="text-xl hover:underline"
                 >Категории
                 </router-link>
 

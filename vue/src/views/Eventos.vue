@@ -8,7 +8,7 @@
 
                 <router-link
                     :to="{name: 'Tags'}"
-                    class="underline"
+                    class="text-xl hover:underline"
                 >Теги
                 </router-link>
 

@@ -7,6 +7,8 @@
                 </h1>
             </div>
 
+<!--            <div>this.filterSeted: {{ this.filterSeted }}</div>-->
+
             <!-- Evento actions -->
             <div class="mr-1 mt-2 flex items-center justify-end flex-wrap">
 
@@ -186,6 +188,7 @@ export default {
         },
 
         resetEventoFilters(){
+            this.filterSeted = false;
             this.$router.push({ name: 'Eventos'});
             this.$store.commit('evento/setFilterDataSeted', false);
             this.$store.dispatch("evento/loadItems");
@@ -242,7 +245,6 @@ export default {
 
         updateFilterParamExists(){
             this.filterSeted = this.isOneFilterQueryParamExists();
-            console.log('filterSeted:', this.filterSeted);
         },
     },
     computed:{
@@ -265,7 +267,6 @@ export default {
         },
 
         isFilterDataSeted(nv){
-            console.log('isFilterDataSeted', nv);
             this.filterSeted = nv;
         }
     },
@@ -276,6 +277,8 @@ export default {
     },
 
     mounted() {
+        this.updateFilterParamExists();
+
         const prData = this.prepareFilterData();
         this.$store.dispatch('evento/loadItems', prData);
     },

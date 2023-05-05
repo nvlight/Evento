@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Session;
 class EventoController extends Controller
 {
     protected int $perPage = 10;
+    protected int $maxEndSum = 107000;
 
     protected function getEventoSqlPart(){
         return Evento::
@@ -78,41 +79,46 @@ class EventoController extends Controller
         /** @var Evento $sql */
         $rs = $this->filterSql();
 
-        // выбрать ли элементы с нулевыми значениями?
-        $zeroFill = $request->boolean('zeroFill');
-        if ($zeroFill !== false){
-            $rs = $rs->whereBetween('tag_values.value', [
-                $request->integer('sum_start'),
-                $request->integer('sum_end') ?: 107000
-            ]);
+        // если что-то от фильтра есть - фильтруем!! Да, там не должен быть page одиноко стоящий!
+        if ( count($request->all()) &&
+            !(  (count($request->all()) === 1) && $request->has('page') ) ){
+
+            // выбрать ли элементы с нулевыми значениями?
+            $zeroFill = $request->boolean('zeroFill');
+            if (!$zeroFill){
+                $rs = $rs->whereBetween('tag_values.value', [
+                    $request->integer('sum_start'),
+                    $request->integer('sum_end') ?: $this->maxEndSum,
+                ]);
+            }
+
+            // выбрать ли все теги?
+            $pickAllTags = $request->boolean('pickAllTags');
+            if (!$pickAllTags){
+                $tags = explode(
+                            ',',
+                            $request->input('tag_arr', '')
+                        );
+
+                $rs = $rs
+                    ->where(function ($query) use($tags){
+                        $query->whereIn('tags1.id', $tags)
+                            ->orWhereIn('tags2.id', $tags);
+                    });
+            }
+
+            // что касается даты.
+            $dataStart = $request->input('date_start');
+            $dateEnd = $request->input('date_end');
+            if ($dataStart && $dateEnd){
+                $rs = $rs->whereBetween('eventos.date', [
+                    $dataStart,
+                    $dateEnd,
+                ]);
+            }
         }
 
-        // выбрать ли все теги?
-        $pickAllTags = $request->boolean('pickAllTags');
-        $tags = $request->input('tag_arr', '');
-        $tagsArr = [];
-        if ($tags){
-            $tagsArr = explode(',',$tags);
-        }
-        if (!$pickAllTags && count($tagsArr) ){
-            $rs = $rs
-                ->where(function ($query) use($tagsArr){
-                    $query->whereIn('tags1.id', $tagsArr)
-                        ->orWhereIn('tags2.id', $tagsArr);
-                });
-        }
-
-        // что касается даты.
-        $dataStart = $request->input('date_start');
-        $dateEnd = $request->input('date_end');
-        if ($dataStart && $dateEnd){
-            $rs = $rs->whereBetween('eventos.date', [
-                $dataStart,
-                $dateEnd,
-            ]);
-        }
-
-        //
+        // сортировка нужна всегда
         $rs = $rs->orderByDesc('date')
             ->orderByDesc('eventos.id');
 
@@ -130,10 +136,15 @@ class EventoController extends Controller
         }
 
         return json_encode([
-            //'$request' => $request->all(),
-            '$zeroFill' => $zeroFill,
-            'sql' => $sql,
-            'params' => $sqlParams,
+//            '$request' => $request->all(),
+//            'zeroFill' => $zeroFill,
+//            'pickAllTags' => $pickAllTags,
+//            'dataStart' => $dataStart,
+//            'dateEnd' => $dateEnd,
+//
+//            'sql' => $sql,
+//            'params' => $sqlParams,
+
             'current_page' => $request->input('page'),
             'data' => $rs,
             'success' => 1,
