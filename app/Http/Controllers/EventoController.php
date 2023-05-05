@@ -73,13 +73,54 @@ class EventoController extends Controller
         ];
     }
 
-    public function index(Request $request)
+    public function index(EventoFilterRequest $request)
     {
+        /** @var Evento $sql */
+        $rs = $this->filterSql();
+
+        // выбрать ли элементы с нулевыми значениями?
+        $zeroFill = $request->boolean('zeroFill');
+        if ($zeroFill !== false){
+            $rs = $rs->whereBetween('tag_values.value', [
+                $request->integer('sum_start'),
+                $request->integer('sum_end') ?: 107000
+            ]);
+        }
+
+        // выбрать ли все теги?
+        $pickAllTags = $request->boolean('pickAllTags');
+        $tags = $request->input('tag_arr', '');
+        $tagsArr = [];
+        if ($tags){
+            $tagsArr = explode(',',$tags);
+        }
+        if (!$pickAllTags && count($tagsArr) ){
+            $rs = $rs
+                ->where(function ($query) use($tagsArr){
+                    $query->whereIn('tags1.id', $tagsArr)
+                        ->orWhereIn('tags2.id', $tagsArr);
+                });
+        }
+
+        // что касается даты.
+        $dataStart = $request->input('date_start');
+        $dateEnd = $request->input('date_end');
+        if ($dataStart && $dateEnd){
+            $rs = $rs->whereBetween('eventos.date', [
+                $dataStart,
+                $dateEnd,
+            ]);
+        }
+
+        //
+        $rs = $rs->orderByDesc('date')
+            ->orderByDesc('eventos.id');
+
+        $sql = $rs->toSql();
+        $sqlParams = $rs->getBindings();
+
         try{
-            $items = $this->getEventoSqlPart()
-                ->paginate($this->perPage)
-            ;
-            //$items->withPath('eventos' . $_SERVER['QUERY_STRING']);
+            $rs = $rs->paginate($this->perPage);
         }catch (\Exception $e){
             $this->saveToLog(__METHOD__, $e);
             return response()->json([
@@ -89,8 +130,12 @@ class EventoController extends Controller
         }
 
         return json_encode([
+            //'$request' => $request->all(),
+            '$zeroFill' => $zeroFill,
+            'sql' => $sql,
+            'params' => $sqlParams,
             'current_page' => $request->input('page'),
-            'data' => $items,
+            'data' => $rs,
             'success' => 1,
         ]);
     }

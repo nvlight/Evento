@@ -22,8 +22,7 @@
                     :dialog_content_classes="'overflow-auto '"
                 >
                     <evento-filter-modal
-                        @doFilterEventos="doFilterEventos"
-                        @closeModalDialog="filterFormVisible=false"
+                        @closeModalDialog="closeModalHandler"
                     />
                 </mg-modal>
 
@@ -152,7 +151,18 @@ export default {
 
             diagramData: [],
 
-            //eventos: [],
+            filterData: {
+                date_start: 1,
+                date_end: 2,
+                sum_start: 0,
+                sum_end: 107000,
+                filter_text: '',
+                tag_arr: [], //[122, 123],
+                orderById: 'desc_asc',
+                zeroFill: false,
+                pickAllTags: false,
+            },
+
         }
     },
     methods:{
@@ -176,48 +186,64 @@ export default {
         },
 
         resetEventoFilters(){
-            //console.log('resetEventoFilters');
-            sessionStorage.removeItem('evento_filter');
-            this.filterSeted = false;
-
-            this.$store.commit('evento/setEventoFilter', null);
-            this.$store.dispatch('evento/loadItems', {url:null});
+            this.$router.push({ name: 'Eventos'});
+            this.$store.commit('evento/setFilterDataSeted', false);
+            this.$store.dispatch("evento/loadItems");
         },
         showDiagram(){
             this.isDiagramVisible = true;
         },
 
+        closeModalHandler(){
+            this.filterFormVisible = false;
+            this.$store.commit('evento/setFilterModalVisible', false);
+        },
 
-        loadEventosHandler(){
-            let page_key = "current_page";
-            let url_path_key = "url_path";
-            let filter_key = 'evento_filter';
-
-            if (sessionStorage.hasOwnProperty(page_key) && sessionStorage.hasOwnProperty(url_path_key) ) {
-                let page = sessionStorage.getItem(page_key);
-                let url_path = sessionStorage.getItem(url_path_key);
-                let url = { url: url_path + `?page=${page}`};
-
-                if (sessionStorage.hasOwnProperty(filter_key)){
-                    let params = {page: page}
-                    params = {...params, ...JSON.parse(sessionStorage.getItem(filter_key)) };
-                    this.loadFilteredEventos(params);
-                }else{
-                    this.loadEventos(url);
+        prepareFilterData() {
+            let filterValues = {}
+            for (let fkey in this.filterData){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        filterValues[rkey] = this.$route.query[rkey];
+                    }
                 }
-            }else{
-                this.loadEventos({});
             }
-        },
-        getForPage(event, link) {
-            event.preventDefault();
-            if (!link.url || link.active){
-                return;
+
+            let queryString = new URLSearchParams(filterValues)
+
+            // console.log('page:', this.$route.query.page);
+            // add current page if exists
+            if (this.$route.query.page){
+                queryString.append('page', this.$route.query.page);
             }
-            this.$store.dispatch("evento/loadItems", {url: link.url})
+
+            queryString = queryString.toString();
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
+            }
+
+            return queryString;
         },
 
+        isOneFilterQueryParamExists(){
+            let isExists = false;
 
+            for (let fkey in this.filterData){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        isExists = true;
+                        break;
+                    }
+                }
+            }
+
+            return isExists;
+        },
+
+        updateFilterParamExists(){
+            this.filterSeted = this.isOneFilterQueryParamExists();
+            console.log('filterSeted:', this.filterSeted);
+        },
     },
     computed:{
         ...mapState({
@@ -226,14 +252,31 @@ export default {
             'diagramValue': state => state.diagram.diagram,
             'current_page': state => state.evento.current_page,
             'evento_filter': state => state.evento.evento_filter,
+            isFilterDataSeted: state => state.evento.isFilterDataSeted,
 
             eventos: state => state.evento.eventos,
         }),
     },
-    mounted() {
-        //const prData = this.prepareFilterData();
-        const prData = '';
+    watch:{
+        filterFormVisible(nv){
+            if (!nv){
+                this.$store.commit('evento/setFilterModalVisible', false);
+            }
+        },
 
+        isFilterDataSeted(nv){
+            console.log('isFilterDataSeted', nv);
+            this.filterSeted = nv;
+        }
+    },
+
+    updated() {
+        //console.log('updated');
+        //this.updateFilterParamExists();
+    },
+
+    mounted() {
+        const prData = this.prepareFilterData();
         this.$store.dispatch('evento/loadItems', prData);
     },
 }

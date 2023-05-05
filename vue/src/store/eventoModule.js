@@ -5,7 +5,6 @@ export const eventoModule = {
         itemModelName: 'evento',
 
         current_page: sessionStorage.getItem('current_page'),
-        evento_filter: sessionStorage.getItem('evento_filter'),
 
         eventos: {
             items: [],
@@ -31,6 +30,9 @@ export const eventoModule = {
         createEditFormVisible: false,
         editMode: false,
         createMode: false,
+
+        filterModalVisible: false,
+        isFilterDataSeted: false,
     }),
     getters:{
         getcreateItemStatus(state){
@@ -415,8 +417,15 @@ export const eventoModule = {
 
         toggleAllPickedEventos(state){
             state.isPickedAllEventos = !state.isPickedAllEventos;
-        }
+        },
 
+        setFilterModalVisible(state, value) {
+            state.filterModalVisible = value;
+        },
+
+        setFilterDataSeted(state, value){
+            state.isFilterDataSeted = value;
+        },
     },
     namespaced: true,
 }

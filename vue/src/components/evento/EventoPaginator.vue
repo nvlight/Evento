@@ -43,6 +43,17 @@ export default {
     },
     data(){
         return {
+            filterDefault: {
+                date_start: 1,
+                date_end: 2,
+                sum_start: 0,
+                sum_end: 107000,
+                filter_text: '',
+                tag_arr: [], //[122, 123],
+                orderById: 'desc / asc',
+                zeroFill: false,
+                pickAllTags: false,
+            },
         }
     },
     methods: {
@@ -51,44 +62,47 @@ export default {
                 return;
             }
 
-            //return;
-            //const windowData = Object.fromEntries(new URL(window.location).searchParams.entries());
-            //console.log(windowData);
-            let newLink = link.url;
-            let key = 'evento_filter';
-            if (sessionStorage.hasOwnProperty(key)){
-                let tmp = JSON.parse(sessionStorage.getItem(key));
-                //console.log(tmp);
+            let routeName = 'Eventos';
+            let params = {page: link.label};
+            params = {page: (new URL(link.url)).searchParams.get('page')};
 
-                let keyValues = '';
-                //keyValues = new URLSearchParams(tmp).toString();
-                for(let i in tmp){
-                    if (Array.isArray(tmp[i])){
+            const prData = this.prepareFilterData();
+            params = {...params, ...prData};
 
-                        tmp[i].forEach(v => {
-                            keyValues += `${i}[]=${v}&`;
-                        });
-                    }else{
-                        keyValues += `${i}=${tmp[i]}&`;
-                    }
-                }
+            this.$router
+                //.push({ name: routeName, params: params })
+                .push({ name: routeName, query: params });
 
-                newLink += '&' + keyValues;
-                //console.log(newLink);
+            let queryString = new URLSearchParams(params).toString();
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
             }
 
-            //console.log(link.url);
-            this.$store.dispatch("evento/loadItems", {url: newLink})
+            this.$store.dispatch("evento/loadItems", queryString)
                 .then(response => {
-                    if (response.data.success) {
-                        this.$store.dispatch('evento/saveCurrentPageToSessionStorage', response.data.data.current_page);
+                    if (response.data?.success) {
                     }
                 })
         },
+
+        prepareFilterData() {
+            let filterValues = {}
+
+            for (let fkey in this.filterDefault){
+                for (let rkey in this.$route.query){
+                    if (fkey === rkey){
+                        filterValues[rkey] = this.$route.query[rkey];
+                    }
+                }
+            }
+
+            return filterValues;
+        },
+
         linkHtml(i, link_label) {
             return i === 0 ? link_label.replace('Previous', 'Назад')
                 : i === this.evento_links.length - 1 ? link_label.replace('Next', 'Вперед')
-                    : link_label
+                : link_label
         },
         classes(i, link_active) {
             return [

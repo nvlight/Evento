@@ -81,8 +81,15 @@ export default {
                     }
                 }
             }
-            //console.log('result:',filterValues);
-            let queryString = new URLSearchParams(filterValues).toString();
+
+            let queryString = new URLSearchParams(filterValues)
+
+            // console.log('page:', this.$route.query.page);
+            // add current page if exists
+            if (this.$route.query.page){
+                queryString.append('page', this.$route.query.page);
+            }
+
             if (queryString !== '') {
                 queryString = `?${queryString}`;
             }

@@ -203,9 +203,6 @@ export default {
         },
 
         isOneFilterQueryParamExists(){
-            //console.log('this.$route.query:', this.$route.query);
-            //console.log('this.filterDefault', this.filterDefault);
-
             let isExists = false;
 
             for (let fkey in this.filterDefault){
@@ -216,7 +213,6 @@ export default {
                     }
                 }
             }
-            //console.log('isExists:',isExists);
 
             return isExists;
         },

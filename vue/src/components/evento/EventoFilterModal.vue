@@ -2,7 +2,7 @@
     <div class="max-w-md">
         <h1 class="text-2xl font-semibold">Фильтр событий</h1>
 
-        <form @submit.prevent="doFilterEventos" class="mt-2">
+        <form @submit.prevent="filterhandler" class="mt-2">
             <div class="date-start-end flex flex-wrap">
                 <mg-input-date-labeled v-model="filterData.date_start" class="mr-1">Дата - начало</mg-input-date-labeled>
                 <mg-input-date-labeled v-model="filterData.date_end"
@@ -49,6 +49,7 @@
                 </div>
 
                 <div v-if="filterRs.length" class="mt-2">Добавленные теги:</div>
+<!--                <div>filterData.tag_arr: {{ filterData.tag_arr }}</div>-->
                 <div v-if="filterRs.length" class="flex flex-wrap">
                     <div v-for="(tag,i) in filterRs" class="mt-1">
                         <div class="cursor-pointer title p-1 px-3 rounded-md"
@@ -95,14 +96,14 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import DateMixin from "../../mixins/DateMixin.vue";
 
 export default {
     name: 'evento-filter-modal',
     components: {},
 
-    emits: ['doFilterEventos', 'closeModalDialog'],
+    emits: ['closeModalDialog'],
     mixins: [DateMixin, ],
     data(){
         return {
@@ -114,7 +115,7 @@ export default {
                 sum_end: 107000,
                 filter_text: '',
                 tag_arr: [], //[122, 123],
-                orderById: 'desc / asc',
+                orderById: 'desc_asc',
                 zeroFill: false,
                 pickAllTags: false,
             },
@@ -125,12 +126,9 @@ export default {
         ...mapActions({
             'filterItems': 'evento/filterItems',
         }),
-        doFilterEventos(){
-            const jsonFilterData = JSON.stringify(this.filterData);
-            sessionStorage.setItem('evento_filter', jsonFilterData);
-            this.$store.commit('evento/setEventoFilter', jsonFilterData);
-            this.filterItems(this.filterData);
-        },
+        ...mapMutations({
+            setFilterModalVisible: 'evento/setFilterModalVisible',
+        }),
 
         setDatesForFilterForm(){
             if (! Object.keys(this.sessionFilter).length){
@@ -155,25 +153,89 @@ export default {
             this.filterData.filter_text='';
         },
 
-        setSessionFilterData(){
-            let key = 'evento_filter';
-            if (sessionStorage.hasOwnProperty(key)) {
-            //if (this.evento_filter_active) {
-                this.sessionFilter = (JSON.parse(sessionStorage.getItem(key)));
-                this.filterData = this.sessionFilter;
+        filledFilterDataInRouteQuery(){
+            let routeQuery = this.$route.query;
+            if (Object.keys(routeQuery).length){
+
+                for (let rq in routeQuery){
+                    for (let fd in this.filterData){
+                        if (rq === fd){
+
+                            if (typeof(this.filterData[fd]) === 'boolean'){
+                                this.filterData[rq] = Boolean(routeQuery[rq]);
+                            }else{
+                                this.filterData[rq] = routeQuery[rq];
+                            }
+                        }
+                    }
+                }
             }
+        },
+
+        withoutEmpty(value){
+            let withoutEmpty = {};
+
+            for (let key in value){
+                switch (typeof(value[key])) {
+                    case 'string':
+                        if (value[key] !== ''){
+                            withoutEmpty[key] = value[key];
+                        } break;
+                    case 'object':
+                        if (Array.isArray(value[key])){
+                            if (value[key].length !== 0){
+                                withoutEmpty[key] = value[key];
+                            }
+                        }
+                        break;
+                    case 'number':
+                        withoutEmpty[key] = Number(value[key]);
+                        break;
+                    case 'boolean':
+                        withoutEmpty[key] = Boolean(value[key]);
+                        break;
+                }
+            }
+
+            return withoutEmpty;
+        },
+        filterhandler(){
+            const jsonFilterData = JSON.parse(JSON.stringify(this.filterData));
+
+            let withoutEmpty = this.withoutEmpty(jsonFilterData);
+
+            let queryString = new URLSearchParams(withoutEmpty).toString();
+            if (queryString !== '') {
+                queryString = `?${queryString}`;
+            }
+
+            this.$store.dispatch('evento/loadItems', queryString)
+                .then( response => {
+                    if (response.data.success) {
+                        let routeName = 'Eventos';
+                        this.$router.push({ name: routeName, query: withoutEmpty });
+
+                        this.$store.commit('evento/setFilterDataSeted', true);
+                        this.setFilterModalVisible(false);
+                    }
+                    this.$emit('closeModalDialog');
+                })
+                .catch(error => {
+                    this.$emit('closeModalDialog');
+                });
+
         },
     },
     computed:{
         ...mapState({
             'tags': state => state.tag.tags,
-            'evento_filter': state => state.evento.evento_filter,
+            filterModalVisible: state => state.evento.eventos,
         }),
 
         filterRs(){
             return this.tags.items.filter(t => {
                 for (let i=0, n=this.filterData.tag_arr.length; i<n; i++){
-                    if (t.id === this.filterData.tag_arr[i]){
+                    if (t.id === +this.filterData.tag_arr[i]){
                         return t.id;
                     }
                 }
@@ -188,21 +250,15 @@ export default {
         },
     },
     mounted() {
-        this.setSessionFilterData();
         this.setDatesForFilterForm();
 
         this.filterDataEtalon = this.filterData;
 
-        if (!this.evento_filter){
-            this.filterData = {...this.filterDataEtalon};
-        }
+        this.$store.commit('evento/setFilterModalVisible', true);
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key == 'Escape') {
-                this.$emit('closeModalDialog');
-            }
-        });
-    }
+        // если что-то из данных фильтра есть в $route.query -> нужно их заполнить
+        this.filledFilterDataInRouteQuery();
+    },
 }
 </script>
 
