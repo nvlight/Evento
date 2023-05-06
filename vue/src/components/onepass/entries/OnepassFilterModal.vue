@@ -75,7 +75,6 @@ export default {
 
             return withoutEmpty;
         },
-
         filterhandler(){
             const jsonFilterData = JSON.parse(JSON.stringify(this.filter));
 
@@ -107,7 +106,32 @@ export default {
                 .catch(error => {
                     //console.log('onepassEntry/filterModal - dispatch error');
                 });
-        }
+        },
+
+        filledFilterDataInRouteQuery(filterValue){
+            let routeQuery = this.$route.query;
+            if (Object.keys(routeQuery).length){
+
+                let booleanKeys = [];
+                for (let rq in routeQuery){
+                    for (let fd in filterValue){
+                        if (rq === fd){
+
+                            if (booleanKeys.includes(rq)){
+                                //this.filterData[rq] = routeQuery[rq] === 'false' ? false : true;
+                                filterValue[rq] = routeQuery[rq] !== 'false';
+                            }else if (typeof(routeQuery[rq]) === 'object' && Array.isArray(routeQuery[rq])){
+                                filterValue[rq] = routeQuery[rq];
+                                // предполагается, что значения массива должны быть целыми числами
+                                filterValue[rq] = filterValue[rq].map(v => +v );
+                            }else{
+                                filterValue[rq] = routeQuery[rq];
+                            }
+                        }
+                    }
+                }
+            }
+        },
     },
 
     computed: {
@@ -119,6 +143,7 @@ export default {
     mounted() {
         this.resetFilter();
 
+        this.filledFilterDataInRouteQuery(this.filter);
     }
 }
 </script>
