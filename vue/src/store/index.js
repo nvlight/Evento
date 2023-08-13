@@ -7,133 +7,116 @@ import {onepassCategoryModule} from "./onepassCategoryModule.js";
 import {onepassEntryModule} from "./onepassEntryModule.js";
 
 const store = createStore({
-    state:{
+    state: {
         mainDevSiteUrl: 'https://mgdev.ru',
         darkModeSessionStorageKey: 'darkMode',
         darkMode: Boolean(sessionStorage.getItem('darkMode')),
-        user:{
-            data:{},
-            token: sessionStorage.getItem('TOKEN'),
+        user: {
+            data: {}, token: sessionStorage.getItem('TOKEN'),
         },
         notification: {
-            show: false,
-            type: null,
-            message: '',
+            show: false, type: null, message: '',
         },
         avatarLoading: false,
-    },
-    getters:{
+    }, getters: {
         isDarkModeEnabled: () => (state) => {
             return state.darkMode;
         },
-    },
-    actions:{
-        getUser({commit}){
+    }, actions: {
+        getUser({commit}) {
             return axiosClient.get('/user')
-                .then( response => {
-                    if (response.data){
+                .then(response => {
+                    if (response.data) {
                         commit('setUserData', response.data)
                     }
                     return response;
                 })
-        },
-        register({commit}, user){
+        }, register({commit}, user) {
             return axiosClient.post('/register', user)
-                .then( ({data}) => {
+                .then(({data}) => {
                     commit('setUser', data)
                     return data;
                 })
-        },
+        }, // 12345678aA@
         // 12345678aA@
-        // 12345678aA@
-        login({commit}, user){
+        login({commit}, user) {
             return axiosClient.post('/login', user)
-                .then( ({data}) => {
+                .then(({data}) => {
                     commit('setUser', data)
                     return data;
                 })
-        },
-        logout({commit}){
+        }, logout({commit}) {
             return axiosClient.post('/logout')
-                .then( response => {
+                .then(response => {
                     commit('logout');
                     return response;
                 })
-        },
-        setUserAvatar({commit}, data){
+        }, setUserAvatar({commit}, data) {
             commit('setAvatarLoading', true);
             return axiosClient.post('/user/profile/avatar', data)
-                .then( response => {
+                .then(response => {
 
-                    if (response.data.success){
+                    if (response.data.success) {
                         commit('setUserData', response.data.user);
                         commit('setAvatarLoading', false);
                     }
 
                     return response;
                 })
-                .catch( response => {
+                .catch(response => {
                     commit('setAvatarLoading', false);
                     return response;
                 })
-        },
-        delUserAvatar({commit}){
+        }, delUserAvatar({commit}) {
             commit('setAvatarLoading', true);
             return axiosClient.delete('/user/profile/avatar')
-                .then( response => {
+                .then(response => {
 
-                    if (response.data.success){
+                    if (response.data.success) {
                         commit('setUserData', {});
                         commit('setAvatarLoading', false);
                     }
 
                     return response;
                 })
-                .catch( response => {
+                .catch(response => {
                     commit('setAvatarLoading', false);
                     return response;
                 })
         },
-    },
-    mutations:{
+    }, mutations: {
         logout: (state) => {
-            state.user.data  = {};
+            state.user.data = {};
             state.user.token = null;
             sessionStorage.removeItem('TOKEN');
-        },
-        setUser: (state, userData) => {
+        }, setUser: (state, userData) => {
             state.user.token = userData.token;
-            state.user.data  = userData.user;
+            state.user.data = userData.user;
             sessionStorage.setItem('TOKEN', userData.token);
-        },
-        setUserData: (state, userData) => {
-            state.user.data  = userData;
-        },
-        notify(state, {message, type, timeout}){
+        }, setUserData: (state, userData) => {
+            state.user.data = userData;
+        }, notify(state, {message, type, timeout}) {
             state.notification.show = true;
             state.notification.type = type;
             state.notification.message = message;
 
-            setTimeout( () => {
+            setTimeout(() => {
                 state.notification.show = false;
             }, timeout ? timeout : 1500)
-        },
-        toggleDarkMode(state){
+        }, toggleDarkMode(state) {
             state.darkMode = !state.darkMode;
             const dmSessKey = state.darkModeSessionStorageKey;
 
             let sdm = sessionStorage.getItem(dmSessKey);
             if (Boolean(sdm)) {
                 sessionStorage.setItem(dmSessKey, '');
-            }else{
+            } else {
                 sessionStorage.setItem(dmSessKey, '1');
             }
-        },
-        setAvatarLoading(state, value){
+        }, setAvatarLoading(state, value) {
             state.avatarLoading = value;
         }
-    },
-    modules:{
+    }, modules: {
         tag: tagModule,
         evento: eventoModule,
         diagram: diagramModule,

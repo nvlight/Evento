@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function ()
+Route::middleware(['auth:sanctum'])->group(function ()
 {
     Route::get('/user', function (Request $request) {
         $user = $request->user();
@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function ()
         }
         return $user;
     });
-    Route::match(['post'], '/logout',    [AuthController::class, 'logout']);
+    Route::match(['post'], '/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('/tag', TagController::class);
 
@@ -73,4 +73,7 @@ Route::match(['post'], '/login',    [AuthController::class, 'login']);
 
 Route::get('test/eloquent/base', [TestController::class, 'eloquent_base']);
 Route::get('test/openai/foobar', [OpenaiController::class, 'foobar']);
+Route::get('test', function (){
+    return response()->json(['message' => 'yes, off course']);
+});
 

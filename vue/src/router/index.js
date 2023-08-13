@@ -88,8 +88,6 @@ const router = createRouter({
     routes,
 })
 
-console.log('router -> index.js');
-
 router.beforeEach( (to,from, next) => {
     if (to.meta.requiresAuth && !store.state.user.token){
         next({name: 'Login'})

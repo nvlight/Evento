@@ -122,11 +122,11 @@ export default {
 
         deleteEvento(id){
             if (!confirm('Действительно удалить?')) return;
-            let isFilterActive = this.evento_filter ? 1 : 0;
+            //let isFilterActive = this.evento_filter ? 1 : 0;
             const delParams = {
                 'current_page': this.current_page,
-                'filter_active': isFilterActive,
-                ...JSON.parse(this.evento_filter),
+                //'filter_active': isFilterActive,
+                //...JSON.parse(this.evento_filter),
             }
             this.$store.dispatch('evento/delItemQuery', {id, params: delParams})
                 .then((res) => {

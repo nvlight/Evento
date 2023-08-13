@@ -1,6 +1,7 @@
 <template>
     <div v-if="notification.show" @click="notification.show = false"
-        class="fixed right-4 rounded-md cursor-pointer bottom-4 py-2 px-4 text-white animate-fade-in-down"
+        class="fixed right-4 rounded-md cursor-pointer bottom-4 py-2 px-4 text-white animate-fade-in-down
+        "
         :class="[notification_class]"
         >
         {{ notification.message }}
